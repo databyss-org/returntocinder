@@ -1,0 +1,34 @@
+@import 'scss/mixins';
+
+html {
+  font-size: 16px;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  outline: none;
+  user-select: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.overlay {
+  @include fullscreen();
+
+  z-index: 10;
+  opacity: 0.9;
+  background: #fff;
+}
