@@ -2,7 +2,7 @@
 
 import parse from 'rtf-parser';
 
-const sectionPattern = /^(\*\*\*)*[A-Z]{1,4}i{0,3}/;
+const sectionPattern = /^(\*\*\*)*\+*[A-Z]{1,4}i{0,3}/;
 
 export function asStream(cb) {
   return parse(htmlifyResult(cb));
