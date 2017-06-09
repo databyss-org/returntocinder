@@ -2,7 +2,7 @@
 
 import parse from 'rtf-parser';
 
-const sectionPattern = /^[A-Z]{1,4}i{0,3}/;
+const sectionPattern = /^(\*\*\*)*[A-Z]{1,4}i{0,3}/;
 
 export function asStream(cb) {
   return parse(htmlifyResult(cb));
@@ -45,7 +45,7 @@ function rtfToHTML(doc) {
   let sections;
   let entries;
 
-  console.error(doc.content);
+  // console.error(doc.content);
 
   for (let i = 0; i < doc.content.length; i += 1) {
     // scan for chapter

@@ -22,6 +22,7 @@
     "css-loader": "latest",
     "es6-promise": "latest",
     "express": "latest",
+    "express-basic-auth": "latest",
     "file-loader": "latest",
     "isomorphic-fetch": "latest",
     "json-loader": "latest",
