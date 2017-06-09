@@ -6,13 +6,13 @@
   "scripts": {
     "start": "webpack & node server.js",
     "dev": "webpack-dev-server --content-base public --open --inline",
-    "rtftohtml": "node scripts/rtftohtml.js"
+    "rtftohtml": "babel-node src/scripts/rtftohtml.js"
   },
   "keywords": [],
   "author": "pzhine",
   "license": "ISC",
   "dependencies": {
-    "@iarna/rtf-to-html": "^1.0.3",
+    "babel-cli": "latest",
     "babel-core": "latest",
     "babel-loader": "latest",
     "babel-preset-es2015": "latest",
@@ -29,8 +29,9 @@
     "react": "latest",
     "react-dom": "latest",
     "react-router": "latest",
-    "react-router-dom": "^4.1.1",
+    "react-router-dom": "latest",
     "reset-css": "latest",
+    "rtf-parser": "latest",
     "sass-loader": "latest",
     "style-loader": "latest",
     "svg-react-loader": "latest",
