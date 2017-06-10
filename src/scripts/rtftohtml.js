@@ -2,7 +2,7 @@
 import fs from 'fs';
 import { fromStream } from '../lib/rtfToHtml';
 
-fromStream(fs.createReadStream('../doc/test5.rtf'), (err, html) => {
+fromStream(fs.createReadStream('../doc/full.rtf'), (err, html) => {
   console.log(html);
   if (err) {
     console.error(err);
