@@ -5,12 +5,11 @@ var basicAuth = require('express-basic-auth')
 var compression = require('compression');
 
 app.set('port', (process.env.PORT || 5000));
-app.use(basicAuth({
+app.use(compression(), basicAuth({
   users: { 'babydaddy': 'borderline' },
   challenge: true,
   realm: 'Return to Cinder'
 }), express.static('./public'));
-app.use(compression());
 
 app.get('/oauth', function(req, res) {
   console.log(req);
