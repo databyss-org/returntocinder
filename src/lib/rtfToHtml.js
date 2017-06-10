@@ -2,7 +2,21 @@
 
 import parse from 'rtf-parser';
 
-const sectionPattern = /^(\*\*\*)*\+*[A-Z]{1,4}i{0,3}/;
+const sectionPattern = /^(\*{3})*\+*[A-Z]{1,4}i{0,3}/;
+
+const defaults = {
+  bold: false,
+  italic: false,
+  underline: false,
+  strikethrough: false,
+  foreground: { red: 0, blue: 0, green: 0 },
+  background: { red: 255, blue: 255, green: 255 },
+  firstLineIndent: 0,
+  indent: 0,
+  align: 'left',
+  valign: 'normal',
+  fontSize: 24
+};
 
 export function asStream(cb) {
   return parse(htmlifyResult(cb));
@@ -28,19 +42,6 @@ function htmlifyResult(cb) {
 }
 
 function rtfToHTML(doc) {
-  const defaults = {
-    bold: false,
-    italic: false,
-    underline: false,
-    strikethrough: false,
-    foreground: { red: 0, blue: 0, green: 0 },
-    background: { red: 255, blue: 255, green: 255 },
-    firstLineIndent: doc.style.firstLineIndent || 0,
-    indent: 0,
-    align: 'left',
-    valign: 'normal'
-  };
-
   const chapters = {};
   let sections;
   let entries;
@@ -73,7 +74,10 @@ function rtfToHTML(doc) {
       do {
         const entry = renderPara(doc.content[i], defaults);
         if (entry) {
-          entries = entries.concat(entry.replace(sectionPattern, '').trim());
+          const re = new RegExp(
+            `^(<em>)*\\s*${sectionPattern.source.substr(1)}\\s*(</em>)*`
+          );
+          entries = entries.concat(entry.replace(re, '').trim());
         }
         if (getSection(doc.content[i + 1])) {
           // end section
@@ -112,8 +116,7 @@ function getHeading(chunk) {
   ))) {
     return false;
   }
-  const h = getChunkValue(chunk);
-  return h.match(/[^\s]/) ? h : false;
+  return renderPara(chunk, defaults);
 }
 
 function getSection(chunk) {
@@ -146,10 +149,6 @@ function styleTags(chunk, defaults) {
   if (chunk.style.italic != null && chunk.style.italic !== defaults.italic) {
     open += '<em>';
     close = '</em>' + close;
-  }
-  if (chunk.style.bold != null && chunk.style.bold !== defaults.bold) {
-    open += '<h2>';
-    close = '</h2>' + close;
   }
   if (chunk.style.strikethrough != null && chunk.style.strikethrough !== defaults.strikethrough) {
     open += '<s>';
