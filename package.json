@@ -19,6 +19,7 @@
     "babel-preset-es2017": "latest",
     "babel-preset-react": "latest",
     "babel-preset-stage-3": "latest",
+    "compression": "latest",
     "css-loader": "latest",
     "es6-promise": "latest",
     "express": "latest",
