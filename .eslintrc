@@ -11,7 +11,7 @@
     "no-shadow": 0, // Shadowing is a nice language feature. Naming is hard.
     "no-underscore-dangle": 0, // It's classic pattern to denote private props.
     "quote-props": 0, // better to stay consistent,
-    "class-methods-use-this": ["error", { "exceptMethods": ["render"] }],
+    "class-methods-use-this": 0,
     "react/jsx-indent": ["error", 2]
   }
 }

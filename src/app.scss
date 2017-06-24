@@ -1,13 +1,34 @@
 @import 'scss/mixins';
 
-html {
-  font-size: 16px;
-}
-
 body {
+  max-width: 800px;
+  margin-left: 72pt;
+  margin-right: 72pt;
+  margin-top: 72pt;
+  margin-bottom: 72pt;
+  font-size: 13pt;
+  text-indent: 0pt;
+  font-family: 'BaskervillePro', serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+small {
+  font-size: 10pt;
+}
+h1 {
+  margin-bottom: 1.5em;
+  font-size: 24pt;
+}
+h2 {
+  margin-top: 2.5em;
+  margin-bottom: 1.5em;
+}
+p {
+  margin:0;
+}
+section {
+  margin-bottom: 1.5em;
 }
 
 * {

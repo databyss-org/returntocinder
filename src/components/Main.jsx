@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-
+import { connect } from 'react-redux';
+import * as appActions from '../actions';
 import FullText from './FullText.jsx';
 
-export default class Main extends Component {
+class Main extends Component {
+  componentDidMount() {
+    this.props.fetchDoc();
+  }
+
   render() {
     return (
       <Router>
@@ -15,3 +20,7 @@ export default class Main extends Component {
     );
   }
 }
+
+export default connect(state => ({
+  appState: state
+}), appActions)(Main);
