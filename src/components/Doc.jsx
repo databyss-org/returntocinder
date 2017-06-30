@@ -36,7 +36,7 @@ class Doc extends PureComponent {
         : nextProps.appState.doc && Object.keys(nextProps.appState.doc);
 
       this.List && this.List.recomputeRowHeights();
-      // this._resetRowCache();
+      queryChanged && this._resetRowCache();
     }
   }
 
