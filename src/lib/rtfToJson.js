@@ -2,6 +2,8 @@
 
 import parse from 'rtf-parser';
 
+import { urlifyMotif, textifyMotif } from './_helpers';
+
 const sectionPattern = /^(\*{3})*\+*[A-Z]{1,4}i{0,3}/;
 
 const defaults = {
@@ -92,7 +94,17 @@ function rtfToHTML(doc) {
       sections[sectionTitle] = entries;
     } while (i < doc.content.length);
 
-    chapters[chapterTitle] = sections;
+    const chapterTitleText = textifyMotif(chapterTitle);
+    const chapterTitleUrl = urlifyMotif(chapterTitleText);
+
+    if (!chapterTitleUrl.length) {
+      continue;
+    }
+
+    chapters[urlifyMotif(chapterTitleText)] = {
+      title: chapterTitle,
+      sources: sections
+    };
   }
 
   // console.log(chapters);

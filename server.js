@@ -1,8 +1,8 @@
-var express = require('express');
-var path = require('path');
-var app = express();
-var basicAuth = require('express-basic-auth')
-var compression = require('compression');
+const express = require('express');
+const basicAuth = require('express-basic-auth');
+const compression = require('compression');
+
+const app = express();
 
 app.set('port', (process.env.PORT || 5000));
 app.use(compression(), basicAuth({
@@ -11,11 +11,11 @@ app.use(compression(), basicAuth({
   realm: 'Return to Cinder'
 }), express.static('./public'));
 
-app.get('/oauth', function(req, res) {
+app.get('/oauth', (req, res) => {
   console.log(req);
   res.status(200).end();
 });
 
-app.listen(app.get('port'), function() {
-  console.log('server started on port', app.get('port'))
+app.listen(app.get('port'), () => {
+  console.log('server started on port', app.get('port'));
 });

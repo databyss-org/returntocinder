@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import qs from 'query-string';
 import * as appActions from '../actions';
-import { urlifyMotif } from '../lib/_helpers';
+import { textifyMotif } from '../lib/_helpers';
 
 class Search extends Component {
   handleMotifChange(evt) {
@@ -21,21 +21,24 @@ class Search extends Component {
     });
   }
   render() {
+    const { doc } = this.props.appState;
     const selectVal = qs.parse(this.props.location.search).motif;
+
     return (
       <select
         value={selectVal || '--'}
         onChange={e => this.handleMotifChange(e)}
+        style={{ width: '80%' }}
       >
         <option key="none" value="--">
           {selectVal ? 'All motifs' : 'Jump to motif...'}
         </option>
-        {Object.keys(this.props.appState.doc).map(motif => (
+        {Object.keys(doc).map(motif => (
           <option
             key={motif}
-            value={urlifyMotif(motif)}
+            value={motif}
           >
-            {motif}
+            {textifyMotif(doc[motif].title)}
           </option>
         ))}
       </select>

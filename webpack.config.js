@@ -1,10 +1,10 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
-  entry: ["babel-polyfill", "./src/index.jsx"],
+  entry: ['babel-polyfill', './src/index.jsx'],
   output: {
-    path: path.resolve(__dirname, "public"),
-    filename: "bundle.js",
+    path: path.resolve(__dirname, 'public'),
+    filename: 'bundle.js',
   },
   module: {
     loaders: [
@@ -29,9 +29,9 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif)$/i,
-        loader: "file-loader",
+        loader: 'file-loader',
         options: {
-          name: "./images/[hash].[ext]"
+          name: './images/[hash].[ext]'
         }
       },
       {
@@ -42,6 +42,6 @@ module.exports = {
   },
   devtool: 'source-map',
   resolve: {
-    extensions: [".js", ".jsx" ]
+    extensions: ['.js', '.jsx']
   }
 };

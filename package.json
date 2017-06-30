@@ -36,6 +36,7 @@
     "react-redux": "^5.0.5",
     "react-router": "latest",
     "react-router-dom": "latest",
+    "react-virtualized": "^9.8.0",
     "redux": "^3.7.0",
     "redux-logger": "^3.0.6",
     "reset-css": "latest",

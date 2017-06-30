@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as appActions from '../actions';
-import FullText from './FullText.jsx';
+import Doc from './Doc.jsx';
 
-class Main extends Component {
+class Main extends PureComponent {
   componentDidMount() {
     this.props.fetchDoc();
   }
@@ -13,8 +13,7 @@ class Main extends Component {
     return (
       <Router>
         <div>
-          <h1>Baby&ndash;Daddy</h1>
-          <Route exact path='/' component={FullText} />
+          <Route exact path='/' component={Doc} />
         </div>
       </Router>
     );
