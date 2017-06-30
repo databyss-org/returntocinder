@@ -7,6 +7,7 @@ body {
   margin-top: 72pt;
   margin-bottom: 72pt;
   font-size: 13pt;
+  line-height: 15pt;
   text-indent: 0pt;
   font-family: 'BaskervillePro', serif;
   text-rendering: optimizeLegibility;
@@ -25,11 +26,15 @@ h2 {
   margin-bottom: 1.5em;
   font-weight: bold;
 }
+h3 {
+  display: inline;
+  color: #533575;
+}
 em {
   font-style: italic;
 }
 p {
-  margin:0;
+  margin:0 0 3px 0;
 }
 section {
   margin-bottom: 1.5em;
@@ -37,7 +42,6 @@ section {
 
 * {
   outline: none;
-  user-select: none;
 }
 
 a {

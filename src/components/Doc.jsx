@@ -21,11 +21,8 @@ class Doc extends PureComponent {
     this.state = {
       doc: null
     };
-    this._cache = new CellMeasurerCache({
-      fixedWidth: true,
-      minHeight: 50
-    });
     this._rowRenderer = this._rowRenderer.bind(this);
+    this._resetRowCache();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,13 +33,10 @@ class Doc extends PureComponent {
       const queryMotif = qs.parse(nextProps.location.search).motif;
       this._motifs = queryMotif
         ? [queryMotif]
-        : Object.keys(nextProps.appState.doc);
+        : nextProps.appState.doc && Object.keys(nextProps.appState.doc);
 
       this.List && this.List.recomputeRowHeights();
-      this._cache = new CellMeasurerCache({
-        fixedWidth: true,
-        minHeight: 50
-      });
+      // this._resetRowCache();
     }
   }
 
@@ -84,6 +78,13 @@ class Doc extends PureComponent {
         Loading...
       </div>
     );
+  }
+
+  _resetRowCache() {
+    this._cache = new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: 50
+    });
   }
 
   _rowRenderer({ index, isScrolling, key, parent, style }) {

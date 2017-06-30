@@ -16,7 +16,7 @@ class Motif extends PureComponent {
                 key={motif + book + idx}
                 dangerouslySetInnerHTML={{ __html: idx
                   ? entry
-                  : `${book} ${entry}`
+                  : `<h3>${book}</h3> ${entry}`
                 }}
               />
             ))}
