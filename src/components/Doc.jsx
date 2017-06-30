@@ -38,9 +38,11 @@ class Doc extends PureComponent {
         ? [queryMotif]
         : Object.keys(nextProps.appState.doc);
 
-      // this.List && this.List.measureAllRows();
       this.List && this.List.recomputeRowHeights();
-      // this.List && this.List.forceUpdateGrid();
+      this._cache = new CellMeasurerCache({
+        fixedWidth: true,
+        minHeight: 50
+      });
     }
   }
 
