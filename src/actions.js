@@ -11,11 +11,11 @@ export function fetchDoc() {
     });
     const res = await axios.get('full.json');
     const motifs = res.data;
-    console.log('motifs', motifs);
+    // console.log('motifs', motifs);
     const entries = entriesFromMotifs(motifs);
-    console.log('entries', entries);
+    // console.log('entries', entries);
     const sources = sourcesFromEntries(entries);
-    console.log('sources', sources);
+    // console.log('sources', sources);
     return { type: FETCH_DOC, motifs, entries, sources };
   };
 }

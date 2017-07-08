@@ -36,10 +36,11 @@ class Search extends PureComponent {
   getSuggestions(value) {
     const { doc } = this.props.appState;
     const val = value.trim().toLowerCase();
+    const regex = new RegExp(val);
 
     return val.length
       ? Object.keys(doc)
-        .filter(m => doc[m].title.toLowerCase().startsWith(val))
+        .filter(m => doc[m].title.toLowerCase().match(regex))
         .map(m => ({ id: m, name: doc[m].title }))
       : [];
   }
@@ -118,7 +119,7 @@ class Search extends PureComponent {
         renderSuggestion={this.renderSuggestion}
         renderInputComponent={this.renderInputComponent}
         inputProps={{
-          placeholder: 'Search for motif, book or phrase',
+          placeholder: 'Search for motif, source or phrase',
           value,
           onChange: this.onChange
         }}
