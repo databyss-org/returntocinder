@@ -21,7 +21,17 @@ module.exports = {
       },
       {
         test: [/\.scss$/, /\.css$/],
-        loaders: ['style-loader', 'css-loader', 'sass-loader']
+        loaders: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[path][name]__[local]--[hash:base64:5]'
+            }
+          },
+          'sass-loader'
+        ],
       },
       {
         test: /\.otf$/,
@@ -36,7 +46,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'babel?presets[]=es2015,presets[]=react!svg-react'
+        loader: 'babel-loader?presets[]=es2015,presets[]=react!svg-react-loader'
       }
     ]
   },

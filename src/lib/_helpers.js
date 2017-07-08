@@ -3,5 +3,5 @@ export function urlifyMotif(m) {
 }
 
 export function textifyMotif(m) {
-  return m.replace(/<\/?[^>]+(>|$)/g, '');
+  return m.replace(/<\/?[^>]+(>|$)/g, '').replace(/\s{2,}/g, ' ');
 }

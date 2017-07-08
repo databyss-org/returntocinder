@@ -45,9 +45,7 @@ class Doc extends PureComponent {
 
     return doc ? (
       <div className="doc">
-        <div className="searchContainer">
-          <Search />
-        </div>
+        <Search />
         <div className="bodyContainer">
           <WindowScroller>
             {({ height, isScrolling, onChildScroll, scrollTop }) => (
