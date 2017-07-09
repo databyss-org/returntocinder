@@ -57,7 +57,7 @@ class Search extends PureComponent {
     this.setState({ searchWords });
 
     const findMatches = collection => collection
-      .filter(m => m.name
+      .filter(m => latinize(m.name)
         .toLowerCase()
         .split(wordSeparator)
         .reduce((f1, w1) => f1 + searchWords.reduce((f2, w2) =>
