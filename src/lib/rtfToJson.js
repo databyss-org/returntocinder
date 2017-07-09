@@ -80,9 +80,9 @@ export function renderPara(para) {
   if (!para) return null;
   // console.log('renderPara', para);
   const tags = styleTags(para);
-  for (const item of Object.keys(para.style)) {
-    if (para.style[item] != null) defaults[item] = para.style[item];
-  }
+  // for (const item of Object.keys(para.style)) {
+  //   if (para.style[item] != null) defaults[item] = para.style[item];
+  // }
   if (para.content) {
     if (para.content.length === 0) return null;
     return tags.open +
