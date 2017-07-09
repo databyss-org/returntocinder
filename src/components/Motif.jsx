@@ -1,15 +1,21 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import qs from 'query-string';
+import { withRouter } from 'react-router-dom';
 
 class Motif extends PureComponent {
   render() {
     const { motif, style } = this.props;
     const { doc } = this.props.appState;
+    const query = qs.parse(this.props.location.search);
+    const sources = query.source
+      ? [query.source]
+      : Object.keys(doc[motif].sources);
 
     return (
       <chapter key={motif} style={style}>
         <h2 dangerouslySetInnerHTML={{ __html: doc[motif].title }} />
-        {Object.keys(doc[motif].sources).map((book, idx) => (
+        {sources.map((book, idx) => (
           <section key={motif + book}>
             {doc[motif].sources[book].map((entry, idx) => (
               <p
@@ -27,6 +33,6 @@ class Motif extends PureComponent {
   }
 }
 
-export default connect(state => ({
+export default withRouter(connect(state => ({
   appState: state
-}), null)(Motif);
+}), null)(Motif));

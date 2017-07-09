@@ -1,11 +1,22 @@
+import { textify } from './_helpers';
+
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
     const entry = entries[eid];
     const { id, title } = entry.source;
-    if (!sources[id]) {
-      sources[id] = { id, title, entries: [] };
+    const sid = id;
+    if (!sources[sid]) {
+      sources[sid] = { id, title, entries: [], entriesByMotif: [] };
     }
-    sources[id].entries.push(entry);
+    sources[sid].entries.push(entry);
+    if (!sources[sid].entriesByMotif[entry.motif.id]) {
+      sources[sid].entriesByMotif[entry.motif.id] = {
+        id: entry.motif.id,
+        title: entry.motif.title,
+        sources: { [sid]: [] }
+      };
+    }
+    sources[sid].entriesByMotif[entry.motif.id].sources[sid].push(entry.content);
     return sources;
   }, {});
 }
@@ -34,4 +45,20 @@ export function entriesFromMotifs(motifs) {
     });
   });
   return entries;
+}
+
+export function sourceListFromBiblio(biblio) {
+  return Object.keys(biblio).reduce((list, sid) => list.concat({
+    id: sid,
+    type: 'source',
+    name: `${biblio[sid].id} ${textify(biblio[sid].title)}`
+  }), []);
+}
+
+export function motifListFromMotifs(motifs) {
+  return Object.keys(motifs).reduce((list, mid) => list.concat({
+    id: mid,
+    type: 'motif',
+    name: textify(motifs[mid].title)
+  }), []);
 }

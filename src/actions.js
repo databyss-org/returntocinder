@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { entriesFromMotifs, sourcesFromEntries } from './lib/indexers';
+import {
+  entriesFromMotifs,
+  sourcesFromEntries,
+  sourceListFromBiblio,
+  motifListFromMotifs
+} from './lib/indexers';
 
 export const FETCH_DOC = 'FETCH_DOC';
 
@@ -9,13 +14,24 @@ export function fetchDoc() {
       type: FETCH_DOC,
       fetching: true
     });
-    const res = await axios.get('full.json');
-    const motifs = res.data;
+    const motifs = (await axios.get('full.json')).data;
+    const biblio = (await axios.get('biblio.json')).data;
     // console.log('motifs', motifs);
+    // console.log('biblio', biblio);
     const entries = entriesFromMotifs(motifs);
     // console.log('entries', entries);
     const sources = sourcesFromEntries(entries);
     // console.log('sources', sources);
-    return { type: FETCH_DOC, motifs, entries, sources };
+    const sourceList = sourceListFromBiblio(biblio);
+    const motifList = motifListFromMotifs(motifs);
+    return {
+      type: FETCH_DOC,
+      motifs,
+      entries,
+      sources,
+      biblio,
+      sourceList,
+      motifList
+    };
   };
 }

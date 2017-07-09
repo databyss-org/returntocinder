@@ -1,7 +1,7 @@
-export function urlifyMotif(m) {
+export function urlify(m) {
   return m.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-export function textifyMotif(m) {
+export function textify(m) {
   return m.replace(/<\/?[^>]+(>|$)/g, '').replace(/\s{2,}/g, ' ');
 }

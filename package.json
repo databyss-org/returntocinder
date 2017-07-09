@@ -6,8 +6,8 @@
   "scripts": {
     "start": "webpack & node server.js",
     "dev": "webpack-dev-server --content-base public --open --inline",
-    "rtftohtml": "babel-node src/scripts/rtftohtml.js",
-    "rtftojson": "babel-node src/scripts/rtftojson.js"
+    "doc": "babel-node src/scripts/docToJson.js",
+    "biblio": "babel-node src/scripts/biblioToJson.js"
   },
   "keywords": [],
   "author": "pzhine",
@@ -29,11 +29,13 @@
     "express-basic-auth": "latest",
     "file-loader": "latest",
     "json-loader": "latest",
+    "latinize": "^0.4.0",
     "node-sass": "latest",
     "query-string": "latest",
     "react": "latest",
     "react-autosuggest": "latest",
     "react-dom": "latest",
+    "react-highlight-words": "^0.8.0",
     "react-redux": "latest",
     "react-router": "latest",
     "react-router-dom": "latest",

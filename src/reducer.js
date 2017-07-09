@@ -4,6 +4,9 @@ const initialState = {
   doc: null,
   sources: null,
   entries: null,
+  biblio: null,
+  sourceList: null,
+  motifList: null,
   isFetching: false
 };
 
@@ -14,7 +17,10 @@ export default function appReducer(state = initialState, action) {
         ...state,
         doc: action.motifs,
         sources: action.sources,
-        entries: action.entries
+        entries: action.entries,
+        biblio: action.biblio,
+        sourceList: action.sourceList,
+        motifList: action.motifList
       };
     }
 

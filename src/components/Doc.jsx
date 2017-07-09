@@ -10,7 +10,6 @@ import {
 } from 'react-virtualized';
 
 import * as appActions from '../actions';
-import { urlifyMotif } from '../lib/_helpers';
 
 import Search from './Search.jsx';
 import Motif from './Motif.jsx';
@@ -29,15 +28,29 @@ class Doc extends PureComponent {
     const docChanged = (this.props.appState.doc !== nextProps.appState.doc);
     const queryChanged = (this.props.location.search !== nextProps.location.search);
 
-    if (docChanged || queryChanged) {
-      const queryMotif = qs.parse(nextProps.location.search).motif;
-      this._motifs = queryMotif
-        ? [queryMotif]
-        : nextProps.appState.doc && Object.keys(nextProps.appState.doc);
-
-      this.List && this.List.recomputeRowHeights();
-      queryChanged && this._resetRowCache();
+    if (!docChanged && !queryChanged) {
+      return;
     }
+
+    const { doc, sources } = nextProps.appState;
+
+    if (!nextProps.appState.doc) {
+      // doc isn't ready yet
+      return;
+    }
+
+    const query = qs.parse(nextProps.location.search);
+
+    const motifs = query.source
+      ? Object.keys(sources[query.source].entriesByMotif)
+      : Object.keys(doc);
+
+    this._motifs = query.motif
+      ? [query.motif]
+      : motifs;
+
+    this.List && this.List.recomputeRowHeights();
+    queryChanged && this._resetRowCache();
   }
 
   render() {
