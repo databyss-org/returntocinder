@@ -81,12 +81,12 @@ class Search extends PureComponent {
     return suggestion.id;
   }
   renderSuggestion(suggestion) {
-    return (
-      <Highlighter
-        sanitize={latinize}
-        searchWords={this.state.searchWords}
-        textToHighlight={suggestion.name}
-      />
+    return suggestion.type === 'motif' ? (
+      <div className={theme.motifSuggestion}>
+        {suggestion.name}
+      </div>
+    ) : (
+      <div>{suggestion.display}</div>
     );
   }
   onChange(event, { newValue }) {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { textify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -51,7 +52,10 @@ export function sourceListFromBiblio(biblio) {
   return Object.keys(biblio).reduce((list, sid) => list.concat({
     id: sid,
     type: 'source',
-    name: `${biblio[sid].id} ${textify(biblio[sid].title)}`
+    name: `${biblio[sid].id} ${textify(biblio[sid].title)}`,
+    display: (
+      <div><h3>{biblio[sid].id}</h3> <span>{textify(biblio[sid].title)}</span></div>
+    )
   }), []);
 }
 
