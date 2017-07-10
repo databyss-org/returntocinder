@@ -48,7 +48,7 @@ class Search extends PureComponent {
   }
   getSuggestions(value) {
     const { motifList, sourceList } = this.props.appState;
-    const wordSeparator = new RegExp(/[^a-z0-9]'"/);
+    const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
 
     if (!searchWords.length) {
