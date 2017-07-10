@@ -25,6 +25,7 @@ class Search extends PureComponent {
     this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
     this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+    this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this);
     this.onClearInput = this.onClearInput.bind(this);
     this.renderInputComponent = this.renderInputComponent.bind(this);
     this.renderSuggestion = this.renderSuggestion.bind(this);
@@ -47,7 +48,7 @@ class Search extends PureComponent {
   }
   getSuggestions(value) {
     const { motifList, sourceList } = this.props.appState;
-    const wordSeparator = new RegExp(/[^a-z0-9]/);
+    const wordSeparator = new RegExp(/[^a-z0-9]'"/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
 
     if (!searchWords.length) {
@@ -56,25 +57,40 @@ class Search extends PureComponent {
 
     this.setState({ searchWords });
 
-    const findMatches = collection => collection
-      .filter(m => latinize(m.name)
-        .toLowerCase()
-        .split(wordSeparator)
-        .reduce((f1, w1) => f1 + searchWords.reduce((f2, w2) =>
-          f2 || w1.startsWith(w2)
-        , false), 0) === searchWords.length
-        )
-      .slice(0, 3);
+    const matchStems = (words, queries, matchCount = 0) => {
+      let found = false;
+      words.forEach((w, widx) => {
+        queries.forEach((q, qidx) => {
+          if (w.startsWith(q) && !found) {
+            const nw = words.slice(0, widx).concat(words.slice(widx + 1));
+            const nq = queries.slice(0, qidx).concat(queries.slice(qidx + 1));
+            matchCount = matchStems(nw, nq, matchCount + 1);
+            found = true;
+          }
+        });
+      });
+      return matchCount;
+    };
+
+    const findMatches = (collection, max) => collection
+      .filter(m => matchStems(
+        latinize(m.name).toLowerCase().split(wordSeparator),
+        searchWords
+      ) === searchWords.length)
+      .slice(0, max);
+
+    const motifMatches = findMatches(motifList, 5);
+    const sourceMatches = findMatches(sourceList, 2);
 
     return [
-      {
+      ...(motifMatches.length ? [{
         title: 'Motifs',
-        suggestions: findMatches(motifList)
-      },
-      {
+        suggestions: motifMatches
+      }] : []),
+      ...(sourceMatches.length ? [{
         title: 'Sources',
-        suggestions: findMatches(sourceList)
-      }
+        suggestions: sourceMatches
+      }] : [])
     ];
   }
   getSuggestionValue(suggestion) {
@@ -106,6 +122,13 @@ class Search extends PureComponent {
         [suggestion.type]: suggestion.id
       }))
     });
+    this.setState({
+      value: textify(suggestion.name)
+    });
+  }
+  onSuggestionHighlighted({ suggestion }) {
+    if (!suggestion) { return; }
+
     this.setState({
       value: textify(suggestion.name)
     });
@@ -163,6 +186,7 @@ class Search extends PureComponent {
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         onSuggestionSelected={this.onSuggestionSelected}
+        onSuggestionHighlighted={this.onSuggestionHighlighted}
         getSuggestionValue={this.getSuggestionValue}
         renderSuggestion={this.renderSuggestion}
         renderInputComponent={this.renderInputComponent}

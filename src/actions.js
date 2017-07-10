@@ -24,6 +24,7 @@ export function fetchDoc() {
     // console.log('sources', sources);
     const sourceList = sourceListFromBiblio(biblio);
     const motifList = motifListFromMotifs(motifs);
+    // console.log(motifList)
     return {
       type: FETCH_DOC,
       motifs,

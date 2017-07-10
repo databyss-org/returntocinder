@@ -63,6 +63,6 @@ export function motifListFromMotifs(motifs) {
   return Object.keys(motifs).reduce((list, mid) => list.concat({
     id: mid,
     type: 'motif',
-    name: textify(motifs[mid].title)
+    name: textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
   }), []);
 }
