@@ -14,7 +14,7 @@ class Motif extends PureComponent {
         <h3>
           <span dangerouslySetInnerHTML={{ __html: entry.motif.title }} />
           ::
-          <span dangerouslySetInnerHTML={{ __html: entry.source.display }} />
+          <span dangerouslySetInnerHTML={{ __html: entry.source.id }} />
         </h3>
         <p dangerouslySetInnerHTML={{ __html: entry.content }} />
       </section>
