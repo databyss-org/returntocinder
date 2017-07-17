@@ -1,4 +1,5 @@
 import React from 'react';
+import latinize from 'latinize';
 import { textify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -56,7 +57,7 @@ export function entriesFromMotifs(motifs, biblio) {
 export function entryListFromEntries(entries) {
   return Object.keys(entries).map(eid => ({
     id: entries[eid].id,
-    content: textify(entries[eid].content)
+    content: latinize(textify(entries[eid].content))
   }));
 }
 
