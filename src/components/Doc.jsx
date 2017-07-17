@@ -9,10 +9,11 @@ import {
   WindowScroller
 } from 'react-virtualized';
 
-import * as appActions from '../actions';
+import actions from '../actions';
 
 import Search from './Search.jsx';
 import Motif from './Motif.jsx';
+import Entry from './Entry.jsx';
 
 class Doc extends PureComponent {
   constructor(props) {
@@ -32,7 +33,7 @@ class Doc extends PureComponent {
       return;
     }
 
-    const { doc, sources } = nextProps.appState;
+    const { doc, sources, entryList } = nextProps.appState;
 
     if (!nextProps.appState.doc) {
       // doc isn't ready yet
@@ -41,13 +42,16 @@ class Doc extends PureComponent {
 
     const query = qs.parse(nextProps.location.search);
 
-    const motifs = query.source
-      ? Object.keys(sources[query.source].entriesByMotif)
-      : Object.keys(doc);
+    let rows = Object.keys(doc);
+    if (query.source) {
+      rows = Object.keys(sources[query.source].entriesByMotif);
+    } else if (query.entry) {
+      rows = this.props.searchState.entryList.result;
+    }
 
-    this._motifs = query.motif
+    this._rows = query.motif
       ? [query.motif]
-      : motifs;
+      : rows;
 
     this.List && this.List.recomputeRowHeights();
     queryChanged && this._resetRowCache();
@@ -68,7 +72,7 @@ class Doc extends PureComponent {
                     ref={(list) => { this.List = list; }}
                     deferredMeasurementCache={this._cache}
                     overscanRowCount={2}
-                    rowCount={this._motifs.length}
+                    rowCount={this._rows.length}
                     rowHeight={this._cache.rowHeight}
                     rowRenderer={this._rowRenderer}
                     width={width}
@@ -99,6 +103,7 @@ class Doc extends PureComponent {
   }
 
   _rowRenderer({ index, isScrolling, key, parent, style }) {
+    const query = qs.parse(this.props.location.search);
     return (
       <CellMeasurer
         cache={this._cache}
@@ -107,12 +112,17 @@ class Doc extends PureComponent {
         rowIndex={index}
         parent={parent}
       >
-        <Motif motif={this._motifs[index]} key={key} style={style} />
+        {query.entry ? (
+          <Entry eid={this._rows[index]} key={key} style={style} />
+        ) : (
+          <Motif motif={this._rows[index]} key={key} style={style} />
+        )}
       </CellMeasurer>
     );
   }
 }
 
 export default connect(state => ({
-  appState: state
-}), appActions)(Doc);
+  appState: state.app,
+  searchState: state.search
+}), actions)(Doc);

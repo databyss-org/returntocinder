@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as appActions from '../actions';
+import { actions } from '../actions';
 import Doc from './Doc.jsx';
 
 class Main extends PureComponent {
@@ -21,5 +21,5 @@ class Main extends PureComponent {
 }
 
 export default connect(state => ({
-  appState: state
-}), appActions)(Main);
+  appState: state.app
+}), actions)(Main);

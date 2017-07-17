@@ -5,11 +5,12 @@ import qs from 'query-string';
 import Autosuggest from 'react-autosuggest';
 import Highlighter from 'react-highlight-words';
 import latinize from 'latinize';
-import * as appActions from '../actions';
+import { actions } from '../actions';
 import theme from '../scss/search.scss';
 import { textify } from '../lib/_helpers';
 
 import CloseIcon from '../icons/close.svg';
+import LoadingImg from '../img/ajax-loader.gif';
 
 class Search extends PureComponent {
   constructor(props) {
@@ -90,25 +91,41 @@ class Search extends PureComponent {
       ...(sourceMatches.length ? [{
         title: 'Sources',
         suggestions: sourceMatches
-      }] : [])
+      }] : []),
+      { suggestions: [{ type: 'entry' }] }
     ];
   }
   getSuggestionValue(suggestion) {
     return suggestion.id;
   }
   renderSuggestion(suggestion) {
-    return suggestion.type === 'motif' ? (
-      <div className={theme.motifSuggestion}>
-        {suggestion.name}
-      </div>
-    ) : (
-      <div>{suggestion.display}</div>
-    );
+    const { searchState } = this.props;
+    return {
+      motif: (
+        <div className={theme.motifSuggestion}>
+          {suggestion.name}
+        </div>
+      ),
+      source: (
+        <div>{suggestion.display}</div>
+      ),
+      entry: (
+        <div style={{ display: 'flex' }}>
+          <div style={{ flexGrow: 1 }}>
+            Find: {searchState.entryList.text}
+          </div>
+          {searchState.entryList.result.length ? (
+            <div>{searchState.entryList.result.length} results</div>
+          ) : null}
+        </div>
+      )
+    }[suggestion.type];
   }
   onChange(event, { newValue }) {
     if (newValue === '') {
       this.onClearInput();
     }
+    this.props.searchEntries(newValue);
     this.setState({
       value: newValue
     });
@@ -119,18 +136,24 @@ class Search extends PureComponent {
     this.props.history.push({
       pathname: this.props.location.pathname,
       search: qs.stringify(Object.assign({}, query, {
-        [suggestion.type]: suggestion.id
+        [suggestion.type]: suggestion.type === 'entry'
+          ? this.props.searchState.entryList.text
+          : suggestion.id
       }))
     });
     this.setState({
-      value: textify(suggestion.name)
+      value: suggestion.type === 'entry'
+        ? this.props.searchState.entryList.text
+        : textify(suggestion.name)
     });
   }
   onSuggestionHighlighted({ suggestion }) {
     if (!suggestion) { return; }
 
     this.setState({
-      value: textify(suggestion.name)
+      value: suggestion.type === 'entry'
+        ? this.props.searchState.entryList.text
+        : textify(suggestion.name)
     });
   }
   onSuggestionsFetchRequested({ value }) {
@@ -147,6 +170,7 @@ class Search extends PureComponent {
     const query = qs.parse(this.props.location.search);
     delete query.motif;
     delete query.source;
+    delete query.entry;
     this.props.history.push({
       pathname: this.props.location.pathname,
       search: qs.stringify(query)
@@ -205,5 +229,6 @@ class Search extends PureComponent {
 }
 
 export default withRouter(connect(state => ({
-  appState: state
-}), appActions)(Search));
+  appState: state.app,
+  searchState: state.search
+}), actions)(Search));

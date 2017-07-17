@@ -34,5 +34,5 @@ class Motif extends PureComponent {
 }
 
 export default withRouter(connect(state => ({
-  appState: state
+  appState: state.app
 }), null)(Motif));

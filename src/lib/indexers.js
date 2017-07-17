@@ -22,12 +22,16 @@ export function sourcesFromEntries(entries) {
   }, {});
 }
 
-export function entriesFromMotifs(motifs) {
+export function entriesFromMotifs(motifs, biblio) {
   const entries = {};
   Object.keys(motifs).forEach((mid) => {
     const motif = motifs[mid];
-    Object.keys(motif.sources).forEach((sid) => {
-      const source = motif.sources[sid];
+    Object.keys(motif.sources).forEach((dsid) => {
+      const source = motif.sources[dsid];
+      const sid = dsid.replace('***', '');
+      if (!biblio[sid]) {
+        console.warn(`Source [${sid}] not found in bibliography`);
+      }
       source.forEach((entry, idx) => {
         const eid = mid + sid + idx;
         entries[eid] = {
@@ -38,7 +42,8 @@ export function entriesFromMotifs(motifs) {
           },
           source: {
             id: sid,
-            title: ''
+            title: biblio[sid] && biblio[sid].title,
+            display: dsid
           },
           id: eid
         };
@@ -46,6 +51,13 @@ export function entriesFromMotifs(motifs) {
     });
   });
   return entries;
+}
+
+export function entryListFromEntries(entries) {
+  return Object.keys(entries).map(eid => ({
+    id: entries[eid].id,
+    content: textify(entries[eid].content)
+  }));
 }
 
 export function sourceListFromBiblio(biblio) {
