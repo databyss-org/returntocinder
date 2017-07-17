@@ -28,7 +28,7 @@ const injectMiddleware = deps => ({ dispatch, getState }) => next => async actio
 
 const prefixSearchApi = new SearchApi({
   indexMode: INDEX_MODES.PREFIXES,
-  tokenizePattern: /[^a-z0-9]+/
+  tokenizePattern: /[^a-z0-9"']+/
 });
 
 const enhancer = compose(
