@@ -58,6 +58,7 @@ export function entryListFromEntries(entries) {
   return Object.keys(entries).map(eid => ({
     id: entries[eid].id,
     content: latinize(textify(entries[eid].content))
+      .replace(/[“”]/g, '"').replace('’', "'")
   }));
 }
 
