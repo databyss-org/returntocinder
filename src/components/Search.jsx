@@ -63,6 +63,8 @@ class Search extends PureComponent {
       words.forEach((w, widx) => {
         queries.forEach((q, qidx) => {
           if (w.startsWith(q) && !found) {
+            // remove term found from queries and words
+            // then recurse on remaining terms/queries
             const nw = words.slice(0, widx).concat(words.slice(widx + 1));
             const nq = queries.slice(0, qidx).concat(queries.slice(qidx + 1));
             matchCount = matchStems(nw, nq, matchCount + 1);
@@ -73,15 +75,67 @@ class Search extends PureComponent {
       return matchCount;
     };
 
-    const findMatches = (collection, max) => collection
+    // filter collection
+    const findMatches = collection => collection
       .filter(m => matchStems(
         latinize(m.name).toLowerCase().split(wordSeparator),
         searchWords
-      ) === searchWords.length)
-      .slice(0, max);
+      // only pass when all query terms are matched
+      ) === searchWords.length);
 
-    const motifMatches = findMatches(motifList, 5);
-    const sourceMatches = findMatches(sourceList, 2);
+    // sort matches so that results starting with query are prioritized
+    const sortMatches = collection => collection
+      .sort((a, b) => {
+        if (a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+        && !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+          return -1;
+        }
+        if (b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+        && !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+          return 1;
+        }
+        return 0;
+      });
+
+    const trimTo = max => c => c.slice(0, max);
+
+    const compile = ({ collection, match, sort, filter, trim }) => {
+      let res = collection;
+      if (filter) {
+        res = filter(res);
+      }
+      if (match) {
+        res = match(res);
+      }
+      if (sort) {
+        res = sort(res);
+      }
+      if (trim) {
+        res = trim(res);
+      }
+      return res;
+    };
+
+    const compileDefaults = {
+      match: findMatches,
+      sort: sortMatches,
+    };
+
+    const motifMatches = compile({
+      ...compileDefaults,
+      collection: motifList,
+      filter: c => c.map(m => ({
+        ...m,
+        name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')
+      })),
+      trim: trimTo(5)
+    });
+
+    const sourceMatches = compile({
+      ...compileDefaults,
+      collection: sourceList,
+      trim: trimTo(2)
+    });
 
     return [
       ...(motifMatches.length ? [{
