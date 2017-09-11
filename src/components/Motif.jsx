@@ -17,15 +17,20 @@ class Motif extends PureComponent {
         <h2 dangerouslySetInnerHTML={{ __html: doc[motif].title }} />
         {sources.map((book, idx) => (
           <section key={motif + book}>
-            {doc[motif].sources[book].map((entry, idx) => (
-              <p
-                key={motif + book + idx}
-                dangerouslySetInnerHTML={{ __html: idx
-                  ? entry
-                  : `<h3>${book}</h3> ${entry}`
-                }}
-              />
-            ))}
+            {doc[motif].sources[book].map((entry, idx) => {
+              const entryContent =
+                `${entry.starred ? '***' : ''}${entry.content}`;
+              return (
+                <p
+                  key={motif + book + idx}
+                  dangerouslySetInnerHTML={{ __html: idx
+                    ? entryContent
+                    : `<h3>${book}</h3> ${entryContent}`
+                  }}
+                />
+              );
+            }
+          )}
           </section>
         ))}
       </chapter>

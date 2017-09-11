@@ -43,12 +43,18 @@ function rtfToJson(doc) {
       // capture entries
       entries = [];
       do {
-        const entry = renderPara(doc.content[i]);
-        if (entry) {
+        const entry = { starred: false };
+        entry.content = renderPara(doc.content[i]);
+        if (entry.content) {
+          if (entry.content.startsWith('*')) {
+            entry.starred = true;
+            entry.content = entry.content.replace(/\*{1,3}/, '');
+          }
           const re = new RegExp(
             `^(<em>)*\\s*${sourcePattern.source.substr(1)}\\s*(</em>)*`
           );
-          entries = entries.concat(entry.replace(re, '').trim());
+          entry.content = entry.content.replace(re, '').trim();
+          entries = entries.concat(entry);
         }
         if (getSource(doc.content[i + 1])) {
           // end section
@@ -60,7 +66,11 @@ function rtfToJson(doc) {
         }
         i += 1;
       } while (i < doc.content.length);
-      sections[sectionTitle] = entries;
+      sections[
+        sectionTitle
+          .replace(/^\*{1,3}/, '')
+          .replace(/\([A-Z]+\)/, '')
+      ] = entries;
     } while (i < doc.content.length);
 
     const chapterTitleText = textify(chapterTitle);
@@ -84,10 +94,21 @@ function getHeading(chunk) {
   if (!chunk) {
     return false;
   }
-  if (!(chunk.style.bold || (
-    chunk.content && chunk.content.length && chunk.content[0].style.bold
-  ))) {
+  if (!isBold(chunk)) {
     return false;
   }
   return renderPara(chunk);
+}
+
+function isBold(chunk) {
+  return (
+    chunk.style.bold || (
+      chunk.style.font &&
+      chunk.style.font.name &&
+      chunk.style.font.name.match(/bold/i)
+    ) ||
+    chunk.content.reduce((allBold, c) =>
+      allBold && c.style.font && c.style.font.name && c.style.font.name.match(/bold/i)
+    , true)
+  );
 }

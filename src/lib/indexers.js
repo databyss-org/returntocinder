@@ -36,7 +36,7 @@ export function entriesFromMotifs(motifs, biblio) {
       source.forEach((entry, idx) => {
         const eid = mid + sid + idx;
         entries[eid] = {
-          content: entry,
+          ...entry,
           motif: {
             id: mid,
             title: motif.title
