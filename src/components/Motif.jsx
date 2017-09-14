@@ -6,10 +6,14 @@ import { withRouter } from 'react-router-dom';
 class Motif extends PureComponent {
   render() {
     const { motif, style } = this.props;
-    const { doc } = this.props.appState;
+    const { doc, entries } = this.props.appState;
     const query = qs.parse(this.props.location.search);
     const sources = query.source
-      ? [query.source]
+      ? Object.keys(doc[motif].sources).reduce((sourceList, sid) =>
+        sid.replace(/\([A-Z]+\)/, '').trim() === query.source
+          ? sourceList.concat(sid)
+          : sourceList
+        , [])
       : Object.keys(doc[motif].sources);
 
     return (
@@ -19,7 +23,9 @@ class Motif extends PureComponent {
           <section key={motif + book}>
             {doc[motif].sources[book].map((entry, idx) => {
               const entryContent =
-                `${entry.starred ? '***' : ''}${entry.content}`;
+                `${entry.starred ? '***' : ''}
+                ${entry.locations.repeat ? '' : entry.locations.raw}
+                ${entry.content}`;
               return (
                 <p
                   key={motif + book + idx}

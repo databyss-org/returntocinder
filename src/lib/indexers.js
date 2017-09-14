@@ -29,12 +29,15 @@ export function entriesFromMotifs(motifs, biblio) {
     const motif = motifs[mid];
     Object.keys(motif.sources).forEach((dsid) => {
       const source = motif.sources[dsid];
-      const sid = dsid.replace('***', '');
+      const sid = dsid
+        .replace('***', '')
+        .replace(/\([A-Z]+\)/, '')
+        .trim();
       if (!biblio[sid]) {
         console.warn(`Source [${sid}] not found in bibliography`);
       }
       source.forEach((entry, idx) => {
-        const eid = mid + sid + idx;
+        const eid = mid + dsid.replace(/[/(/) ]/g, '') + idx;
         entries[eid] = {
           ...entry,
           motif: {

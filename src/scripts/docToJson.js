@@ -54,7 +54,19 @@ function rtfToJson(doc) {
             `^(<em>)*\\s*${sourcePattern.source.substr(1)}\\s*(</em>)*`
           );
           entry.content = entry.content.replace(re, '').trim();
-          entries = entries.concat(entry);
+          entries = entries.concat({
+            ...entry,
+            ...getLocations(entry)
+          });
+          try {
+            correctLastEntry(entries);
+          } catch (err) {
+            console.error({
+              msg: 'Missing or bad location',
+              content: entries[entries.length - 1].content,
+            });
+          }
+          parseLocations(entries[entries.length - 1]);
         }
         if (getSource(doc.content[i + 1])) {
           // end section
@@ -69,7 +81,8 @@ function rtfToJson(doc) {
       sections[
         sectionTitle
           .replace(/^\*{1,3}/, '')
-          .replace(/\([A-Z]+\)/, '')
+          // .replace(/\([A-Z]+\)/, '')
+          .trim()
       ] = entries;
     } while (i < doc.content.length);
 
@@ -88,6 +101,77 @@ function rtfToJson(doc) {
 
   // console.log(chapters);
   return JSON.stringify(chapters);
+}
+
+function parseLocations(entry) {
+  // console.log(entry.locations.raw);
+}
+
+// check for 'false' entries and repeat page locations
+function correctLastEntry(entries) {
+  const lastIdx = entries.length - 1;
+  const lastEntry = entries[lastIdx];
+  if (!lastEntry.locations.raw) {
+    if (lastEntry.content.startsWith('——')) {
+      // repeat page location
+      lastEntry.locations.raw = entries[lastIdx - 1].locations.raw;
+      lastEntry.locations.repeat = true;
+    } else {
+      // stray line break, add content to previous entry and delete last
+      entries[lastIdx - 1].content += ` ${lastEntry.content}`;
+      entries.splice(-1, 1);
+    }
+  }
+}
+
+function getLocations(entry) {
+  let content = textify(entry.content);
+  const locations = {};
+  const pp = /^p ?p?\.? ?/;
+
+  // pp. 204, 206
+  const re1 = new RegExp(`${pp.source}([^ ,]+, )+.+? `);
+  let matches = content.match(re1);
+  if (matches) {
+    content = content.replace(re1, '');
+    // console.log('--RE1', matches[0]);
+    locations.raw = matches[0];
+    return { content, locations };
+  }
+
+  // pp. anne|leiris 28
+  const re1a = new RegExp(`${pp.source}(anne|leiris) .+? `);
+  matches = content.match(re1a);
+  if (matches) {
+    content = content.replace(re1a, '');
+    // console.log('--RE1A', matches[0]);
+    locations.raw = matches[0];
+    return { content, locations };
+  }
+
+  // pp. 41-2 (60-2)
+  // pp. 148-49 (212-14)
+  // p. 323n (13n)
+  const re1b = new RegExp(`${pp.source}[^ ]+ \\([^ \\)]\\) `);
+  matches = content.match(re1b);
+  if (matches) {
+    content = content.replace(re1b, '');
+    // console.log('--RE1B', matches[0]);
+    locations.raw = matches[0];
+    return { content, locations };
+  }
+
+  // pp. 94-7
+  const re2 = new RegExp(`${pp.source}[^ ,]+ `);
+  matches = content.match(re2);
+  if (matches) {
+    content = content.replace(re2, '');
+    // console.log('--RE2', matches[0]);
+    locations.raw = matches[0];
+    return { content, locations };
+  }
+
+  return { content, locations };
 }
 
 function getHeading(chunk) {
