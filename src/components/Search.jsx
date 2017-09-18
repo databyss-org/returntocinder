@@ -153,7 +153,7 @@ class Search extends PureComponent {
     return suggestion.id;
   }
   renderSuggestion(suggestion) {
-    const { searchState } = this.props;
+    const { appState } = this.props;
     return {
       motif: (
         <div className={theme.motifSuggestion}>
@@ -166,11 +166,8 @@ class Search extends PureComponent {
       entry: (
         <div style={{ display: 'flex' }}>
           <div style={{ flexGrow: 1 }}>
-            Find: {searchState.entryList.text}
+            Find: {appState.query}
           </div>
-          {searchState.entryList.result.length ? (
-            <div>{searchState.entryList.result.length} results</div>
-          ) : null}
         </div>
       )
     }[suggestion.type];
@@ -179,7 +176,7 @@ class Search extends PureComponent {
     if (newValue === '') {
       this.onClearInput();
     }
-    this.props.searchEntries(newValue);
+    this.props.setQuery(newValue);
     this.setState({
       value: newValue
     });
@@ -187,17 +184,21 @@ class Search extends PureComponent {
   onSuggestionSelected(event, { suggestion }) {
     const query = qs.parse(this.props.location.search);
 
+    if (suggestion.type === 'entry') {
+      this.props.searchEntries(this.props.appState.query);
+    }
+
     this.props.history.push({
       pathname: this.props.location.pathname,
       search: qs.stringify(Object.assign({}, query, {
         [suggestion.type]: suggestion.type === 'entry'
-          ? this.props.searchState.entryList.text
+          ? this.props.appState.query
           : suggestion.id
       }))
     });
     this.setState({
       value: suggestion.type === 'entry'
-        ? this.props.searchState.entryList.text
+        ? this.props.appState.query
         : textify(suggestion.name)
     });
   }
@@ -206,7 +207,7 @@ class Search extends PureComponent {
 
     this.setState({
       value: suggestion.type === 'entry'
-        ? this.props.searchState.entryList.text
+        ? this.props.appState.query
         : textify(suggestion.name)
     });
   }
@@ -284,5 +285,4 @@ class Search extends PureComponent {
 
 export default withRouter(connect(state => ({
   appState: state.app,
-  searchState: state.search
 }), actions)(Search));

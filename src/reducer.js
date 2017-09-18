@@ -8,7 +8,8 @@ const initialState = {
   biblio: null,
   sourceList: null,
   motifList: null,
-  isFetching: false
+  isFetching: false,
+  query: ''
 };
 
 export default function appReducer(state = initialState, action) {
@@ -27,6 +28,21 @@ export default function appReducer(state = initialState, action) {
         biblio: action.biblio,
         sourceList: action.sourceList,
         motifList: action.motifList
+      };
+    }
+
+    case actions.SEARCH_ENTRIES: {
+      return {
+        ...state,
+        query: action.query,
+        results: action.results
+      };
+    }
+
+    case actions.SET_QUERY: {
+      return {
+        ...state,
+        query: action.query
       };
     }
 

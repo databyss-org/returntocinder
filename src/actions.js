@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { createSearchAction, createSearchSelectors } from 'redux-search';
 import {
   entriesFromMotifs,
   entryListFromEntries,
@@ -7,8 +6,11 @@ import {
   sourceListFromBiblio,
   motifListFromMotifs
 } from './lib/indexers';
+import searchEntries from './lib/search';
 
 export const FETCH_DOC = 'FETCH_DOC';
+export const SEARCH_ENTRIES = 'SEARCH_ENTRIES';
+export const SET_QUERY = 'SET_QUERY';
 
 export const actions = {
   fetchDoc() {
@@ -41,5 +43,20 @@ export const actions = {
       });
     };
   },
-  searchEntries: createSearchAction('entryList')
+  searchEntries(query) {
+    return async ({ dispatch, getState }) => {
+      const { entryList } = getState().app;
+      dispatch({
+        type: SEARCH_ENTRIES,
+        results: searchEntries({ entryList, query }),
+        query
+      });
+    };
+  },
+  setQuery(query) {
+    return {
+      type: SET_QUERY,
+      query
+    };
+  }
 };

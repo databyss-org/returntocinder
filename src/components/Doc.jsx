@@ -46,7 +46,8 @@ class Doc extends PureComponent {
     if (query.source) {
       rows = Object.keys(sources[query.source].entriesByMotif);
     } else if (query.entry) {
-      rows = this.props.searchState.entryList.result;
+      console.log('results', this.props.appState.results);
+      rows = this.props.appState.results;
     }
 
     this._rows = query.motif
