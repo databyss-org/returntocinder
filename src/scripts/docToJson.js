@@ -78,12 +78,15 @@ function rtfToJson(doc) {
         }
         i += 1;
       } while (i < doc.content.length);
-      sections[
-        sectionTitle
-          .replace(/^\*{1,3}/, '')
-          // .replace(/\([A-Z]+\)/, '')
-          .trim()
-      ] = entries;
+
+      // add or append the entries to the section
+      const sid = sectionTitle.replace(/^\*{1,3}/, '').trim();
+      if (sections[sid]) {
+        console.warn(`${chapterTitle} Duplicate source ${sid} (appending)`);
+        sections[sid] = sections[sid].concat(entries);
+      } else {
+        sections[sid] = entries;
+      }
     } while (i < doc.content.length);
 
     const chapterTitleText = textify(chapterTitle);
@@ -116,6 +119,7 @@ function correctLastEntry(entries) {
       // repeat page location
       lastEntry.locations.raw = entries[lastIdx - 1].locations.raw;
       lastEntry.locations.repeat = true;
+      lastEntry.content = lastEntry.content.substr(2);
     } else {
       // stray line break, add content to previous entry and delete last
       entries[lastIdx - 1].content += ` ${lastEntry.content}`;
@@ -125,28 +129,31 @@ function correctLastEntry(entries) {
 }
 
 function getLocations(entry) {
-  let content = textify(entry.content);
+  const content = textify(entry.content);
   const locations = {};
   const pp = /^p ?p?\.? ?/;
+
+  const removeLocations = re =>
+    entry.content.replace(
+      new RegExp(`(<em>)*\\s*${re.source}\\s*(</em>)*`), ''
+    );
 
   // pp. 204, 206
   const re1 = new RegExp(`${pp.source}([^ ,]+, )+.+? `);
   let matches = content.match(re1);
   if (matches) {
-    content = content.replace(re1, '');
     // console.log('--RE1', matches[0]);
     locations.raw = matches[0];
-    return { content, locations };
+    return { content: removeLocations(re1), locations };
   }
 
   // pp. anne|leiris 28
   const re1a = new RegExp(`${pp.source}(anne|leiris) .+? `);
   matches = content.match(re1a);
   if (matches) {
-    content = content.replace(re1a, '');
     // console.log('--RE1A', matches[0]);
     locations.raw = matches[0];
-    return { content, locations };
+    return { content: removeLocations(re1a), locations };
   }
 
   // pp. 41-2 (60-2)
@@ -156,23 +163,21 @@ function getLocations(entry) {
   const re1b = new RegExp(`${pp.source}[^ ]* \\([^ \\)]+\\) `);
   matches = content.match(re1b);
   if (matches) {
-    content = content.replace(re1b, '');
     // console.log('--RE1B', matches[0]);
     locations.raw = matches[0];
-    return { content, locations };
+    return { content: removeLocations(re1b), locations };
   }
 
   // pp. 94-7
   const re2 = new RegExp(`${pp.source}[^ ,]+ `);
   matches = content.match(re2);
   if (matches) {
-    content = content.replace(re2, '');
     // console.log('--RE2', matches[0]);
     locations.raw = matches[0];
-    return { content, locations };
+    return { content: removeLocations(re2), locations };
   }
 
-  return { content, locations };
+  return { content: entry.content, locations };
 }
 
 function getHeading(chunk) {

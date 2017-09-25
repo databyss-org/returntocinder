@@ -24,7 +24,7 @@ class Motif extends PureComponent {
             {doc[motif].sources[book].map((entry, idx) => {
               const entryContent =
                 `${entry.starred ? '***' : ''}
-                ${entry.locations.repeat ? '' : entry.locations.raw}
+                ${entry.locations.repeat ? '——' : entry.locations.raw}
                 ${entry.content}`;
               return (
                 <p
