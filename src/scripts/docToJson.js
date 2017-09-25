@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-continue */
 import fs from 'fs';
 import parse from 'rtf-parser';
+import roman from 'roman-numerals';
 import { urlify, textify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
@@ -107,7 +108,63 @@ function rtfToJson(doc) {
 }
 
 function parseLocations(entry) {
-  // console.log(entry.locations.raw);
+  // remove all non-numeric or delim chars
+  let pages = entry.locations.raw.replace(/[^0-9ivxlcdm,\-()]/ig, '');
+
+  // (36) => 36
+  // (45-7) => 45-7
+  if (pages.match(/^\([^)]+\)$/)) {
+    pages = pages.replace(/[()]/g, '');
+  }
+
+  // pp. 41-2(60-2) => pp. 41-2
+  pages = pages.replace(/\([^)]+\)/g, '');
+
+  let pageList = [];
+
+  // 204,206
+  if (pages.match(/,/)) {
+    pageList = pages.split(/,/);
+  } else {
+    // 123-24
+    // xx-xxiv
+    // 55
+    pageList = pageList.concat(pages);
+  }
+
+  pageList = pageList.reduce((list, p) => {
+    if (p.match(/-/)) {
+      let range = p.split(/-/);
+      if (p.match(/[ivxlcdm]/i)) {
+        range = range.map(n => `0.${roman.toArabic(n)}`);
+      }
+      range = range.map(n => parseFloat(n, 10));
+      // [123, 24] => [123, 124]
+      if (range[1] < range[0]) {
+        range[1] = parseFloat(range[0].toString().charAt(0) + range[1].toString(), 10);
+      }
+      return list.concat(range);
+    }
+    if (p.match(/[ivxlcdm]/i)) {
+      p = `0.${roman.toArabic(p)}`;
+    }
+    return list.concat(parseFloat(p, 10));
+  }, []);
+
+  let min = pageList[0];
+  let max = pageList[0];
+  pageList.forEach((p) => {
+    if (p < min) {
+      min = p;
+    }
+    if (p > max) {
+      max = p;
+    }
+  });
+
+  entry.locations.list = pageList;
+  entry.locations.high = max;
+  entry.locations.low = min;
 }
 
 // check for 'false' entries and repeat page locations

@@ -49,6 +49,7 @@
     "redux-search": "latest",
     "redux-thunk": "^2.2.0",
     "reset-css": "latest",
+    "roman-numerals": "^0.3.2",
     "rtf-parser": "latest",
     "sass-loader": "latest",
     "style-loader": "latest",
