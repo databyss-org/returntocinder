@@ -1,5 +1,3 @@
-import * as actions from './actions';
-
 const initialState = {
   doc: null,
   sources: null,
@@ -14,10 +12,10 @@ const initialState = {
 
 export default function appReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.FETCH_DOC: {
-      if (action.fetching) {
-        return { ...state, isFetching: true };
-      }
+    case 'FETCH_DOC': {
+      return { ...state, isFetching: true };
+    }
+    case 'RECEIVE_DOC': {
       return {
         ...state,
         isFetching: false,
@@ -28,21 +26,6 @@ export default function appReducer(state = initialState, action) {
         biblio: action.biblio,
         sourceList: action.sourceList,
         motifList: action.motifList
-      };
-    }
-
-    case actions.SEARCH_ENTRIES: {
-      return {
-        ...state,
-        query: action.query,
-        results: action.results
-      };
-    }
-
-    case actions.SET_QUERY: {
-      return {
-        ...state,
-        query: action.query
       };
     }
 

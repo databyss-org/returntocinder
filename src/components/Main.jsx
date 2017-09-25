@@ -1,14 +1,10 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { actions } from '../actions';
+import actions from '../redux/app/actions';
 import Doc from './Doc.jsx';
 
 class Main extends PureComponent {
-  componentDidMount() {
-    this.props.fetchDoc();
-  }
-
   render() {
     return (
       <Router>

@@ -1,5 +1,7 @@
 /* eslint-disable prefer-template */
 
+import { textify } from './_helpers';
+
 const defaults = {
   bold: false,
   italic: false,
@@ -30,7 +32,9 @@ export function allMatches(re, str, capture = 0) {
 }
 
 export function getSource(chunk) {
-  const c = getChunkValue(chunk);
+  const p = renderPara(chunk);
+  if (!p) return null;
+  const c = textify(p);
   const s = c.match(sourcePattern);
   return s ? s[0] : null;
 }

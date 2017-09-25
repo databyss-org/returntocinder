@@ -1,5 +1,6 @@
 import React from 'react';
 import latinize from 'latinize';
+import * as JsDiff from 'diff';
 import { textify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -82,4 +83,54 @@ export function motifListFromMotifs(motifs) {
     type: 'motif',
     name: textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
   }), []);
+}
+
+export function mergeEntries(entryList, minCount, mergedList = []) {
+  if (!entryList.length) {
+    return mergedList;
+  }
+  const entries = entryList.slice(1);
+  const firstEntry = {
+    ...entryList[0],
+    motif: { [entryList[0].motif.id]: entryList[0].motif }
+  };
+  const mergeResult = mergedList.concat(firstEntry);
+
+  console.log(firstEntry.content)
+  console.log(' ')
+  console.log(' ')
+
+  const filteredEntries = entries.filter((entry) => {
+    const score = compare(firstEntry.content, entry.content, minCount)
+    if (score) {
+      console.log(entry.content)
+      console.log(score)
+      console.log(' ')
+      firstEntry.motif[entry.motif.id] = entry.motif;
+
+      // Take the longest content
+      if (entry.content.length > firstEntry.content.length) {
+        firstEntry.content = entry.content;
+      }
+      // TODO: take the longest page range
+      return false;
+    }
+    return true;
+  });
+  console.log(' ')
+  console.log(' ')
+
+  return mergeEntries(filteredEntries, minCount, mergeResult);
+}
+
+export function compare(s1, s2, minCount) {
+  return JsDiff.diffWords(s1, s2).reduce((score, r) => {
+    if (r.added ||
+      r.removed ||
+      r.value.split(/\s/).length < minCount) {
+      return score;
+    }
+    console.log(r)
+    return score + 1;
+  }, 0);
 }

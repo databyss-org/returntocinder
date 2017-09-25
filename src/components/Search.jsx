@@ -5,7 +5,7 @@ import qs from 'query-string';
 import Autosuggest from 'react-autosuggest';
 import Highlighter from 'react-highlight-words';
 import latinize from 'latinize';
-import { actions } from '../actions';
+import actions from '../redux/search/actions';
 import theme from '../scss/search.scss';
 import { textify } from '../lib/_helpers';
 
@@ -19,7 +19,7 @@ class Search extends PureComponent {
     this.state = {
       value: '',
       searchWords: [],
-      suggestions: []
+      suggestions: [],
     };
 
     this.onChange = this.onChange.bind(this);
@@ -46,6 +46,12 @@ class Search extends PureComponent {
         value: textify(sourceList.find(s => s.id === source).name)
       });
     }
+  }
+  setQuery(query) {
+    this.props.setQuery(query);
+  }
+  getQuery() {
+    return this.props.searchState.query;
   }
   getSuggestions(value) {
     const { motifList, sourceList } = this.props.appState;
@@ -153,7 +159,6 @@ class Search extends PureComponent {
     return suggestion.id;
   }
   renderSuggestion(suggestion) {
-    const { appState } = this.props;
     return {
       motif: (
         <div className={theme.motifSuggestion}>
@@ -166,7 +171,7 @@ class Search extends PureComponent {
       entry: (
         <div style={{ display: 'flex' }}>
           <div style={{ flexGrow: 1 }}>
-            Find: {appState.query}
+            Find: {this.getQuery()}
           </div>
         </div>
       )
@@ -176,29 +181,31 @@ class Search extends PureComponent {
     if (newValue === '') {
       this.onClearInput();
     }
-    this.props.setQuery(newValue);
-    this.setState({
-      value: newValue
-    });
+    if (newValue) {
+      this.setQuery(newValue);
+      this.setState({
+        value: newValue
+      });
+    }
   }
   onSuggestionSelected(event, { suggestion }) {
     const query = qs.parse(this.props.location.search);
 
     if (suggestion.type === 'entry') {
-      this.props.searchEntries(this.props.appState.query);
+      this.props.searchEntries();
     }
 
     this.props.history.push({
       pathname: this.props.location.pathname,
       search: qs.stringify(Object.assign({}, query, {
         [suggestion.type]: suggestion.type === 'entry'
-          ? this.props.appState.query
+          ? this.getQuery()
           : suggestion.id
       }))
     });
     this.setState({
       value: suggestion.type === 'entry'
-        ? this.props.appState.query
+        ? this.getQuery()
         : textify(suggestion.name)
     });
   }
@@ -207,7 +214,7 @@ class Search extends PureComponent {
 
     this.setState({
       value: suggestion.type === 'entry'
-        ? this.props.appState.query
+        ? this.getQuery()
         : textify(suggestion.name)
     });
   }
@@ -285,4 +292,5 @@ class Search extends PureComponent {
 
 export default withRouter(connect(state => ({
   appState: state.app,
+  searchState: state.search
 }), actions)(Search));

@@ -9,7 +9,8 @@ import {
   WindowScroller
 } from 'react-virtualized';
 
-import actions from '../actions';
+import appActions from '../redux/app/actions';
+import searchActions from '../redux/search/actions';
 
 import Search from './Search.jsx';
 import Motif from './Motif.jsx';
@@ -25,18 +26,37 @@ class Doc extends PureComponent {
     this._resetRowCache();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const docChanged = (this.props.appState.doc !== nextProps.appState.doc);
-    const queryChanged = (this.props.location.search !== nextProps.location.search);
+  componentDidMount() {
+    this.props.fetchDoc();
+  }
 
-    if (!docChanged && !queryChanged) {
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.appState.doc) {
+      // doc isn't ready yet
       return;
     }
 
-    const { doc, sources, entryList } = nextProps.appState;
+    if (!nextProps.searchState.isIndexed) {
+      // index the entries
+      if (!nextProps.searchState.isIndexing) {
+        this.props.indexEntries(nextProps.appState.entryList);
+      }
+      return;
+    }
 
-    if (!nextProps.appState.doc) {
-      // doc isn't ready yet
+    this.updateRows(nextProps);
+  }
+
+  updateRows(nextProps) {
+    const { doc, sources } = nextProps.appState;
+
+    const docChanged = (this.props.appState.doc !== nextProps.appState.doc);
+    const indexChanged = (
+      !this.props.searchState.isIndexed && nextProps.searchState.isIndexed
+    );
+    const queryChanged = (this.props.location.search !== nextProps.location.search);
+
+    if (!docChanged && !indexChanged && !queryChanged) {
       return;
     }
 
@@ -46,8 +66,7 @@ class Doc extends PureComponent {
     if (query.source) {
       rows = Object.keys(sources[query.source].entriesByMotif);
     } else if (query.entry) {
-      console.log('results', this.props.appState.results);
-      rows = this.props.appState.results;
+      rows = this.props.searchState.results;
     }
 
     this._rows = query.motif
@@ -58,10 +77,18 @@ class Doc extends PureComponent {
     queryChanged && this._resetRowCache();
   }
 
-  render() {
-    const { doc } = this.props.appState;
+  getStatus() {
+    if (!this.props.appState.doc) {
+      return 'LOADING';
+    }
+    if (!this.props.searchState.isIndexed) {
+      return 'INDEXING';
+    }
+    return 'READY';
+  }
 
-    return doc ? (
+  render() {
+    return this.getStatus() === 'READY' ? (
       <div className="doc">
         <Search />
         <div className="bodyContainer">
@@ -91,7 +118,10 @@ class Doc extends PureComponent {
       </div>
     ) : (
       <div id="center">
-        Loading...
+        {{
+          'LOADING': 'Loading...',
+          'INDEXING': 'Indexing...'
+        }[this.getStatus()]}
       </div>
     );
   }
@@ -126,4 +156,4 @@ class Doc extends PureComponent {
 export default connect(state => ({
   appState: state.app,
   searchState: state.search
-}), actions)(Doc);
+}), { ...appActions, ...searchActions })(Doc);

@@ -4,7 +4,7 @@ import parse from 'rtf-parser';
 import { urlify, textify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
-parse.stream(fs.createReadStream('../doc/full.rtf'), (err, doc) => {
+parse.stream(fs.createReadStream('../doc/test05.rtf'), (err, doc) => {
   if (err) {
     console.error(err);
     return;
@@ -51,7 +51,7 @@ function rtfToJson(doc) {
             entry.content = entry.content.replace(/\*{1,3}/, '');
           }
           const re = new RegExp(
-            `^(<em>)*\\s*${sourcePattern.source.substr(1)}\\s*(</em>)*`
+            `^(<em>)*\\s*${sourcePattern.source.substr(1)}*(</em>)*`
           );
           entry.content = entry.content.replace(re, '').trim();
           entries = entries.concat({
@@ -152,7 +152,8 @@ function getLocations(entry) {
   // pp. 41-2 (60-2)
   // pp. 148-49 (212-14)
   // p. 323n (13n)
-  const re1b = new RegExp(`${pp.source}[^ ]+ \\([^ \\)]\\) `);
+  // p. (36)
+  const re1b = new RegExp(`${pp.source}[^ ]* \\([^ \\)]+\\) `);
   matches = content.match(re1b);
   if (matches) {
     content = content.replace(re1b, '');

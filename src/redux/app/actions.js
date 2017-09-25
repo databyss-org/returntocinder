@@ -5,19 +5,13 @@ import {
   sourcesFromEntries,
   sourceListFromBiblio,
   motifListFromMotifs
-} from './lib/indexers';
-import searchEntries from './lib/search';
+} from '../../lib/indexers';
 
-export const FETCH_DOC = 'FETCH_DOC';
-export const SEARCH_ENTRIES = 'SEARCH_ENTRIES';
-export const SET_QUERY = 'SET_QUERY';
-
-export const actions = {
+export default {
   fetchDoc() {
-    return async ({ dispatch }) => {
+    return async (dispatch) => {
       dispatch({
-        type: FETCH_DOC,
-        fetching: true
+        type: 'FETCH_DOC'
       });
       const motifs = (await axios.get('full.json')).data;
       const biblio = (await axios.get('biblio.json')).data;
@@ -32,7 +26,7 @@ export const actions = {
       const motifList = motifListFromMotifs(motifs);
       // console.log(motifList)
       return dispatch({
-        type: FETCH_DOC,
+        type: 'RECEIVE_DOC',
         motifs,
         entries,
         sources,
@@ -41,22 +35,6 @@ export const actions = {
         motifList,
         entryList
       });
-    };
-  },
-  searchEntries(query) {
-    return async ({ dispatch, getState }) => {
-      const { entryList } = getState().app;
-      dispatch({
-        type: SEARCH_ENTRIES,
-        results: searchEntries({ entryList, query }),
-        query
-      });
-    };
-  },
-  setQuery(query) {
-    return {
-      type: SET_QUERY,
-      query
     };
   }
 };
