@@ -5,7 +5,7 @@ import roman from 'roman-numerals';
 import { urlify, textify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
-parse.stream(fs.createReadStream('../doc/test05.rtf'), (err, doc) => {
+parse.stream(fs.createReadStream('../doc/full.rtf'), (err, doc) => {
   if (err) {
     console.error(err);
     return;
@@ -46,28 +46,41 @@ function rtfToJson(doc) {
       do {
         const entry = { starred: false };
         entry.content = renderPara(doc.content[i]);
-        if (entry.content) {
-          if (entry.content.startsWith('*')) {
-            entry.starred = true;
-            entry.content = entry.content.replace(/\*{1,3}/, '');
-          }
-          const re = new RegExp(
-            `^(<em>)*\\s*${sourcePattern.source.substr(1)}*(</em>)*`
-          );
-          entry.content = entry.content.replace(re, '').trim();
-          entries = entries.concat({
-            ...entry,
-            ...getLocations(entry)
-          });
-          try {
-            correctLastEntry(entries);
-          } catch (err) {
-            console.error({
-              msg: 'Missing or bad location',
-              content: entries[entries.length - 1].content,
+        try {
+          if (entry.content) {
+            const reStar = /^(<em>)*\s*\*{1,3}\s*(<\/em>)*/;
+            if (entry.content.match(reStar)) {
+              entry.starred = true;
+              entry.content = entry.content.replace(reStar, '');
+            }
+            const re = new RegExp(
+              `^(<em>)*\\s*${sourcePattern.source.substr(1)}*(</em>)*`
+            );
+            entry.content = entry.content.replace(re, '').trim();
+            entries = entries.concat({
+              ...entry,
+              ...getLocations(entry)
             });
+            try {
+              correctLastEntry(entries);
+            } catch (err) {
+              throw new Error({
+                msg: 'Missing or bad location',
+                content: entries[entries.length - 1].content,
+              });
+            }
+            parseLocations(entries[entries.length - 1]);
           }
-          parseLocations(entries[entries.length - 1]);
+        } catch (err) {
+          console.error(JSON.stringify({
+            msg: '☠️ Error processing entry',
+            content: {
+              entry,
+              lastEntry: entries[entries.length - 1]
+            },
+            inner: err.stack.toString().split('\n')
+          }, null, 2));
+          // throw err;
         }
         if (getSource(doc.content[i + 1])) {
           // end section
@@ -109,7 +122,9 @@ function rtfToJson(doc) {
 
 function parseLocations(entry) {
   // remove all non-numeric or delim chars
-  let pages = entry.locations.raw.replace(/[^0-9ivxlcdm,\-()]/ig, '');
+  let pages = entry.locations.raw
+    .replace(/(anne|leiris)/i, '')
+    .replace(/[^0-9ivxlcdm,\-()]/ig, '');
 
   // (36) => 36
   // (45-7) => 45-7
@@ -118,7 +133,7 @@ function parseLocations(entry) {
   }
 
   // pp. 41-2(60-2) => pp. 41-2
-  pages = pages.replace(/\([^)]+\)/g, '');
+  pages = pages.replace(/\([^)]*\)/g, '');
 
   let pageList = [];
 
@@ -134,21 +149,26 @@ function parseLocations(entry) {
 
   pageList = pageList.reduce((list, p) => {
     if (p.match(/-/)) {
-      let range = p.split(/-/);
-      if (p.match(/[ivxlcdm]/i)) {
-        range = range.map(n => `0.${roman.toArabic(n)}`);
-      }
-      range = range.map(n => parseFloat(n, 10));
+      const range = p.split(/-/);
+      // xx-xxiv
+      // xvi-221
+      const prange = range.map(n => parseFloat(
+        n.match(/[ivxlcdm]/i) ? `0.${roman.toArabic(n)}` : n
+      , 10));
       // [123, 24] => [123, 124]
-      if (range[1] < range[0]) {
-        range[1] = parseFloat(range[0].toString().charAt(0) + range[1].toString(), 10);
+      if (prange[1] < prange[0]) {
+        prange[1] = parseFloat(range[0].charAt(0) + range[1], 10);
       }
-      return list.concat(range);
+      return list.concat(prange);
     }
     if (p.match(/[ivxlcdm]/i)) {
       p = `0.${roman.toArabic(p)}`;
     }
-    return list.concat(parseFloat(p, 10));
+    const f = parseFloat(p, 10);
+    if (isNaN(f)) {
+      throw new Error(`parseLocations: "${p}" is not a number.`);
+    }
+    return list.concat(f);
   }, []);
 
   let min = pageList[0];
@@ -196,7 +216,7 @@ function getLocations(entry) {
     );
 
   // pp. 204, 206
-  const re1 = new RegExp(`${pp.source}([^ ,]+, )+.+? `);
+  const re1 = new RegExp(`${pp.source}([^ ,]+, *)+.+? `);
   let matches = content.match(re1);
   if (matches) {
     // console.log('--RE1', matches[0]);

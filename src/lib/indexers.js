@@ -1,3 +1,5 @@
+/* eslint-disable no-console*/
+
 import React from 'react';
 import latinize from 'latinize';
 import * as JsDiff from 'diff';
@@ -96,30 +98,57 @@ export function mergeEntries(entryList, minCount, mergedList = []) {
   };
   const mergeResult = mergedList.concat(firstEntry);
 
-  console.log(firstEntry.content)
-  console.log(' ')
-  console.log(' ')
+  console.log(firstEntry.content);
+  console.log(firstEntry.locations);
+  console.log(' ');
 
   const filteredEntries = entries.filter((entry) => {
-    const score = compare(firstEntry.content, entry.content, minCount)
+    const score = compare(firstEntry.content, entry.content, minCount);
     if (score) {
-      console.log(entry.content)
-      console.log(score)
-      console.log(' ')
+      console.log(entry.content);
+      // check for overlap of page ranges
+      if (!(
+        (firstEntry.locations.low >= entry.locations.low
+        && firstEntry.locations.low <= entry.locations.high) ||
+        (firstEntry.locations.high >= entry.locations.low
+        && firstEntry.locations.high <= entry.locations.high) ||
+        (entry.locations.low >= firstEntry.locations.low
+        && entry.locations.low <= firstEntry.locations.high) ||
+        (entry.locations.high >= firstEntry.locations.low
+        && entry.locations.high <= firstEntry.locations.high)
+      )) {
+        console.log('❌', entry.locations);
+        return true;
+      }
+
       firstEntry.motif[entry.motif.id] = entry.motif;
 
       // Take the longest content
       if (entry.content.length > firstEntry.content.length) {
         firstEntry.content = entry.content;
+        console.log('⭐ content');
       }
-      // TODO: take the longest page range
+      // take the longest page range
+      if (entry.locations.low < firstEntry.locations.low
+      || entry.locations.high > firstEntry.locations.high) {
+        console.log('⭐ locations', entry.locations);
+        firstEntry.locations = entry.locations;
+      }
+      console.log(' ');
       return false;
     }
     return true;
   });
-  console.log(' ')
-  console.log(' ')
 
+  // flatten motif object to list
+  firstEntry.motif = Object.keys(firstEntry.motif)
+    .reduce((arr, mid) => arr.concat(firstEntry.motif[mid]), [])
+    .sort(m => m.name);
+
+  console.log(' ');
+  console.log(' ');
+
+  // tail-recurse on new list with merged entries removed
   return mergeEntries(filteredEntries, minCount, mergeResult);
 }
 
@@ -130,7 +159,6 @@ export function compare(s1, s2, minCount) {
       r.value.split(/\s/).length < minCount) {
       return score;
     }
-    console.log(r)
     return score + 1;
   }, 0);
 }
