@@ -4,15 +4,15 @@ import SearchWorker from './worker';
 const searchWorker = new PromiseWorker(new SearchWorker());
 
 export default {
-  indexEntries(entryList) {
-    return async (dispatch) => {
+  indexEntries() {
+    return async (dispatch, getState) => {
       dispatch({
         type: 'INDEX_ENTRIES'
       });
       await searchWorker.postMessage({
         type: 'INDEX',
         payload: {
-          entryList
+          entryList: getState().app.entryList
         }
       });
       dispatch({

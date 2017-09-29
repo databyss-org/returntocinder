@@ -1,32 +1,25 @@
 const initialState = {
   doc: null,
-  sources: null,
-  entries: null,
-  entryList: [],
   biblio: null,
+  entryList: null,
   sourceList: null,
   motifList: null,
-  isFetching: false,
-  query: ''
+  query: '',
+  status: 'STARTUP'
 };
 
 export default function appReducer(state = initialState, action) {
   switch (action.type) {
-    case 'FETCH_DOC': {
-      return { ...state, isFetching: true };
-    }
-    case 'RECEIVE_DOC': {
+    case 'RECEIVE_DOC':
+    case 'RECEIVE_BIBLIO':
+    case 'RECEIVE_ENTRIES':
       return {
         ...state,
-        isFetching: false,
-        doc: action.motifs,
-        sources: action.sources,
-        entries: action.entries,
-        entryList: action.entryList,
-        biblio: action.biblio,
-        sourceList: action.sourceList,
-        motifList: action.motifList
+        ...action.payload
       };
+
+    case 'SET_STATUS': {
+      return { ...state, status: action.payload };
     }
 
     default: {

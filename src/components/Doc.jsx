@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import qs from 'query-string';
 import {
@@ -19,37 +20,14 @@ import Entry from './Entry.jsx';
 class Doc extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      doc: null
-    };
+
     this._rowRenderer = this._rowRenderer.bind(this);
     this._resetRowCache();
-  }
 
-  componentDidMount() {
-    this.props.fetchDoc();
+    this._updateRows(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.appState.doc) {
-      // doc isn't ready yet
-      return;
-    }
-
-    if (!nextProps.searchState.isIndexed) {
-      // index the entries
-      if (!nextProps.searchState.isIndexing) {
-        this.props.indexEntries(nextProps.appState.entryList);
-      }
-      return;
-    }
-
-    this.updateRows(nextProps);
-  }
-
-  updateRows(nextProps) {
-    const { doc, sources } = nextProps.appState;
-
     const docChanged = (this.props.appState.doc !== nextProps.appState.doc);
     const indexChanged = (
       !this.props.searchState.isIndexed && nextProps.searchState.isIndexed
@@ -60,7 +38,15 @@ class Doc extends PureComponent {
       return;
     }
 
-    const query = qs.parse(nextProps.location.search);
+    this._updateRows(nextProps);
+
+    this.List && this.List.recomputeRowHeights();
+    queryChanged && this._resetRowCache();
+  }
+
+  _updateRows(props) {
+    const { doc, sources } = props.appState;
+    const query = qs.parse(props.location.search);
 
     let rows = Object.keys(doc);
     if (query.source) {
@@ -72,58 +58,6 @@ class Doc extends PureComponent {
     this._rows = query.motif
       ? [query.motif]
       : rows;
-
-    this.List && this.List.recomputeRowHeights();
-    queryChanged && this._resetRowCache();
-  }
-
-  getStatus() {
-    if (!this.props.appState.doc) {
-      return 'LOADING';
-    }
-    if (!this.props.searchState.isIndexed) {
-      return 'INDEXING';
-    }
-    return 'READY';
-  }
-
-  render() {
-    return this.getStatus() === 'READY' ? (
-      <div className="doc">
-        <Search />
-        <div className="bodyContainer">
-          <WindowScroller>
-            {({ height, isScrolling, onChildScroll, scrollTop }) => (
-              <AutoSizer disableHeight>
-                {({ width }) => (
-                  <List
-                    ref={(list) => { this.List = list; }}
-                    deferredMeasurementCache={this._cache}
-                    overscanRowCount={2}
-                    rowCount={this._rows.length}
-                    rowHeight={this._cache.rowHeight}
-                    rowRenderer={this._rowRenderer}
-                    width={width}
-                    height={height}
-                    isScrolling={isScrolling}
-                    onScroll={onChildScroll}
-                    scrollTop={scrollTop}
-                    autoHeight
-                  />
-                )}
-              </AutoSizer>
-            )}
-          </WindowScroller>
-        </div>
-      </div>
-    ) : (
-      <div id="center">
-        {{
-          'LOADING': 'Loading...',
-          'INDEXING': 'Indexing...'
-        }[this.getStatus()]}
-      </div>
-    );
   }
 
   _resetRowCache() {
@@ -151,9 +85,41 @@ class Doc extends PureComponent {
       </CellMeasurer>
     );
   }
+
+  render() {
+    return (
+      <div className="doc">
+        <Search />
+        <div className="bodyContainer">
+          <WindowScroller>
+            {({ height, isScrolling, onChildScroll, scrollTop }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <List
+                    ref={(list) => { this.List = list; }}
+                    deferredMeasurementCache={this._cache}
+                    overscanRowCount={2}
+                    rowCount={this._rows.length}
+                    rowHeight={this._cache.rowHeight}
+                    rowRenderer={this._rowRenderer}
+                    width={width}
+                    height={height}
+                    isScrolling={isScrolling}
+                    onScroll={onChildScroll}
+                    scrollTop={scrollTop}
+                    autoHeight
+                  />
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default connect(state => ({
+export default withRouter(connect(state => ({
   appState: state.app,
   searchState: state.search
-}), { ...appActions, ...searchActions })(Doc);
+}), { ...appActions, ...searchActions })(Doc));
