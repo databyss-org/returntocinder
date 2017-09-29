@@ -2,6 +2,7 @@ const initialState = {
   doc: null,
   biblio: null,
   entryList: null,
+  entriesBySource: null,
   sourceList: null,
   motifList: null,
   query: '',

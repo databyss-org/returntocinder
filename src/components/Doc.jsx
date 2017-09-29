@@ -14,8 +14,8 @@ import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
 
 import Search from './Search.jsx';
-import Motif from './Motif.jsx';
-import Entry from './Entry.jsx';
+import EntriesByMotif from './EntriesByMotif.jsx';
+import EntriesBySource from './EntriesBySource.jsx';
 
 class Doc extends PureComponent {
   constructor(props) {
@@ -28,36 +28,58 @@ class Doc extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const docChanged = (this.props.appState.doc !== nextProps.appState.doc);
-    const indexChanged = (
-      !this.props.searchState.isIndexed && nextProps.searchState.isIndexed
+    const queryChanged = (
+      this.props.location.search !== nextProps.location.search
     );
-    const queryChanged = (this.props.location.search !== nextProps.location.search);
+    const resultsChanged = (
+      this.props.searchState.results !== nextProps.searchState.results
+    );
 
-    if (!docChanged && !indexChanged && !queryChanged) {
+    if (!queryChanged && !resultsChanged) {
       return;
     }
 
     this._updateRows(nextProps);
 
     this.List && this.List.recomputeRowHeights();
-    queryChanged && this._resetRowCache();
+    this._resetRowCache();
   }
 
   _updateRows(props) {
-    const { doc, sources } = props.appState;
+    const { doc, entriesBySource } = props.appState;
     const query = qs.parse(props.location.search);
 
-    let rows = Object.keys(doc);
-    if (query.source) {
-      rows = Object.keys(sources[query.source].entriesByMotif);
-    } else if (query.entry) {
-      rows = this.props.searchState.results;
-    }
+    this._rows = Object.keys(doc);
+    this._rowComponent = ({ index, key, style }) =>
+      <EntriesByMotif
+        mid={index}
+        motif={doc[this._rows[index]]}
+        key={key}
+        style={style}
+      />;
 
-    this._rows = query.motif
-      ? [query.motif]
-      : rows;
+    if (query.motif) {
+      this._rows = [query.motif];
+    } else if (query.source) {
+      this._rows = [query.source];
+      this._rowComponent = ({ index, key, style }) =>
+        <EntriesBySource
+          sid={index}
+          entries={entriesBySource[query.source]}
+          key={key}
+          style={style}
+        />;
+    } else if (query.entry) {
+      this._rows = Object.keys(props.searchState.results);
+      this._rowComponent = ({ index, key, style }) =>
+        <EntriesBySource
+          sid={this._rows[index]}
+          entries={props.searchState.results[this._rows[index]]}
+          key={key}
+          style={style}
+          showHeader
+        />;
+    }
   }
 
   _resetRowCache() {
@@ -68,7 +90,6 @@ class Doc extends PureComponent {
   }
 
   _rowRenderer({ index, isScrolling, key, parent, style }) {
-    const query = qs.parse(this.props.location.search);
     return (
       <CellMeasurer
         cache={this._cache}
@@ -77,11 +98,7 @@ class Doc extends PureComponent {
         rowIndex={index}
         parent={parent}
       >
-        {query.entry ? (
-          <Entry eid={this._rows[index]} key={key} style={style} />
-        ) : (
-          <Motif motif={this._rows[index]} key={key} style={style} />
-        )}
+        {this._rowComponent({ index, key, style })}
       </CellMeasurer>
     );
   }
@@ -90,7 +107,7 @@ class Doc extends PureComponent {
     return (
       <div className="doc">
         <Search />
-        <div className="bodyContainer">
+        <main>
           <WindowScroller>
             {({ height, isScrolling, onChildScroll, scrollTop }) => (
               <AutoSizer disableHeight>
@@ -113,7 +130,7 @@ class Doc extends PureComponent {
               </AutoSizer>
             )}
           </WindowScroller>
-        </div>
+        </main>
       </div>
     );
   }

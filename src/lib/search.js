@@ -4,6 +4,8 @@ import {
   PrefixIndexStrategy
 } from 'js-search';
 
+import { groupEntriesBySource } from './indexers';
+
 export function indexEntries(entryList) {
   const search = new Search('id');
   search.sanitizer = new LowerCaseSanitizer();
@@ -17,8 +19,5 @@ export function indexEntries(entryList) {
 
 export function searchEntries({ index, query }) {
   const results = index.search(query);
-  console.log('query', query);
-  console.log('searchEntries', results);
-
-  return results;
+  return groupEntriesBySource(results);
 }

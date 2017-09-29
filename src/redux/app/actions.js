@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {
   sourceListFromBiblio,
-  motifListFromMotifs
+  motifListFromMotifs,
+  groupEntriesBySource
 } from '../../lib/indexers';
 
 export default {
@@ -45,11 +46,13 @@ export default {
         type: 'FETCH_ENTRIES'
       });
       const entryList = (await axios.get('entries.json')).data;
+      const entriesBySource = groupEntriesBySource(entryList);
 
       return dispatch({
         type: 'RECEIVE_ENTRIES',
         payload: {
-          entryList
+          entryList,
+          entriesBySource
         }
       });
     };

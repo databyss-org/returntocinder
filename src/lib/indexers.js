@@ -162,3 +162,14 @@ export function compare(s1, s2, minCount) {
     return score + 1;
   }, 0);
 }
+
+export function groupEntriesBySource(entryList) {
+  return entryList.reduce((sources, entry) => {
+    if (!sources[entry.source.id]) {
+      sources[entry.source.id] = [];
+    }
+    sources[entry.source.id].push(entry);
+    sources[entry.source.id].sort((a, b) => a.locations.low - b.locations.low);
+    return sources;
+  }, {});
+}

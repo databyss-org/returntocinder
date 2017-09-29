@@ -10,9 +10,7 @@ registerPromiseWorker((action) => {
       return true;
     }
     case 'SEARCH': {
-      return {
-        results: searchEntries({ index, query: action.payload.query })
-      };
+      return searchEntries({ index, query: action.payload.query });
     }
   }
   throw new Error(`Invalid action type "${action.type}"`);

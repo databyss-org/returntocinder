@@ -1,28 +1,32 @@
 import React, { PureComponent } from 'react';
-import Highlighter from 'react-highlight-words';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
-class Motif extends PureComponent {
+export default class Entry extends PureComponent {
   render() {
-    const { eid, style } = this.props;
-    const { entries } = this.props.appState;
-    const entry = entries[eid];
-
+    const { entry, showRepeats } = this.props;
     return (
-      <section style={style}>
-        <h3>
-          <span dangerouslySetInnerHTML={{ __html: entry.motif.title }} />
-          ::
-          <span dangerouslySetInnerHTML={{ __html: entry.source.id }} />
-        </h3>
-        <p dangerouslySetInnerHTML={{ __html: entry.content }} />
-      </section>
+      <p>
+        <span
+          dangerouslySetInnerHTML={{ __html:
+            `
+            ${entry.starred ? '***' : ''}
+            ${entry.locations.repeat && showRepeats
+              ? '—— '
+              : entry.locations.raw
+            }
+            ${entry.content}
+            `
+          }}
+        />
+        {entry.motif ? (
+          <h5>{entry.motif.map(m =>
+            <a
+              key={m.id}
+              dangerouslySetInnerHTML={{ __html: m.title }}
+            />
+          )}
+          </h5>
+        ) : null}
+      </p>
     );
   }
 }
-
-export default withRouter(connect(state => ({
-  appState: state.app,
-  searchState: state.search
-}), null)(Motif));
