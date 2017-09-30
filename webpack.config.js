@@ -9,6 +9,10 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: [/worker\.js?$/],
+        loader: 'worker-loader',
+      },
+      {
         test: [/\.jsx?$/, /\.js?$/],
         exclude: /(node_modules)/,
         loader: 'babel-loader',

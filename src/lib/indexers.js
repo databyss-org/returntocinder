@@ -1,5 +1,8 @@
+/* eslint-disable no-console*/
+
 import React from 'react';
 import latinize from 'latinize';
+import * as JsDiff from 'diff';
 import { textify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -82,4 +85,91 @@ export function motifListFromMotifs(motifs) {
     type: 'motif',
     name: textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
   }), []);
+}
+
+export function mergeEntries(entryList, minCount, mergedList = []) {
+  if (!entryList.length) {
+    return mergedList;
+  }
+  const entries = entryList.slice(1);
+  const firstEntry = {
+    ...entryList[0],
+    motif: { [entryList[0].motif.id]: entryList[0].motif }
+  };
+  const mergeResult = mergedList.concat(firstEntry);
+
+  console.log(firstEntry.content);
+  console.log(firstEntry.locations);
+  console.log(' ');
+
+  const filteredEntries = entries.filter((entry) => {
+    const score = compare(firstEntry.content, entry.content, minCount);
+    if (score) {
+      console.log(entry.content);
+      // check for overlap of page ranges
+      if (!(
+        (firstEntry.locations.low >= entry.locations.low
+        && firstEntry.locations.low <= entry.locations.high) ||
+        (firstEntry.locations.high >= entry.locations.low
+        && firstEntry.locations.high <= entry.locations.high) ||
+        (entry.locations.low >= firstEntry.locations.low
+        && entry.locations.low <= firstEntry.locations.high) ||
+        (entry.locations.high >= firstEntry.locations.low
+        && entry.locations.high <= firstEntry.locations.high)
+      )) {
+        console.log('❌', entry.locations);
+        return true;
+      }
+
+      firstEntry.motif[entry.motif.id] = entry.motif;
+
+      // Take the longest content
+      if (entry.content.length > firstEntry.content.length) {
+        firstEntry.content = entry.content;
+        console.log('⭐ content');
+      }
+      // take the longest page range
+      if (entry.locations.low < firstEntry.locations.low
+      || entry.locations.high > firstEntry.locations.high) {
+        console.log('⭐ locations', entry.locations);
+        firstEntry.locations = entry.locations;
+      }
+      console.log(' ');
+      return false;
+    }
+    return true;
+  });
+
+  // flatten motif object to list
+  firstEntry.motif = Object.keys(firstEntry.motif)
+    .reduce((arr, mid) => arr.concat(firstEntry.motif[mid]), [])
+    .sort(m => m.name);
+
+  console.log(' ');
+  console.log(' ');
+
+  // tail-recurse on new list with merged entries removed
+  return mergeEntries(filteredEntries, minCount, mergeResult);
+}
+
+export function compare(s1, s2, minCount) {
+  return JsDiff.diffWords(s1, s2).reduce((score, r) => {
+    if (r.added ||
+      r.removed ||
+      r.value.split(/\s/).length < minCount) {
+      return score;
+    }
+    return score + 1;
+  }, 0);
+}
+
+export function groupEntriesBySource(entryList) {
+  return entryList.reduce((sources, entry) => {
+    if (!sources[entry.source.id]) {
+      sources[entry.source.id] = [];
+    }
+    sources[entry.source.id].push(entry);
+    sources[entry.source.id].sort((a, b) => a.locations.low - b.locations.low);
+    return sources;
+  }, {});
 }
