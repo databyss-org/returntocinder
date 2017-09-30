@@ -1,14 +1,15 @@
 import {
   Search,
-  LowerCaseSanitizer,
   PrefixIndexStrategy
 } from 'js-search';
+
+import { sanitize } from '../lib/_helpers';
 
 import { groupEntriesBySource } from './indexers';
 
 export function indexEntries(entryList) {
   const search = new Search('id');
-  search.sanitizer = new LowerCaseSanitizer();
+  search.sanitizer = { sanitize };
   search.indexStrategy = new PrefixIndexStrategy();
 
   search.addIndex('content');

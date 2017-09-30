@@ -2,7 +2,7 @@
 import fs from 'fs';
 import parse from 'rtf-parser';
 import roman from 'roman-numerals';
-import { urlify, textify } from '../lib/_helpers';
+import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
 parse.stream(fs.createReadStream('../doc/full.rtf'), (err, doc) => {
@@ -48,6 +48,7 @@ function rtfToJson(doc) {
         entry.content = renderPara(doc.content[i]);
         try {
           if (entry.content) {
+            entry.content = simplify(entry.content);
             const reStar = /^(<em>)*\s*\*{1,3}\s*(<\/em>)*/;
             if (entry.content.match(reStar)) {
               entry.starred = true;

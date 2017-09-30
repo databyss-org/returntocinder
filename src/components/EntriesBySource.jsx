@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import Highlighter from 'react-highlight-words';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -7,7 +6,7 @@ import Entry from './Entry.jsx';
 
 class EntriesBySource extends PureComponent {
   render() {
-    const { sid, style, entries, showHeader } = this.props;
+    const { sid, style, entries, showHeader, highlight } = this.props;
 
     return (
       <section style={style}>
@@ -16,7 +15,7 @@ class EntriesBySource extends PureComponent {
           : null
         }
         {entries.map(entry =>
-          <Entry key={entry.id} entry={entry} />
+          <Entry key={entry.id} entry={entry} highlight={highlight} />
         )}
       </section>
     );

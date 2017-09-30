@@ -41,43 +41,46 @@ article {
   padding-bottom: 2.5em;
 }
 
-/* appears in */
-h5 {
-  font-size: 0.7em;
-  margin: 0.3em 0 1.4em;
-
-  a {
-    display: inline-block;
-    text-decoration: underline;
-    text-decoration-color: #ccc;
-    cursor: pointer;
-
-    &:after {
-      content: ',';
-      padding-right: 0.4em;
-    }
-    &:last-child:after {
-      content: '';
-      padding-right: 0;
-    }
-  }
-}
-
 em {
   font-style: italic;
 }
-p {
-  margin:0 0 0.3em 0;
-}
+
 section {
   margin-bottom: 1.7em;
 
-  p {
+  span {
+    display: block;
+
     &:first-of-type {
       display: inline;
     }
     &:nth-of-type(2) {
       margin-top: .3em;
+    }
+
+    p {
+      display: inline;
+    }
+
+    nav {
+      font-size: 0.7em;
+      margin: 0.3em 0 1.4em;
+
+      a {
+        display: inline-block;
+        text-decoration: underline;
+        text-decoration-color: #ccc;
+        cursor: pointer;
+
+        &:after {
+          content: ',';
+          padding-right: 0.4em;
+        }
+        &:last-child:after {
+          content: '';
+          padding-right: 0;
+        }
+      }
     }
   }
 }

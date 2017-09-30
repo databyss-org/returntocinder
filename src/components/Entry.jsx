@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
+import highlighter from '../lib/highlight';
 
 export default class Entry extends PureComponent {
+
   render() {
-    const { entry, showRepeats } = this.props;
+    const { entry, showRepeats, highlight } = this.props;
     return (
-      <p>
-        <span
+      <span>
+        <p
           dangerouslySetInnerHTML={{ __html:
             `
             ${entry.starred ? '***' : ''}
@@ -13,20 +15,22 @@ export default class Entry extends PureComponent {
               ? '—— '
               : entry.locations.raw
             }
-            ${entry.content}
+            ${highlighter({
+              searchWords: highlight,
+              textToHighlight: entry.content
+            })}
             `
           }}
         />
         {entry.motif ? (
-          <h5>{entry.motif.map(m =>
+          <nav>{entry.motif.map(m =>
             <a
               key={m.id}
               dangerouslySetInnerHTML={{ __html: m.title }}
             />
-          )}
-          </h5>
+          )}</nav>
         ) : null}
-      </p>
+      </span>
     );
   }
 }

@@ -78,6 +78,7 @@ class Doc extends PureComponent {
           key={key}
           style={style}
           showHeader
+          highlight={query.entry.split(/\s/)}
         />;
     }
   }

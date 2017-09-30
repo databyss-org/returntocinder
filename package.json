@@ -8,7 +8,8 @@
     "dev": "webpack-dev-server --content-base public --open --inline",
     "doc": "babel-node src/scripts/docToJson.js",
     "biblio": "babel-node src/scripts/biblioToJson.js",
-    "index": "babel-node src/scripts/indexEntries.js"
+    "index": "babel-node src/scripts/indexEntries.js",
+    "simplify": "babel-node src/scripts/simplifyEntries.js"
   },
   "keywords": [],
   "author": "pzhine",
@@ -30,6 +31,7 @@
     "express": "latest",
     "express-basic-auth": "latest",
     "file-loader": "latest",
+    "highlight-words-core": "^1.0.3",
     "js-search": "^1.4.2",
     "json-loader": "latest",
     "latinize": "latest",
