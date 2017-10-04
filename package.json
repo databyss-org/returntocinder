@@ -4,7 +4,8 @@
   "description": "derrida db",
   "main": "index.js",
   "scripts": {
-    "start": "webpack & node server.js",
+    "heroku-postbuild": "webpack -p --progress",
+    "start": "node server.js",
     "dev": "webpack-dev-server --content-base public --open --inline",
     "doc": "babel-node src/scripts/docToJson.js",
     "biblio": "babel-node src/scripts/biblioToJson.js",
