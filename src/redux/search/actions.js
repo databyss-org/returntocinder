@@ -28,13 +28,14 @@ export default {
       const results = await searchWorker.postMessage({
         type: 'SEARCH',
         payload: {
-          query: getState().search.query
+          query: query || getState().search.query
         }
       });
       dispatch({
         type: 'SEARCH_ENTRIES_RESULTS',
         payload: {
-          results
+          results,
+          query
         }
       });
     };

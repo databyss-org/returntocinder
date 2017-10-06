@@ -26,6 +26,12 @@ export default function appReducer(state = initialState, action) {
         query: action.payload.query
       };
     }
+    case 'SEARCH': {
+      return {
+        ...state,
+        query: action.payload.query
+      };
+    }
     case 'SEARCH_ENTRIES_RESULTS': {
       return {
         ...state,

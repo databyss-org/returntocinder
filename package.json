@@ -42,7 +42,6 @@
     "react": "latest",
     "react-autosuggest": "latest",
     "react-dom": "latest",
-    "react-highlight-words": "latest",
     "react-redux": "latest",
     "react-router": "latest",
     "react-router-dom": "latest",

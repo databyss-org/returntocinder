@@ -27,6 +27,13 @@ class Doc extends PureComponent {
     this._updateRows(this.props);
   }
 
+  componentWillMount() {
+    const query = qs.parse(this.props.location.search);
+    if (query.entry) {
+      this.props.searchEntries(query.entry);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const queryChanged = (
       this.props.location.search !== nextProps.location.search
@@ -37,6 +44,13 @@ class Doc extends PureComponent {
 
     if (!queryChanged && !resultsChanged) {
       return;
+    }
+
+    if (queryChanged) {
+      const query = qs.parse(nextProps.location.search);
+      if (query.entry) {
+        this.props.searchEntries();
+      }
     }
 
     this._updateRows(nextProps);
