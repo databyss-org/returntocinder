@@ -10,7 +10,7 @@ export default class Entry extends PureComponent {
         <p
           dangerouslySetInnerHTML={{ __html:
             `
-            ${entry.starred ? '***' : ''}
+            ${entry.starred ? '*** ' : ''}
             ${entry.locations.repeat && showRepeats
               ? '—— '
               : entry.locations.raw

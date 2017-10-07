@@ -6,10 +6,16 @@ $height: 30px;
 
 .container {
   width: 80%;
+  max-width: 680px;
   position: relative;
+  z-index: 100;
   border: 1px solid $border-color;
   border-radius: $border-radius;
   height: $height + 20;
+  background: rgba(255,255,255,0.8);
+  top: 22px;
+  background: rgba(255,255,255,1);
+  transition: all 500ms ease;
 }
 
 .input {

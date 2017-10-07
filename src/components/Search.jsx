@@ -5,6 +5,7 @@ import qs from 'query-string';
 import Autosuggest from 'react-autosuggest';
 import latinize from 'latinize';
 import actions from '../redux/search/actions';
+import frontTheme from '../scss/search-front.scss';
 import theme from '../scss/search.scss';
 import { textify } from '../lib/_helpers';
 
@@ -198,7 +199,7 @@ class Search extends PureComponent {
     this.clearSearchQuery(query);
 
     this.props.history.push({
-      pathname: this.props.location.pathname,
+      pathname: '/doc',
       search: qs.stringify(Object.assign({}, query, {
         [suggestion.type]: suggestion.id
       }))
@@ -234,7 +235,7 @@ class Search extends PureComponent {
       const query = qs.parse(this.props.location.search);
       this.clearSearchQuery(query);
       this.props.history.push({
-        pathname: this.props.location.pathname,
+        pathname: '/doc',
         search: qs.stringify(Object.assign({}, query, {
           entry: this.getQuery()
         }))
@@ -291,7 +292,10 @@ class Search extends PureComponent {
           this.autosuggest = autosuggest;
           this.inputElement = autosuggest.input;
         }}
-        theme={theme}
+        theme={this.props.location.pathname.match('doc')
+          ? theme
+          : frontTheme
+        }
       />
     );
   }
