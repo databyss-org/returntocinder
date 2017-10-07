@@ -47,7 +47,12 @@ export default function loader(Wrapped, queue) {
     render() {
       if (this.state.processing) {
         return this.state.processing ?
-          <div className="loader">
+          <div style={ {
+            zIndex: 100,
+            position: 'relative',
+            color: 'rgba(255,255,255,0.4)',
+            top: 100
+          }}>
             {this.state.processing.map((a, idx) => (
               <div key={idx}>{a.message}</div>
             ))}

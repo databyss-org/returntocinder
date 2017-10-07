@@ -1,6 +1,7 @@
 @import 'scss/mixins';
 
 body {
+  padding-left: 15px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -32,6 +33,7 @@ h3 {
 }
 
 main {
+  max-width: 750px;
   margin-top: 3.5em;
 }
 
@@ -108,6 +110,7 @@ button {
 
 .frontis {
   position: absolute;
+  padding-left: 15px;
   left: 0;
   top: 0;
   display: flex;
