@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
 
-export default function loader(Wrapped, queue) {
+export default function loader({ Wrapped, queue, onComplete }) {
   class Loader extends PureComponent {
     constructor(props) {
       super(props);
@@ -17,6 +17,7 @@ export default function loader(Wrapped, queue) {
     processAction() {
       if (!this.state.queue.length) {
         this.setState({ processing: null });
+        onComplete && onComplete();
         return;
       }
       // shift the first item from the queue and process it
@@ -50,7 +51,9 @@ export default function loader(Wrapped, queue) {
           <div style={ {
             zIndex: 100,
             position: 'relative',
-            color: 'rgba(255,255,255,0.4)',
+            color: this.props.location.pathname.match('doc')
+              ? '#333'
+              : 'rgba(255,255,255,0.4)',
             top: 100
           }}>
             {this.state.processing.map((a, idx) => (

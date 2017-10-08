@@ -6,8 +6,8 @@ export default class Front extends PureComponent {
   render() {
     return (
       <div className={style.frontis}>
-        {frontis.map(para => (
-          <p>{para}</p>
+        {frontis.map((para, idx) => (
+          <p key={idx}>{para}</p>
         ))}
       </div>
     );
