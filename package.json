@@ -21,6 +21,7 @@
     "babel-core": "latest",
     "babel-loader": "latest",
     "babel-polyfill": "latest",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-react": "latest",
     "babel-preset-stage-3": "latest",
     "compression": "latest",
@@ -60,7 +61,6 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "babel-preset-env": "^1.6.0",
     "eslint": "latest",
     "eslint-config-airbnb-base": "^12.0.2",
     "eslint-config-react-app": "^2.0.1",
