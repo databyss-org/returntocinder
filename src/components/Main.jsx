@@ -39,7 +39,7 @@ export default class Main extends PureComponent {
     return (
       <Router>
         <div>
-          <WrappedSearch />
+          <Route path='*' component={WrappedSearch} />
           <Route exact path='/' component={Front} />
           <Route exact path='/doc' component={Doc} />
         </div>
