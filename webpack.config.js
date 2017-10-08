@@ -17,7 +17,7 @@ module.exports = {
         exclude: /(node_modules)/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react', 'stage-3']
+          presets: ['env', 'react', 'stage-3']
         }
       },
       {
@@ -50,7 +50,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'babel-loader?presets[]=es2015,presets[]=react!svg-react-loader'
+        loader: 'babel-loader?presets[]=env,presets[]=react!svg-react-loader'
       }
     ]
   },

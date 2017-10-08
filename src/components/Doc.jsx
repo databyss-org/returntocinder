@@ -90,8 +90,7 @@ class Doc extends PureComponent {
           <main>
             {
               this._rows.map((key, index) =>
-                this._rowComponent({ index, key, style: {} })
-              )
+                this._rowComponent({ index, key, style: {} }))
             }
           </main>
         : null}

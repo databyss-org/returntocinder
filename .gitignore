@@ -9,3 +9,6 @@ bundle.js.map
 # OSX
 #
 .DS_Store
+
+# YARN
+yarn.lock
