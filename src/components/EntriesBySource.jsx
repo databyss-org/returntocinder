@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 import Entry from './Entry.jsx';
 
@@ -11,7 +11,7 @@ class EntriesBySource extends PureComponent {
     return (
       <section style={style}>
         {showHeader
-          ? <h3>{sid}</h3>
+          ? <h3><Link to={`${this.props.location.pathname}/${sid}`}>{sid}</Link></h3>
           : null
         }
         {entries.map(entry =>

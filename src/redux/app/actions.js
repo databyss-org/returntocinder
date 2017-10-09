@@ -11,7 +11,7 @@ export default {
       dispatch({
         type: 'FETCH_DOC'
       });
-      const doc = (await axios.get('full.json')).data;
+      const doc = (await axios.get('/full.json')).data;
       const motifList = motifListFromMotifs(doc);
 
       return dispatch({
@@ -28,7 +28,7 @@ export default {
       dispatch({
         type: 'FETCH_BIBLIO'
       });
-      const biblio = (await axios.get('biblio.json')).data;
+      const biblio = (await axios.get('/biblio.json')).data;
       const sourceList = sourceListFromBiblio(biblio);
 
       return dispatch({
@@ -45,7 +45,7 @@ export default {
       dispatch({
         type: 'FETCH_ENTRIES'
       });
-      const entryList = (await axios.get('entries.json')).data;
+      const entryList = (await axios.get('/entries.json')).data;
       const entriesBySource = groupEntriesBySource(entryList);
 
       return dispatch({

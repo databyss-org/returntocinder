@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import Front from './Front.jsx';
 import Doc from './Doc.jsx';
 import Search from './Search.jsx';
+import Source from './Source.jsx';
+import ModalRoute from './ModalRoute.jsx';
 import loader from './Loader.jsx';
 import defer from './Defer.jsx';
 import actions from '../redux/app/actions';
@@ -39,15 +42,20 @@ class Main extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.WrappedSearch = loader({
+    this.Search = loader({
       Wrapped: Search,
       queue: actionQ,
       onComplete: () => this.props.setStatus('READY')
     });
 
-    this.WrappedDoc = defer({
+    this.Doc = defer({
       Wrapped: Doc,
-      untilStatus: 'READY'
+      untilStatus: 'READY',
+    });
+
+    this.Source = defer({
+      Wrapped: Source,
+      untilStatus: 'READY',
     });
   }
 
@@ -55,9 +63,13 @@ class Main extends PureComponent {
     return (
       <Router>
         <div>
-          <Route path='*' component={this.WrappedSearch} />
+          <Route path='*' component={this.Search} />
           <Route exact path='/' component={Front} />
-          <Route exact path='/doc' component={this.WrappedDoc} />
+          <Route path='/(motif|source|search)/:term' component={this.Doc} />
+          <ModalRoute
+            path='/(motif|source|search)/:term/:sid'
+            component={this.Source}
+          />
         </div>
       </Router>
     );

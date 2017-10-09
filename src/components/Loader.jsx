@@ -51,9 +51,9 @@ export default function loader({ Wrapped, queue, onComplete }) {
           <div style={ {
             zIndex: 100,
             position: 'relative',
-            color: this.props.location.pathname.match('doc')
-              ? '#333'
-              : 'rgba(255,255,255,0.4)',
+            color: this.props.location.pathname === '/'
+              ? 'rgba(255,255,255,0.4)'
+              : '#333',
             top: 100
           }}>
             {this.state.processing.map((a, idx) => (

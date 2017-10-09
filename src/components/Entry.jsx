@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import highlighter from '../lib/highlight';
 
 export default class Entry extends PureComponent {
-
   render() {
     const { entry, showRepeats, highlight } = this.props;
     return (

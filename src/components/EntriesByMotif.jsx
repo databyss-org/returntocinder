@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Entry from './Entry.jsx';
 
 class EntriesByMotif extends PureComponent {
@@ -12,7 +12,11 @@ class EntriesByMotif extends PureComponent {
         <h2 dangerouslySetInnerHTML={{ __html: motif.title }} />
         {Object.keys(motif.sources).map((sid, idx) => (
           <section key={motif + sid}>
-            <h3>{sid}</h3>
+            <h3>
+              <Link to={`${this.props.location.pathname}/${sid}`}>
+                {sid}
+              </Link>
+            </h3>
             {motif.sources[sid].map((entry, idx) =>
               <Entry
                 key={motif + sid + idx}

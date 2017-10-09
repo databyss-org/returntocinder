@@ -4,13 +4,13 @@ module.exports = {
   entry: ['babel-polyfill', './src/index.jsx'],
   output: {
     path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
       {
         test: [/worker\.js?$/],
-        loader: 'worker-loader',
+        loader: 'worker-loader?inline=true',
       },
       {
         test: [/\.jsx?$/, /\.js?$/],

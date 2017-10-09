@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 export default function defer({ Wrapped, untilStatus }) {
   class Defer extends PureComponent {
@@ -11,7 +12,7 @@ export default function defer({ Wrapped, untilStatus }) {
     }
   }
 
-  return connect(state => ({
+  return withRouter(connect(state => ({
     appState: state.app,
-  }), null)(Defer);
+  }), null)(Defer));
 }

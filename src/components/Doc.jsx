@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import qs from 'query-string';
+import shallowequal from 'shallowequal';
 
 import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
@@ -12,20 +12,20 @@ import EntriesBySource from './EntriesBySource.jsx';
 class Doc extends PureComponent {
   constructor(props) {
     super(props);
+    this.query = this.queryFromProps(props);
     this._updateRows(this.props);
   }
 
   componentWillMount() {
-    const query = qs.parse(this.props.location.search);
-    if (query.entry) {
-      this.props.searchEntries(query.entry);
+    if (this.query.search) {
+      this.props.searchEntries(this.query.term);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const queryChanged = (
-      this.props.location.search !== nextProps.location.search
-    );
+    const nextQuery = this.queryFromProps(nextProps);
+
+    const queryChanged = !shallowequal(this.query, nextQuery);
     const resultsChanged = (
       this.props.searchState.results !== nextProps.searchState.results
     );
@@ -35,18 +35,27 @@ class Doc extends PureComponent {
     }
 
     if (queryChanged) {
-      const query = qs.parse(nextProps.location.search);
-      if (query.entry) {
-        this.props.searchEntries();
+      this.query = nextQuery;
+      if (this.query.search) {
+        this.props.searchEntries(this.query.term);
       }
     }
 
     this._updateRows(nextProps);
   }
 
+  queryFromProps(props) {
+    return {
+      term: props.match.params.term,
+      search: props.match.params[0] === 'search',
+      motif: props.match.params[0] === 'motif',
+      source: props.match.params[0] === 'source',
+    };
+  }
+
   _updateRows(props) {
     const { doc, entriesBySource } = props.appState;
-    const query = qs.parse(props.location.search);
+    const { search, motif, source, term } = this.query;
 
     this._rows = Object.keys(doc);
     this._rowComponent = ({ index, key, style }) =>
@@ -57,18 +66,18 @@ class Doc extends PureComponent {
         style={style}
       />;
 
-    if (query.motif) {
-      this._rows = [query.motif];
-    } else if (query.source) {
-      this._rows = [query.source];
+    if (motif) {
+      this._rows = [term];
+    } else if (source) {
+      this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
           sid={index}
-          entries={entriesBySource[query.source]}
+          entries={entriesBySource[source]}
           key={key}
           style={style}
         />;
-    } else if (query.entry) {
+    } else if (search) {
       this._rows = Object.keys(props.searchState.results);
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
@@ -77,16 +86,16 @@ class Doc extends PureComponent {
           key={key}
           style={style}
           showHeader
-          highlight={query.entry.split(/\s/)}
+          highlight={term.split(/\s/)}
         />;
     }
   }
 
   render() {
-    const query = qs.parse(this.props.location.search);
+    const { search, motif, source } = this.query;
     return (
       <div className="doc">
-        {query.entry || query.motif || query.source ?
+        { search || motif || source ?
           <main>
             {
               this._rows.map((key, index) =>

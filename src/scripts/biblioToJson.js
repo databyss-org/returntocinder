@@ -16,10 +16,11 @@ function rtfToJson(doc) {
 
   for (let i = 0; i < doc.content.length; i += 1) {
     // scan for section
-    const sid = getSource(doc.content[i]);
+    let sid = getSource(doc.content[i]);
     if (!sid) {
       continue;
     }
+    sid = sid.trim();
 
     // capture title and citations
     const html = renderPara(doc.content[i]);

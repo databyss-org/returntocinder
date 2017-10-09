@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import qs from 'query-string';
 import Autosuggest from 'react-autosuggest';
 import latinize from 'latinize';
 import actions from '../redux/search/actions';
@@ -34,7 +33,7 @@ class Search extends PureComponent {
     this.getSuggestions = this.getSuggestions.bind(this);
   }
   componentDidMount() {
-    const { motif, source } = qs.parse(this.props.location.search);
+    const { motif, source } = this.props.match.params;
     const { doc, sourceList } = this.props.appState;
 
     if (motif) {
@@ -159,11 +158,6 @@ class Search extends PureComponent {
   getSuggestionValue(suggestion) {
     return suggestion.id;
   }
-  clearSearchQuery(query) {
-    delete query.motif;
-    delete query.source;
-    delete query.entry;
-  }
   renderSuggestion(suggestion) {
     return {
       motif: (
@@ -195,16 +189,9 @@ class Search extends PureComponent {
     }
   }
   onSuggestionSelected(event, { suggestion }) {
-    const query = qs.parse(this.props.location.search);
-    this.clearSearchQuery(query);
-
     this.props.history.push({
-      pathname: '/doc',
-      search: qs.stringify(Object.assign({}, query, {
-        [suggestion.type]: suggestion.id
-      }))
+      pathname: `/${suggestion.type}/${suggestion.id}`
     });
-
     this.onClearInput();
   }
   onSuggestionHighlighted({ suggestion }) {
@@ -232,13 +219,8 @@ class Search extends PureComponent {
   }
   onKeyDown(event) {
     if (event.key === 'Enter' && !this.state.highlightedSuggestion) {
-      const query = qs.parse(this.props.location.search);
-      this.clearSearchQuery(query);
       this.props.history.push({
-        pathname: '/doc',
-        search: qs.stringify(Object.assign({}, query, {
-          entry: this.getQuery()
-        }))
+        pathname: `/search/${this.getQuery()}`,
       });
       this.onClearInput();
     }
@@ -292,9 +274,9 @@ class Search extends PureComponent {
           this.autosuggest = autosuggest;
           this.inputElement = autosuggest.input;
         }}
-        theme={this.props.location.pathname.match('doc')
-          ? theme
-          : frontTheme
+        theme={this.props.location.pathname === '/'
+          ? frontTheme
+          : theme
         }
       />
     );
