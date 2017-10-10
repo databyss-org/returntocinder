@@ -62,5 +62,11 @@ export default {
       type: 'SET_STATUS',
       payload: status
     };
+  },
+  showMask(show) {
+    return {
+      type: 'SHOW_MASK',
+      payload: show
+    };
   }
 };

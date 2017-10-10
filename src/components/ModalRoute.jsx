@@ -2,25 +2,59 @@
 import React, { PureComponent } from 'react';
 import Transition from 'react-transition-group/Transition';
 import { withRouter, matchPath } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { lockBodyScroll } from '../lib/dom';
+import actions from '../redux/app/actions';
 import styles from '../scss/modal.scss';
 
-const transitionStyles = {
-  entering: { top: '100%' },
-  exiting: { top: 0 },
-  exited: { top: '100%' },
-  entered: { top: 0 },
+const tranStyles = {
+  exited: {
+    container: {
+      top: '100%'
+    },
+    mask: {
+      opacity: 0
+    }
+  },
+  entered: {
+    container: {
+      top: 0
+    },
+    mask: {
+      opacity: 0.2
+    }
+  }
 };
+tranStyles.entering = tranStyles.exited;
+tranStyles.exiting = tranStyles.entered;
 
 class ModalRoute extends PureComponent {
+  onTransition(isIn) {
+    this.props.showMask(isIn);
+    lockBodyScroll(isIn);
+  }
   render() {
-    const { path, component: Component, location } = this.props;
+    const { path, component: Component, location, history } = this.props;
     const inProp = Boolean(matchPath(location.pathname, { path }));
     return (
-      <Transition in={inProp} timeout={300}>
+      <Transition
+        in={inProp}
+        timeout={200}
+        onEntering={() => this.onTransition(true)}
+        onExiting={() => this.onTransition(false)}
+        appear
+      >
         {(state) => {
           return (
-            <div className={styles.container} style={transitionStyles[state]}>
-              <Component />
+            <div
+              className={styles.container}
+              style={tranStyles[state].container}
+              onClick={() => history.goBack()}
+            >
+              <div className={styles.mask} style={tranStyles[state].mask} />
+              <div className={styles.content}>
+                <Component />
+              </div>
             </div>
           );
         }}
@@ -29,4 +63,6 @@ class ModalRoute extends PureComponent {
   }
 }
 
-export default withRouter(ModalRoute);
+export default withRouter(connect(state => ({
+  appState: state.app,
+}), actions)(ModalRoute));

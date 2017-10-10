@@ -6,7 +6,8 @@ const initialState = {
   sourceList: null,
   motifList: null,
   query: '',
-  status: 'STARTUP'
+  status: 'STARTUP',
+  showMask: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -21,6 +22,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'SET_STATUS': {
       return { ...state, status: action.payload };
+    }
+
+    case 'SHOW_MASK': {
+      return { ...state, showMask: action.payload };
     }
 
     default: {

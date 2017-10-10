@@ -1,6 +1,8 @@
+/* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Transition from 'react-transition-group/Transition';
 
 import Front from './Front.jsx';
 import Doc from './Doc.jsx';
@@ -38,6 +40,17 @@ const actionQ = [
   ]
 ];
 
+const maskStyles = {
+  exited: {
+    filter: 'blur(0)'
+  },
+  entered: {
+    filter: 'blur(3px)'
+  }
+};
+maskStyles.entering = maskStyles.exited;
+maskStyles.exiting = maskStyles.entered;
+
 class Main extends PureComponent {
   constructor(props) {
     super(props);
@@ -58,14 +71,21 @@ class Main extends PureComponent {
       untilStatus: 'READY',
     });
   }
-
   render() {
     return (
       <Router>
         <div>
-          <Route path='*' component={this.Search} />
-          <Route exact path='/' component={Front} />
-          <Route path='/(motif|source|search)/:term' component={this.Doc} />
+          <Transition in={this.props.appState.showMask} timeout={150}>
+            {(state) => {
+              return (
+                <div style={maskStyles[state]}>
+                  <Route path='*' component={this.Search} />
+                  <Route exact path='/' component={Front} />
+                  <Route path='/(motif|source|search)/:term' component={this.Doc} />
+                </div>
+              );
+            }}
+          </Transition>
           <ModalRoute
             path='/(motif|source|search)/:term/:sid'
             component={this.Source}

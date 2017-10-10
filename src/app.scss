@@ -88,6 +88,7 @@ section {
 * {
   outline: none;
   transition: opacity 300ms ease-in-out;
+  transition: filter 300ms ease;
   box-sizing: border-box;
 }
 
