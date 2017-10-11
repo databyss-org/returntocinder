@@ -73,7 +73,7 @@ class Doc extends PureComponent {
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
           sid={index}
-          entries={entriesBySource[source]}
+          entries={entriesBySource[term]}
           key={key}
           style={style}
         />;

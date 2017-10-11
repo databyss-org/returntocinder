@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 
@@ -45,7 +45,7 @@ const maskStyles = {
     filter: 'blur(0)'
   },
   entered: {
-    filter: 'blur(3px)'
+    filter: 'blur(15px)'
   }
 };
 maskStyles.entering = maskStyles.exited;
@@ -72,10 +72,14 @@ class Main extends PureComponent {
     });
   }
   render() {
+    const { appState } = this.props;
     return (
       <Router>
         <div>
-          <Transition in={this.props.appState.showMask} timeout={150}>
+          <Transition
+            in={appState.showMask}
+            timeout={150}
+          >
             {(state) => {
               return (
                 <div style={maskStyles[state]}>
@@ -89,6 +93,13 @@ class Main extends PureComponent {
           <ModalRoute
             path='/(motif|source|search)/:term/:sid'
             component={this.Source}
+            title={(props) => {
+              const match = matchPath(
+                props.location.pathname,
+                '/(motif|source|search)/:term/:sid'
+              );
+              return (match && match.params.sid) || null;
+            }}
           />
         </div>
       </Router>

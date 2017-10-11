@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { lockBodyScroll } from '../lib/dom';
 import actions from '../redux/app/actions';
 import styles from '../scss/modal.scss';
+import CloseIcon from '../icons/close.svg';
 
 const tranStyles = {
   exited: {
@@ -21,7 +22,8 @@ const tranStyles = {
       top: 0
     },
     mask: {
-      opacity: 0.2
+      opacity: 0.1,
+      pointerEvents: 'all'
     }
   }
 };
@@ -29,13 +31,38 @@ tranStyles.entering = tranStyles.exited;
 tranStyles.exiting = tranStyles.entered;
 
 class ModalRoute extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.title = props.title;
+    this.state = {
+      title: typeof this.title === 'function' ? null : this.title
+    };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (typeof this.title === 'function') {
+      const title = this.title(nextProps);
+      if (title) {
+        this.setState({ title });
+      }
+    }
+  }
   onTransition(isIn) {
     this.props.showMask(isIn);
     lockBodyScroll(isIn);
   }
   render() {
-    const { path, component: Component, location, history } = this.props;
-    const inProp = Boolean(matchPath(location.pathname, { path }));
+    const {
+      path,
+      component: Component,
+      location,
+      history,
+      title,
+      appState
+    } = this.props;
+
+    const inProp = Boolean(matchPath(location.pathname, { path }))
+      && appState.status === 'READY';
+
     return (
       <Transition
         in={inProp}
@@ -49,10 +76,19 @@ class ModalRoute extends PureComponent {
             <div
               className={styles.container}
               style={tranStyles[state].container}
-              onClick={() => history.goBack()}
             >
-              <div className={styles.mask} style={tranStyles[state].mask} />
+              <div
+                className={styles.mask}
+                style={tranStyles[state].mask}
+                onClick={() => history.goBack()}
+              />
               <div className={styles.content}>
+                <header>
+                  <div>
+                    <span>{this.state.title}</span>
+                    <CloseIcon onClick={() => history.goBack()} />
+                  </div>
+                </header>
                 <Component />
               </div>
             </div>
