@@ -46,7 +46,7 @@ class Search extends PureComponent {
         value: textify(sourceList.find(s => s.id === source).name)
       });
     }
-    this.inputElement.focus();
+    // this.inputElement.focus();
   }
   setQuery(query) {
     this.props.setQuery(query);
@@ -189,10 +189,7 @@ class Search extends PureComponent {
     }
   }
   onSuggestionSelected(event, { suggestion }) {
-    this.props.history.push({
-      pathname: `/${suggestion.type}/${suggestion.id}`
-    });
-    this.onClearInput();
+    this.onSearch(`/${suggestion.type}/${suggestion.id}`);
   }
   onSuggestionHighlighted({ suggestion }) {
     if (!suggestion) { return; }
@@ -217,12 +214,16 @@ class Search extends PureComponent {
       highlightedSuggestion: null
     });
   }
+  onSearch(path) {
+    this.props.history.push({
+      pathname: path,
+    });
+    this.onClearInput();
+    this.inputElement.blur();
+  }
   onKeyDown(event) {
     if (event.key === 'Enter' && !this.state.highlightedSuggestion) {
-      this.props.history.push({
-        pathname: `/search/${this.getQuery()}`,
-      });
-      this.onClearInput();
+      this.onSearch(`/search/${this.getQuery()}`);
     }
   }
   renderInputComponent(inputProps) {
@@ -262,6 +263,7 @@ class Search extends PureComponent {
         renderInputComponent={this.renderInputComponent}
         renderSectionTitle={this.renderSectionTitle}
         getSectionSuggestions={this.getSectionSuggestions}
+        focusInputOnSuggestionClick={false}
         multiSection={true}
         inputProps={{
           placeholder: 'Search for motif, source or phrase',

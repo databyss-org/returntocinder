@@ -56,7 +56,6 @@ class ModalRoute extends PureComponent {
       component: Component,
       location,
       history,
-      title,
       appState
     } = this.props;
 
@@ -82,13 +81,11 @@ class ModalRoute extends PureComponent {
                 style={tranStyles[state].mask}
                 onClick={() => history.goBack()}
               />
+              <div className={styles.contentHeader}>
+                <span>{this.state.title}</span>
+                <CloseIcon onClick={() => history.goBack()} />
+              </div>
               <div className={styles.content}>
-                <header>
-                  <div>
-                    <span>{this.state.title}</span>
-                    <CloseIcon onClick={() => history.goBack()} />
-                  </div>
-                </header>
                 <Component />
               </div>
             </div>

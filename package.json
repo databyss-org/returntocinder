@@ -6,7 +6,7 @@
   "scripts": {
     "heroku-postbuild": "webpack -p --progress",
     "start": "node server.js",
-    "dev": "webpack-dev-server --content-base public --open --inline",
+    "dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
     "doc": "babel-node src/scripts/docToJson.js",
     "biblio": "babel-node src/scripts/biblioToJson.js",
     "index": "babel-node src/scripts/indexEntries.js",

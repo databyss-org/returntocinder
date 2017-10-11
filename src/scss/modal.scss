@@ -12,48 +12,44 @@
   align-items: center;
 }
 
+.contentHeader {
+  display: flex;
+  width: 97%;
+  padding: 0 1em;
+  align-items: center;
+  position: relative;
+  margin-bottom: 0.6em;
+
+  span {
+    font-size: 1em;
+    line-height: 1em;
+    color: #000;
+    opacity: 0.5;
+    position: relative;
+    top: 0.05em;
+  }
+
+  svg {
+    position: absolute;
+    right: 1%;
+    padding: 1px;
+    opacity: 0.3;
+    height: 1em;
+    cursor: pointer;
+
+    path {
+      stroke: #000;
+      stroke-width: 4px;
+    }
+  }
+}
+
 .content {
   border-radius: 0.5em 0.5em 0 0;
   width: 97%;
   background-color: #fff;
   padding: 1.2em 1em 0.5em;
   z-index: 100;
-
-  header {
-    line-height: 0;
-    position: relative;
-    top: -2.4em;
-
-    div {
-      display: flex;
-      align-items: center;
-
-      span {
-        font-size: 1em;
-        color: #000;
-        opacity: 0.5;
-        position: relative;
-        bottom: 0.1em;
-      }
-
-      svg {
-        position: absolute;
-        right: -2%;
-        padding: 1px;
-        opacity: 0.3;
-        height: 1em;
-        cursor: pointer;
-
-        path {
-          stroke: #000;
-          stroke-width: 4px;
-        }
-      }
-
-    }
-
-
-  }
 }
 
 .mask {
