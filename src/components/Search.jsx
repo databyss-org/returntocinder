@@ -46,7 +46,12 @@ class Search extends PureComponent {
         value: textify(sourceList.find(s => s.id === source).name)
       });
     }
-    // this.inputElement.focus();
+    this.inputElement.focus();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.searchState.resultCount !== nextProps.searchState.resultCount) {
+      this.onSuggestionsFetchRequested({ value: this.state.value });
+    }
   }
   setQuery(query) {
     this.props.setQuery(query);
@@ -145,6 +150,14 @@ class Search extends PureComponent {
     });
 
     return [
+      {
+        suggestions: [
+          {
+            type: 'entry',
+            count: this.props.searchState.resultCount
+          }
+        ]
+      },
       ...(motifMatches.length ? [{
         title: 'Motifs',
         suggestions: motifMatches
@@ -172,7 +185,11 @@ class Search extends PureComponent {
         <div style={{ display: 'flex' }}>
           <div style={{ flexGrow: 1 }}>
             Find: {this.getQuery()}
+            <span
+              style={{ paddingLeft: '0.5em', fontSize: '0.8em' }}
+            >[press enter]</span>
           </div>
+          <div>{this.props.searchState.resultCount} results</div>
         </div>
       )
     }[suggestion.type];
@@ -189,7 +206,11 @@ class Search extends PureComponent {
     }
   }
   onSuggestionSelected(event, { suggestion }) {
-    this.onSearch(`/${suggestion.type}/${suggestion.id}`);
+    if (suggestion.type === 'entry') {
+      this.onSearch(`/search/${this.state.value}`);
+    } else {
+      this.onSearch(`/${suggestion.type}/${suggestion.id}`);
+    }
   }
   onSuggestionHighlighted({ suggestion }) {
     if (!suggestion) { return; }

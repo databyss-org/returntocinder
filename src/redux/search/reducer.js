@@ -2,7 +2,8 @@ const initialState = {
   isIndexing: false,
   isIndexed: false,
   results: [],
-  query: ''
+  query: '',
+  resultCount: 0
 };
 
 export default function appReducer(state = initialState, action) {
@@ -26,6 +27,14 @@ export default function appReducer(state = initialState, action) {
         query: action.payload.query
       };
     }
+    case 'SET_QUERY_RESULTS': {
+      const { results, query } = action.payload;
+      return {
+        ...state,
+        query,
+        resultCount: results.length
+      };
+    }
     case 'SEARCH': {
       return {
         ...state,
@@ -35,7 +44,8 @@ export default function appReducer(state = initialState, action) {
     case 'SEARCH_ENTRIES_RESULTS': {
       return {
         ...state,
-        results: action.payload.results
+        results: action.payload.results,
+        resultCount: action.payload.results.length
       };
     }
 

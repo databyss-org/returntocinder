@@ -28,7 +28,8 @@ export default {
       const results = await searchWorker.postMessage({
         type: 'SEARCH',
         payload: {
-          query: query || getState().search.query
+          query: query || getState().search.query,
+          processResults: 'GROUP_BY_SOURCE'
         }
       });
       dispatch({
@@ -41,11 +42,22 @@ export default {
     };
   },
   setQuery(query) {
-    return {
-      type: 'SET_QUERY',
-      payload: {
-        query
-      }
+    return async (dispatch, getState) => {
+      dispatch({
+        type: 'SET_QUERY',
+        payload: { query }
+      });
+      const results = await searchWorker.postMessage({
+        type: 'SEARCH',
+        payload: { query }
+      });
+      dispatch({
+        type: 'SET_QUERY_RESULTS',
+        payload: {
+          results,
+          query
+        }
+      });
     };
   }
 };
