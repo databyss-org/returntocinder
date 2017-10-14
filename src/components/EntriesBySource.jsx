@@ -11,7 +11,7 @@ class EntriesBySource extends PureComponent {
     return (
       <section style={style}>
         {showHeader
-          ? <h3><Link to={`${this.props.location.pathname}/${sid}`}>{sid}</Link></h3>
+          ? <h3><Link to={`${this.props.location.pathname}/source:${sid}`}>{sid}</Link></h3>
           : null
         }
         {entries.map(entry =>

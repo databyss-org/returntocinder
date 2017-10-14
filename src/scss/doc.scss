@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  margin-top: 3em;
+}
+
+.main {
+  max-width: 750px;
+
+}
+
+.aside {
+  width: 50%;
+  padding: 0 3em;
+
+  section, h2 {
+    opacity: 0;
+  }
+
+  &.show {
+    section, h2{
+      opacity: 1;
+    }
+  }
+}

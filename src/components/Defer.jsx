@@ -6,7 +6,7 @@ export default function defer({ Wrapped, untilStatus }) {
   class Defer extends PureComponent {
     render() {
       if (this.props.appState.status === untilStatus) {
-        return <Wrapped />;
+        return <Wrapped {...this.props} />;
       }
       return null;
     }

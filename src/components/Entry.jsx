@@ -1,11 +1,16 @@
 import React, { PureComponent } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import highlighter from '../lib/highlight';
 
-export default class Entry extends PureComponent {
+function formatAsidePath(pathname, mid) {
+  return `${pathname.replace(/\/motif:[^/]+/, '')}/motif:${mid}`;
+}
+
+class Entry extends PureComponent {
   render() {
-    const { entry, showRepeats, highlight } = this.props;
+    const { entry, showRepeats, highlight, style } = this.props;
     return (
-      <span>
+      <span style={style}>
         <p
           dangerouslySetInnerHTML={{ __html:
             `
@@ -23,9 +28,10 @@ export default class Entry extends PureComponent {
         />
         {entry.motif ? (
           <nav>{entry.motif.map(m =>
-            <a
+            <Link
               key={m.id}
               dangerouslySetInnerHTML={{ __html: m.title }}
+              to={formatAsidePath(this.props.location.pathname, m.id)}
             />
           )}</nav>
         ) : null}
@@ -33,3 +39,5 @@ export default class Entry extends PureComponent {
     );
   }
 }
+
+export default withRouter(Entry);

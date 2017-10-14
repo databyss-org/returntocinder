@@ -62,6 +62,10 @@ class ModalRoute extends PureComponent {
     const inProp = Boolean(matchPath(location.pathname, { path }))
       && appState.status === 'READY';
 
+    const passProps = typeof this.props.passProps === 'function'
+      ? this.props.passProps(this.props)
+      : this.props.passProps;
+
     return (
       <Transition
         in={inProp}
@@ -86,7 +90,7 @@ class ModalRoute extends PureComponent {
                 <CloseIcon onClick={() => history.goBack()} />
               </div>
               <div className={styles.content}>
-                <Component />
+                <Component {...passProps} />
               </div>
             </div>
           );

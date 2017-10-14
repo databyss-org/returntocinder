@@ -33,11 +33,6 @@ h3, h3 a {
   text-decoration: none;
 }
 
-main {
-  max-width: 750px;
-  margin-top: 3.5em;
-}
-
 article {
   padding-bottom: 2.5em;
 }
@@ -48,6 +43,7 @@ em {
 
 section {
   margin-bottom: 1.7em;
+  transition: opacity 100ms ease-in;
 
   span {
     display: block;
@@ -72,6 +68,7 @@ section {
         text-decoration: underline;
         text-decoration-color: #ccc;
         cursor: pointer;
+        color: #000;
 
         &:after {
           content: ',';
@@ -90,6 +87,7 @@ section {
   outline: none;
   transition: opacity 300ms ease-in-out;
   transition: filter 300ms ease;
+  transition: width 300ms ease;
   box-sizing: border-box;
 }
 

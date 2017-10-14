@@ -151,6 +151,7 @@ class Search extends PureComponent {
 
     return [
       {
+        title: 'Find',
         suggestions: [
           {
             type: 'entry',
@@ -179,15 +180,17 @@ class Search extends PureComponent {
         </div>
       ),
       source: (
-        <div>{suggestion.display}</div>
+        <div className={theme.sourceSuggestion}>
+          {suggestion.display}
+        </div>
       ),
       entry: (
         <div style={{ display: 'flex' }}>
           <div style={{ flexGrow: 1 }}>
-            Find: {this.getQuery()}
+            {this.getQuery()}
             <span
-              style={{ paddingLeft: '0.5em', fontSize: '0.8em' }}
-            >[press enter]</span>
+              style={{ paddingLeft: '0.5em', fontSize: '0.6em' }}
+            >[PRESS&nbsp;ENTER]</span>
           </div>
           <div>{this.props.searchState.resultCount} results</div>
         </div>

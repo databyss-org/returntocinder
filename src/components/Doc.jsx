@@ -12,7 +12,7 @@ import EntriesBySource from './EntriesBySource.jsx';
 class Doc extends PureComponent {
   constructor(props) {
     super(props);
-    this.query = this.queryFromProps(props);
+    this.query = props.query;
     this._updateRows(this.props);
   }
 
@@ -23,9 +23,7 @@ class Doc extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const nextQuery = this.queryFromProps(nextProps);
-
-    const queryChanged = !shallowequal(this.query, nextQuery);
+    const queryChanged = !shallowequal(this.query, nextProps.query);
     const resultsChanged = (
       this.props.searchState.results !== nextProps.searchState.results
     );
@@ -35,22 +33,13 @@ class Doc extends PureComponent {
     }
 
     if (queryChanged) {
-      this.query = nextQuery;
+      this.query = nextProps.query;
       if (this.query.search) {
         this.props.searchEntries(this.query.term);
       }
     }
 
     this._updateRows(nextProps);
-  }
-
-  queryFromProps(props) {
-    return {
-      term: props.match.params.term,
-      search: props.match.params[0] === 'search',
-      motif: props.match.params[0] === 'motif',
-      source: props.match.params[0] === 'source',
-    };
   }
 
   _updateRows(props) {
@@ -92,19 +81,8 @@ class Doc extends PureComponent {
   }
 
   render() {
-    const { search, motif, source } = this.query;
-    return (
-      <div className="doc">
-        { search || motif || source ?
-          <main>
-            {
-              this._rows.map((key, index) =>
-                this._rowComponent({ index, key, style: {} }))
-            }
-          </main>
-        : null}
-      </div>
-    );
+    return this._rows.map((key, index) =>
+      this._rowComponent({ index, key, style: {} }));
   }
 }
 

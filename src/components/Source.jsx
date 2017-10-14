@@ -13,18 +13,15 @@ class Source extends PureComponent {
     };
   }
   componentDidMount() {
-    this.onPathChange(this.props.location.pathname);
+    this.onPathChange(this.props);
   }
   componentWillReceiveProps(nextProps) {
-    this.onPathChange(nextProps.location.pathname);
+    this.onPathChange(nextProps);
   }
-  onPathChange(pathname) {
-    const match = matchPath(pathname, {
-      path: '/(motif|source|search)/:term/:sid'
-    });
-    if (match && match.params.sid) {
+  onPathChange(props) {
+    if (props.sid) {
       this.setState({
-        entry: this.props.appState.biblio[match.params.sid]
+        entry: this.props.appState.biblio[props.sid]
       });
     }
   }

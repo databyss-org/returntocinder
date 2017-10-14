@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 
 import Front from './Front.jsx';
-import Doc from './Doc.jsx';
+import DocContainer from './DocContainer.jsx';
 import Search from './Search.jsx';
 import Source from './Source.jsx';
 import ModalRoute from './ModalRoute.jsx';
@@ -61,8 +61,8 @@ class Main extends PureComponent {
       onComplete: () => this.props.setStatus('READY')
     });
 
-    this.Doc = defer({
-      Wrapped: Doc,
+    this.DocContainer = defer({
+      Wrapped: DocContainer,
       untilStatus: 'READY',
     });
 
@@ -73,6 +73,14 @@ class Main extends PureComponent {
   }
   render() {
     const { appState } = this.props;
+    const sourcePath = '(.*)/source::sid/(.*)?';
+    const sidFromPath = (props) => {
+      const match = matchPath(
+        props.location.pathname,
+        '(.*)/source::sid/(.*)?'
+      );
+      return (match && match.params.sid) || null;
+    };
     return (
       <Router>
         <div>
@@ -85,21 +93,16 @@ class Main extends PureComponent {
                 <div style={maskStyles[state]}>
                   <Route path='*' component={this.Search} />
                   <Route exact path='/' component={Front} />
-                  <Route path='/(motif|source|search)/:term' component={this.Doc} />
+                  <this.DocContainer />
                 </div>
               );
             }}
           </Transition>
           <ModalRoute
-            path='/(motif|source|search)/:term/:sid'
+            path={sourcePath}
             component={this.Source}
-            title={(props) => {
-              const match = matchPath(
-                props.location.pathname,
-                '/(motif|source|search)/:term/:sid'
-              );
-              return (match && match.params.sid) || null;
-            }}
+            passProps={props => ({ sid: sidFromPath(props) })}
+            title={sidFromPath}
           />
         </div>
       </Router>
