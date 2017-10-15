@@ -7,7 +7,7 @@ $height: 30px;
 .container {
   width: 100%;
   max-width: 680px;
-  position: relative;
+  position: absolute;
   z-index: 100;
   border: 1px solid $border-color;
   border-radius: $border-radius;

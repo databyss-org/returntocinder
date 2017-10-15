@@ -28,10 +28,6 @@ class Doc extends PureComponent {
       this.props.searchState.results !== nextProps.searchState.results
     );
 
-    if (!queryChanged && !resultsChanged) {
-      return;
-    }
-
     if (queryChanged) {
       this.query = nextProps.query;
       if (this.query.search) {
@@ -39,12 +35,15 @@ class Doc extends PureComponent {
       }
     }
 
-    this._updateRows(nextProps);
+    if (queryChanged || resultsChanged) {
+      this._updateRows(nextProps);
+    }
   }
 
   _updateRows(props) {
     const { doc, entriesBySource } = props.appState;
     const { search, motif, source, term } = this.query;
+    const { path } = this.props;
 
     this._rows = Object.keys(doc);
     this._rowComponent = ({ index, key, style }) =>
@@ -53,6 +52,7 @@ class Doc extends PureComponent {
         motif={doc[this._rows[index]]}
         key={key}
         style={style}
+        path={path}
       />;
 
     if (motif) {
@@ -65,6 +65,7 @@ class Doc extends PureComponent {
           entries={entriesBySource[term]}
           key={key}
           style={style}
+          path={path}
         />;
     } else if (search) {
       this._rows = Object.keys(props.searchState.results);
@@ -76,6 +77,7 @@ class Doc extends PureComponent {
           style={style}
           showHeader
           highlight={term.split(/\s/)}
+          path={path}
         />;
     }
   }

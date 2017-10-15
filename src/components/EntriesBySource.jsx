@@ -2,21 +2,24 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 
-import Entry from './Entry.jsx';
+import Entries from './Entries.jsx';
 
 class EntriesBySource extends PureComponent {
   render() {
-    const { sid, style, entries, showHeader, highlight } = this.props;
+    const { sid, style, entries, showHeader, highlight, path } = this.props;
 
     return (
       <section style={style}>
-        {showHeader
-          ? <h3><Link to={`${this.props.location.pathname}/source:${sid}`}>{sid}</Link></h3>
-          : null
-        }
-        {entries.map(entry =>
-          <Entry key={entry.id} entry={entry} highlight={highlight} />
-        )}
+        <Entries
+          entries={entries}
+          highlight={highlight}
+          path={path.concat(sid)}
+          inlineHead={showHeader ? <h3>
+            <Link to={`${this.props.location.pathname}/source:${sid}`}>
+              {sid}
+            </Link></h3> : null
+          }
+        />
       </section>
     );
   }

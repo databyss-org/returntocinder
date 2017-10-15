@@ -4,13 +4,27 @@ import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
 import styles from '../scss/doc.scss';
+import { scrollDocsTo } from '../lib/dom';
 
 const tranStyles = {
   exited: {
-    width: '100%'
+    container: {
+      overflow: 'scroll'
+    },
+    main: {
+      width: '100%',
+      overflow: 'visible'
+    }
   },
   entered: {
-    width: '50%'
+    container: {
+      overflow: 'hidden'
+    },
+    main: {
+      width: '55%',
+      overflow: 'scroll',
+      paddingRight: '2em'
+    }
   }
 };
 tranStyles.entering = tranStyles.entered;
@@ -30,6 +44,15 @@ export default class DocContainer extends PureComponent {
       query: this.getQuery(nextProps)
     });
   }
+  componentDidUpdate(prevProps) {
+    const hashChanged = this.props.location.hash !== prevProps.location.hash;
+    if (hashChanged) {
+      this.updateScroll();
+    }
+  }
+  updateScroll() {
+    scrollDocsTo(this.props.location.hash.replace('#', ''));
+  }
   getQuery(props) {
     const aside = matchPath(props.location.pathname, this.asidePath);
     return {
@@ -44,12 +67,15 @@ export default class DocContainer extends PureComponent {
     return (
       <Transition in={this.state.query.aside} timeout={300}>
         {state => (
-          <div className={styles.container}>
+          <div
+            className={styles.container}
+            style={tranStyles[state].container}
+          >
             <Route
               path='/(motif|source|search)/:term'
               render={props => (
-                <main className={styles.main} style={tranStyles[state]}>
-                  <Doc query={this.getQuery(props)} />
+                <main className={styles.main} style={tranStyles[state].main}>
+                  <Doc query={this.getQuery(props)} path={['main']} />
                 </main>
               )}
             />
@@ -64,6 +90,7 @@ export default class DocContainer extends PureComponent {
                       motif: true,
                       term: props.match.params.term
                     }}
+                    path={['aside']}
                   />
                 </aside>
               )}

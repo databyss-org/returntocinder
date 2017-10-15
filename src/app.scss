@@ -48,9 +48,9 @@ section {
   span {
     display: block;
     margin-top: .6em;
+    position: relative;
 
     &:first-of-type {
-      display: inline;
       margin-top: 0;
     }
 
