@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, matchPath } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import styles from '../scss/source.scss';
 

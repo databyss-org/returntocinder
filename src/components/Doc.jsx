@@ -14,6 +14,11 @@ class Doc extends PureComponent {
     super(props);
     this.query = props.query;
     this._updateRows(this.props);
+    this.lastScroll = {
+      query: null,
+      hash: null
+    };
+    this.setScroll = this.setScroll.bind(this);
   }
 
   componentWillMount() {
@@ -30,6 +35,7 @@ class Doc extends PureComponent {
 
     if (queryChanged) {
       this.query = nextProps.query;
+      this.setState({ lastScroll: { query: null, path: null } });
       if (this.query.search) {
         this.props.searchEntries(this.query.term);
       }
@@ -38,6 +44,18 @@ class Doc extends PureComponent {
     if (queryChanged || resultsChanged) {
       this._updateRows(nextProps);
     }
+  }
+
+  setScroll(hash) {
+    if (!this.props.ready) {
+      return false;
+    }
+    const scroll = { query: this.query, hash };
+    if (shallowequal(this.lastScroll, scroll)) {
+      return false;
+    }
+    this.lastScroll = scroll;
+    return true;
   }
 
   _updateRows(props) {
@@ -53,6 +71,7 @@ class Doc extends PureComponent {
         key={key}
         style={style}
         path={path}
+        setScroll={this.setScroll}
       />;
 
     if (motif) {
@@ -61,11 +80,12 @@ class Doc extends PureComponent {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
-          sid={index}
+          sid={term}
           entries={entriesBySource[term]}
           key={key}
           style={style}
           path={path}
+          setScroll={this.setScroll}
         />;
     } else if (search) {
       this._rows = Object.keys(props.searchState.results);
@@ -78,6 +98,7 @@ class Doc extends PureComponent {
           showHeader
           highlight={term.split(/\s/)}
           path={path}
+          setScroll={this.setScroll}
         />;
     }
   }

@@ -4,7 +4,6 @@ import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
 import styles from '../scss/doc.scss';
-import { scrollDocsTo } from '../lib/dom';
 
 const tranStyles = {
   exited: {
@@ -44,15 +43,6 @@ export default class DocContainer extends PureComponent {
       query: this.getQuery(nextProps)
     });
   }
-  componentDidUpdate(prevProps) {
-    const hashChanged = this.props.location.hash !== prevProps.location.hash;
-    if (hashChanged) {
-      this.updateScroll();
-    }
-  }
-  updateScroll() {
-    scrollDocsTo(this.props.location.hash.replace('#', ''));
-  }
   getQuery(props) {
     const aside = matchPath(props.location.pathname, this.asidePath);
     return {
@@ -75,7 +65,10 @@ export default class DocContainer extends PureComponent {
               path='/(motif|source|search)/:term'
               render={props => (
                 <main className={styles.main} style={tranStyles[state].main}>
-                  <Doc query={this.getQuery(props)} path={['main']} />
+                  <Doc
+                    query={this.getQuery(props)} path={['main']}
+                    ready={state === 'entered'}
+                  />
                 </main>
               )}
             />
@@ -91,6 +84,7 @@ export default class DocContainer extends PureComponent {
                       term: props.match.params.term
                     }}
                     path={['aside']}
+                    ready={state === 'entered'}
                   />
                 </aside>
               )}

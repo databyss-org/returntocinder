@@ -44,7 +44,11 @@ function rtfToJson(doc) {
       // capture entries
       entries = [];
       do {
-        const entry = { starred: false };
+        const entry = {
+          source: { id: sectionTitle.trim() },
+          mid: urlify(chapterTitle),
+          starred: false
+        };
         entry.content = renderPara(doc.content[i]);
         try {
           if (entry.content) {

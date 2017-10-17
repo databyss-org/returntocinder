@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
-// import Tween from 'component-tween'
+import Tween from 'component-tween';
+import raf from 'raf';
 
 export function lockBodyScroll(lock) {
   document.body.style.overflow = lock ? 'hidden' : 'auto';
@@ -15,56 +16,48 @@ function _pd(e) {
   e.preventDefault();
 }
 
-export function scrollDocsTo(id) {
-  scrollDocTo('main', id);
-  scrollDocTo('aside', id);
-}
-
-export function scrollDocTo(docname, id) {
-  scrollTo({
-    containerElem: document.getElementsByTagName(docname)[0],
-    targetElem: document.getElementById(`${docname}.${id}`),
-    delay: 300
-  });
-}
-
 export function scrollDocToElement(docname, elem) {
   scrollTo({
     containerElem: document.getElementsByTagName(docname)[0],
     targetElem: elem,
-    delay: 300
+    duration: 300
   });
 }
 
-export function scrollTo({ containerElem, targetElem, delay }) {
+const rafHandles = {};
+
+export function scrollTo({ containerElem, targetElem, duration }) {
   if (!containerElem || !targetElem) {
     return;
   }
-  const offset = containerElem.clientHeight / 2 - targetElem.clientHeight / 2;
+  const offset = containerElem.clientHeight * 0.1;
   const elemTop = targetElem.offsetTop;
-  containerElem.scrollTop = elemTop - offset;
+  const fromScrollTop = containerElem.scrollTop;
+  const toScrollTop = elemTop - offset;
+  const docName = containerElem.tagName;
 
-  // var raf = require('raf');
-  // var button = document.querySelector('button');
-  //
-  // var tween = Tween({ rotate: 0, opacity: 0 })
-  //   .ease('out-bounce')
-  //   .to({ rotate: 360, opacity: 1  })
-  //   .duration(800);
-  //
-  // tween.update(function(o){
-  //   button.style.opacity = o.opacity;
-  //   button.style.webkitTransform = 'rotate(' + (o.rotate | 0) + 'deg)';
-  // });
-  //
-  // tween.on('end', function(){
-  //   animate = function(){};
-  // });
-  //
-  // function animate() {
-  //   raf(animate);
-  //   tween.update();
-  // }
-  //
-  // animate();
+  if (rafHandles[docName]) {
+    raf.cancel(rafHandles[docName]);
+  }
+
+  const tween = Tween({ scrollTop: fromScrollTop })
+    .ease('in-out-quad')
+    .to({ scrollTop: toScrollTop })
+    .duration(duration);
+
+  tween.update((t) => {
+    containerElem.scrollTop = t.scrollTop;
+  });
+
+  tween.on('end', () => {
+    raf.cancel(rafHandles[docName]);
+    rafHandles[docName] = null;
+  });
+
+  function tick() {
+    tween.update();
+    rafHandles[docName] = raf(tick);
+  }
+
+  tick();
 }

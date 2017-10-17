@@ -11,18 +11,19 @@ function rowStyle(idx) {
 
 class EntriesByMotif extends PureComponent {
   render() {
-    const { mid, motif, style, path } = this.props;
+    const { mid, motif, style, path, setScroll } = this.props;
 
-    return (
+    return [
       <article key={mid} style={style}>
         <h2 dangerouslySetInnerHTML={{ __html: motif.title }} />
         {Object.keys(motif.sources).map((sid, sidx) => (
-          <section key={motif + sid} style={rowStyle(sidx)}>
+          <section key={motif + sid}>
             <Entries
               makeId={idx => motif + sid + idx}
               entries={motif.sources[sid]}
               showRepeats
               path={path.concat(sid)}
+              setScroll={setScroll}
               inlineHead={(
                 <h3>
                   <Link to={`${this.props.location.pathname}/source:${sid}`}>
@@ -34,7 +35,7 @@ class EntriesByMotif extends PureComponent {
           </section>
         ))}
       </article>
-    );
+    ];
   }
 }
 

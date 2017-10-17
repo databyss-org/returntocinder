@@ -6,7 +6,7 @@ import Entries from './Entries.jsx';
 
 class EntriesBySource extends PureComponent {
   render() {
-    const { sid, style, entries, showHeader, highlight, path } = this.props;
+    const { sid, style, entries, showHeader, highlight, path, setScroll } = this.props;
 
     return (
       <section style={style}>
@@ -14,6 +14,7 @@ class EntriesBySource extends PureComponent {
           entries={entries}
           highlight={highlight}
           path={path.concat(sid)}
+          setScroll={setScroll}
           inlineHead={showHeader ? <h3>
             <Link to={`${this.props.location.pathname}/source:${sid}`}>
               {sid}

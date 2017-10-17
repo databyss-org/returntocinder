@@ -3,7 +3,15 @@ import Entry from './Entry.jsx';
 
 export default class Entries extends PureComponent {
   render() {
-    const { entries, path, highlight, showRepeats, makeId, inlineHead } = this.props;
+    const {
+      entries,
+      path,
+      highlight,
+      showRepeats,
+      makeId,
+      inlineHead,
+      setScroll
+    } = this.props;
 
     let lastLocation = null;
     let locationCount = 0;
@@ -25,6 +33,7 @@ export default class Entries extends PureComponent {
             cardinal={locationCount}
             showRepeats={showRepeats}
             inlineHead={idx ? null : inlineHead}
+            setScroll={setScroll}
           />
         );
       })

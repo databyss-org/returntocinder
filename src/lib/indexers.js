@@ -87,6 +87,13 @@ export function motifListFromMotifs(motifs) {
   }), []);
 }
 
+export function rangeOverlapExists(range1, range2) {
+  return (range1.low >= range2.low && range1.low <= range2.high) ||
+    (range1.high >= range2.low && range1.high <= range2.high) ||
+    (range2.low >= range1.low && range2.low <= range1.high) ||
+    (range2.high >= range1.low && range2.high <= range1.high);
+}
+
 export function mergeEntries(entryList, minCount, mergedList = []) {
   if (!entryList.length) {
     return mergedList;
@@ -107,16 +114,7 @@ export function mergeEntries(entryList, minCount, mergedList = []) {
     if (score) {
       console.log(entry.content);
       // check for overlap of page ranges
-      if (!(
-        (firstEntry.locations.low >= entry.locations.low
-        && firstEntry.locations.low <= entry.locations.high) ||
-        (firstEntry.locations.high >= entry.locations.low
-        && firstEntry.locations.high <= entry.locations.high) ||
-        (entry.locations.low >= firstEntry.locations.low
-        && entry.locations.low <= firstEntry.locations.high) ||
-        (entry.locations.high >= firstEntry.locations.low
-        && entry.locations.high <= firstEntry.locations.high)
-      )) {
+      if (!rangeOverlapExists(firstEntry.locations, entry.locations)) {
         console.log('❌', entry.locations);
         return true;
       }
