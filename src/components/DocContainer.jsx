@@ -3,28 +3,10 @@ import { Route, matchPath } from 'react-router-dom';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
-import styles from '../scss/doc.scss';
+import styles from '../app.scss';
 
 const tranStyles = {
-  exited: {
-    container: {
-      overflow: 'scroll'
-    },
-    main: {
-      width: '100%',
-      overflow: 'visible'
-    }
-  },
-  entered: {
-    container: {
-      overflow: 'hidden'
-    },
-    main: {
-      width: '55%',
-      overflow: 'scroll',
-      paddingRight: '2em'
-    }
-  }
+
 };
 tranStyles.entering = tranStyles.entered;
 tranStyles.exiting = tranStyles.exited;
@@ -57,14 +39,11 @@ export default class DocContainer extends PureComponent {
     return (
       <Transition in={this.state.query.aside} timeout={300}>
         {state => (
-          <div
-            className={styles.container}
-            style={tranStyles[state].container}
-          >
+          <div className={cx(styles.doc, styles[state])}>
             <Route
               path='/(motif|source|search)/:term'
               render={props => (
-                <main className={styles.main} style={tranStyles[state].main}>
+                <main>
                   <Doc
                     query={this.getQuery(props)} path={['main']}
                     ready={state === 'entered'}
@@ -75,9 +54,7 @@ export default class DocContainer extends PureComponent {
             <Route
               path={this.asidePath}
               render={props => (
-                <aside className={
-                  cx(styles.aside, { [styles.show]: state === 'entered' })
-                }>
+                <aside>
                   <Doc
                     query={{
                       motif: true,

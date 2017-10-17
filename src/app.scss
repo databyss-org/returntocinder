@@ -1,129 +1,27 @@
-@import 'scss/mixins';
+/* mobile */
+@media (max-width: 480px) {
+  @import 'scss/desktop/global';
 
-body {
-  padding: 0 15px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  font-size: 13pt;
-  line-height: 15pt;
-  text-indent: 0pt;
-  font-family: 'BaskervillePro', serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-small {
-  font-size: 10pt;
-}
-h1 {
-  margin-bottom: 1.5em;
-  font-size: 24pt;
-}
-h2 {
-  margin-bottom: 1.5em;
-  font-weight: bold;
-  font-size: 14pt;
-}
-h3, h3 a {
-  display: inline;
-  color: #675d71;
-  font-size: 12pt;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-article {
-  padding-bottom: 2.5em;
-}
-
-em {
-  font-style: italic;
-}
-
-section {
-  margin-bottom: 2em;
-  transition: opacity 100ms ease-in;
-
-  span {
-    display: block;
-    margin-top: .6em;
-    position: relative;
-
-    &:first-of-type {
-      margin-top: 0;
-    }
-
-    p {
-      display: inline;
-    }
-
-    nav {
-      font-size: 0.7em;
-      margin: 0.3em 0 1.4em;
-
-      a {
-        display: inline-block;
-        text-decoration: underline;
-        text-decoration-color: #ccc;
-        cursor: pointer;
-        color: #000;
-
-        &:after {
-          content: ',';
-          padding-right: 0.4em;
-        }
-        &:last-child:after {
-          content: '';
-          padding-right: 0;
-        }
-      }
-    }
+  .app {
+    @import 'scss/desktop/mixins';
+    @import 'scss/desktop/mask';
+    @import 'scss/mobile/doc';
+    @import 'scss/desktop/front';
+    @import 'scss/desktop/modal';
+    @import 'scss/desktop/search';
+    @import 'scss/desktop/source';
   }
 }
+@media (min-width: 481px) {
+  @import 'scss/desktop/global';
 
-* {
-  outline: none;
-  transition: opacity 300ms ease-in-out;
-  transition: filter 300ms ease;
-  transition: width 300ms ease;
-  box-sizing: border-box;
-}
-
-mark {
-  background-color: #ffd54f;
-}
-
-button {
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-.overlay {
-  @include fullscreen();
-
-  z-index: 10;
-  opacity: 0.9;
-  background: #fff;
-}
-
-.frontis {
-  position: absolute;
-  padding: 214px 15px 0;
-  left: 0;
-  top: 0;
-  display: flex;
-  width: 100%;
-  background-image: url('/stone.jpg');
-  background-size: cover;
-  color: rgba(255,255,255,0.4);
-  flex-direction: column;
-  text-align: justify;
-  font-size: 0.8em;
-
-  p {
-    margin-bottom: 1em;
-    max-width: 750px;
+  .app {
+    @import 'scss/desktop/mixins';
+    @import 'scss/desktop/mask';
+    @import 'scss/desktop/doc';
+    @import 'scss/desktop/front';
+    @import 'scss/desktop/modal';
+    @import 'scss/desktop/search';
+    @import 'scss/desktop/source';
   }
 }

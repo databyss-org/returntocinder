@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import styles from '../scss/source.scss';
+import styles from '../app.scss';
 
 class Source extends PureComponent {
   constructor(props) {

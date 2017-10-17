@@ -5,7 +5,7 @@ import { withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { lockBodyScroll } from '../lib/dom';
 import actions from '../redux/app/actions';
-import styles from '../scss/modal.scss';
+import styles from '../app.scss';
 import CloseIcon from '../icons/close.svg';
 
 const tranStyles = {
@@ -77,7 +77,7 @@ class ModalRoute extends PureComponent {
         {(state) => {
           return (
             <div
-              className={styles.container}
+              className={styles.modal}
               style={tranStyles[state].container}
             >
               <div

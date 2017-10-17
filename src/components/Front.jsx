@@ -5,7 +5,7 @@ import style from '../app.scss';
 export default class Front extends PureComponent {
   render() {
     return (
-      <div className={style.frontis}>
+      <div className={style.front}>
         {frontis.map((para, idx) => (
           <p key={idx}>{para}</p>
         ))}

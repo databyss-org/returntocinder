@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
 import latinize from 'latinize';
 import actions from '../redux/search/actions';
-import frontTheme from '../scss/search-front.scss';
-import theme from '../scss/search.scss';
+import theme from '../app.scss';
 import { textify } from '../lib/_helpers';
 
 import CloseIcon from '../icons/close.svg';
@@ -276,35 +275,34 @@ class Search extends PureComponent {
     const { suggestions, value } = this.state;
 
     return (
-      <Autosuggest
-        suggestions={suggestions}
-        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-        onSuggestionSelected={this.onSuggestionSelected}
-        onSuggestionHighlighted={this.onSuggestionHighlighted}
-        getSuggestionValue={this.getSuggestionValue}
-        renderSuggestion={this.renderSuggestion}
-        renderInputComponent={this.renderInputComponent}
-        renderSectionTitle={this.renderSectionTitle}
-        getSectionSuggestions={this.getSectionSuggestions}
-        focusInputOnSuggestionClick={false}
-        multiSection={true}
-        inputProps={{
-          placeholder: 'Search for motif, source or phrase',
-          value,
-          onChange: this.onChange,
-          onKeyDown: this.onKeyDown
-        }}
-        ref={(autosuggest) => {
-          if (!autosuggest) { return; }
-          this.autosuggest = autosuggest;
-          this.inputElement = autosuggest.input;
-        }}
-        theme={this.props.location.pathname === '/'
-          ? frontTheme
-          : theme
-        }
-      />
+      <div className={theme.search}>
+        <Autosuggest
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          onSuggestionSelected={this.onSuggestionSelected}
+          onSuggestionHighlighted={this.onSuggestionHighlighted}
+          getSuggestionValue={this.getSuggestionValue}
+          renderSuggestion={this.renderSuggestion}
+          renderInputComponent={this.renderInputComponent}
+          renderSectionTitle={this.renderSectionTitle}
+          getSectionSuggestions={this.getSectionSuggestions}
+          focusInputOnSuggestionClick={false}
+          multiSection={true}
+          inputProps={{
+            placeholder: 'Search for motif, source or phrase',
+            value,
+            onChange: this.onChange,
+            onKeyDown: this.onKeyDown
+          }}
+          ref={(autosuggest) => {
+            if (!autosuggest) { return; }
+            this.autosuggest = autosuggest;
+            this.inputElement = autosuggest.input;
+          }}
+          theme={theme}
+        />
+      </div>
     );
   }
 }
