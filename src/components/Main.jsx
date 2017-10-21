@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 
-import Front from './Front.jsx';
+import Navbar from './Navbar.jsx';
 import DocContainer from './DocContainer.jsx';
 import Search from './Search.jsx';
 import Source from './Source.jsx';
@@ -91,8 +91,6 @@ class Main extends PureComponent {
             {(state) => {
               return (
                 <div style={maskStyles[state]}>
-                  <Route path='*' component={this.Search} />
-                  <Route exact path='/' component={Front} />
                   <this.DocContainer />
                 </div>
               );
@@ -104,6 +102,8 @@ class Main extends PureComponent {
             passProps={props => ({ sid: sidFromPath(props) })}
             title={sidFromPath}
           />
+          <Navbar path='(.*)#!menu' />
+          <Search path='(.*)#!search' />
         </div>
       </Router>
     );

@@ -3,12 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 import Entries from './Entries.jsx';
 
-function rowStyle(idx) {
-  return {
-    transitionDelay: `${idx * 50}ms`,
-  };
-}
-
 class EntriesByMotif extends PureComponent {
   render() {
     const { mid, motif, style, path, setScroll } = this.props;

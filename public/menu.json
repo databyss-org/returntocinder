@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "title": "Home",
+      "path": "/"
+    }
+  ],
+  [
+    {
+      "title": "About",
+      "path": "/about"
+    },
+    {
+      "title": "Motifs",
+      "path": "/motifs"
+    },
+    {
+      "title": "Bibliography",
+      "path": "/bibliography"
+    },
+    {
+      "title": "Baby—Daddy",
+      "path": "/about/baby–daddy"
+    }
+  ],
+  [
+    {
+      "title": "User's Manual",
+      "path": "/about/usersmanual"
+    },
+    {
+      "title": "Contribute",
+      "path": "/about/contribute"
+    },
+    {
+      "title": "Feedback",
+      "path": "/about/feedback"
+    }
+  ]
+]

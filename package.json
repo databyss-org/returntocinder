@@ -10,7 +10,8 @@
     "doc": "babel-node src/scripts/docToJson.js",
     "biblio": "babel-node src/scripts/biblioToJson.js",
     "index": "babel-node src/scripts/indexEntries.js",
-    "simplify": "babel-node src/scripts/simplifyEntries.js"
+    "simplify": "babel-node src/scripts/simplifyEntries.js",
+    "dump-motifs": "babel-node src/scripts/dumpMotifs.js"
   },
   "keywords": [],
   "author": "pzhine",
@@ -33,6 +34,7 @@
     "express": "latest",
     "express-basic-auth": "latest",
     "file-loader": "latest",
+    "hamburgers": "^0.9.1",
     "highlight-words-core": "latest",
     "js-search": "latest",
     "json-loader": "latest",

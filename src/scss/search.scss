@@ -5,6 +5,8 @@ $border-radius: 4px;
 $height: 30px;
 
 .container {
+  opacity: 0;
+  display: none;
   width: 100%;
   max-width: 680px;
   position: absolute;

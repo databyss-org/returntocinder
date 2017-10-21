@@ -1,0 +1,69 @@
+$hamburger-padding-x                       : 0;
+$hamburger-padding-y                       : 0;
+$hamburger-layer-width                     : 5vh;
+$hamburger-layer-height                    : 0.5vh;
+$hamburger-layer-spacing                   : 0.7vh;
+$hamburger-layer-color                     : #fff;
+$hamburger-layer-border-radius             : 0;
+$hamburger-hover-opacity                   : 0.7;
+$hamburger-hover-transition-duration       : 0.15s;
+$hamburger-hover-transition-timing-function: linear;
+$hamburger-hover-use-filter: false !default;
+$hamburger-hover-filter    : opacity(50%) !default;
+$hamburger-types: (minus);
+
+.navbar {
+  @import "../../node_modules/hamburgers/_sass/hamburgers/base";
+  @import "../../node_modules/hamburgers/_sass/hamburgers/types/minus";
+
+  background-image: url('/stone.jpg');
+  background-size: cover;
+
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  height: 70px;
+  transition: height 300ms ease-in-out;
+
+  &.showFull {
+    height: 100vh;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    height: 70px;
+  }
+
+  .isActive {
+    @extend .is-active;
+  }
+  .hamburgerBox {
+    @extend .hamburger-box;
+  }
+  .hamburgerInner {
+    @extend .hamburger-inner;
+  }
+  .menuButton {
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 21px;
+    cursor: pointer;
+  }
+  .databyss {
+    flex-grow: 1;
+    flex-shrink: 0;
+    height: 30px;
+  }
+  .searchButton {
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 27px;
+    cursor: pointer;
+  }
+  .front {
+    opacity: 0;
+    display: none;
+  }
+
+}
