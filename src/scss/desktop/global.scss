@@ -1,9 +1,12 @@
+body, html {
+  overflow: hidden;
+}
 body {
   width: 100%;
   font-size: 13pt;
   line-height: 15pt;
   text-indent: 0pt;
-  font-family: 'BaskervillePro', serif;
+  font-family: 'Baskerville', serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -97,4 +100,5 @@ button {
   border: 0;
   padding: 0;
   cursor: pointer;
+  background: none;
 }

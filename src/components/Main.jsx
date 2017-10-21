@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 
 import Navbar from './Navbar.jsx';
+import Menu from './Menu.jsx';
 import DocContainer from './DocContainer.jsx';
 import Search from './Search.jsx';
 import Source from './Source.jsx';
@@ -104,8 +105,8 @@ class Main extends PureComponent {
             passProps={props => ({ sid: sidFromPath(props) })}
             title={sidFromPath}
           />
-          <Navbar path='(.*)#!menu' />
-          <Search path='(.*)#!search' />
+          <Navbar />
+          <Menu path='(.*)#!menu' />
         </div>
       </Router>
     );

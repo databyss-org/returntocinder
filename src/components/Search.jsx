@@ -1,7 +1,10 @@
+/* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
+import Transition from 'react-transition-group/Transition';
+import cx from 'classnames';
 import latinize from 'latinize';
 import actions from '../redux/search/actions';
 import theme from '../app.scss';
@@ -45,7 +48,6 @@ class Search extends PureComponent {
         value: textify(sourceList.find(s => s.id === source).name)
       });
     }
-    this.inputElement.focus();
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.searchState.resultCount !== nextProps.searchState.resultCount) {
@@ -273,36 +275,51 @@ class Search extends PureComponent {
   }
   render() {
     const { suggestions, value } = this.state;
+    const { isVisible } = this.props;
 
     return (
-      <div className={theme.search}>
-        <Autosuggest
-          suggestions={suggestions}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          onSuggestionSelected={this.onSuggestionSelected}
-          onSuggestionHighlighted={this.onSuggestionHighlighted}
-          getSuggestionValue={this.getSuggestionValue}
-          renderSuggestion={this.renderSuggestion}
-          renderInputComponent={this.renderInputComponent}
-          renderSectionTitle={this.renderSectionTitle}
-          getSectionSuggestions={this.getSectionSuggestions}
-          focusInputOnSuggestionClick={false}
-          multiSection={true}
-          inputProps={{
-            placeholder: 'Search for motif, source or phrase',
-            value,
-            onChange: this.onChange,
-            onKeyDown: this.onKeyDown
-          }}
-          ref={(autosuggest) => {
-            if (!autosuggest) { return; }
-            this.autosuggest = autosuggest;
-            this.inputElement = autosuggest.input;
-          }}
-          theme={theme}
-        />
-      </div>
+      <Transition
+        in={isVisible}
+        timeout={300}
+        onEntered={() => this.inputElement.focus()}
+      >
+        {(state) => {
+          return (
+            <div className={cx(theme.search, {
+              [theme.entering]: state === 'entering',
+              [theme.entered]: state === 'entered',
+              [theme.withMenu]: this.props.withMenu
+            })}>
+              <Autosuggest
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                onSuggestionSelected={this.onSuggestionSelected}
+                onSuggestionHighlighted={this.onSuggestionHighlighted}
+                getSuggestionValue={this.getSuggestionValue}
+                renderSuggestion={this.renderSuggestion}
+                renderInputComponent={this.renderInputComponent}
+                renderSectionTitle={this.renderSectionTitle}
+                getSectionSuggestions={this.getSectionSuggestions}
+                focusInputOnSuggestionClick={false}
+                multiSection={true}
+                inputProps={{
+                  placeholder: 'Search for motif, source or phrase',
+                  value,
+                  onChange: this.onChange,
+                  onKeyDown: this.onKeyDown
+                }}
+                ref={(autosuggest) => {
+                  if (!autosuggest) { return; }
+                  this.autosuggest = autosuggest;
+                  this.inputElement = autosuggest.input;
+                }}
+                theme={theme}
+              />
+            </div>
+          );
+        }}
+      </Transition>
     );
   }
 }
