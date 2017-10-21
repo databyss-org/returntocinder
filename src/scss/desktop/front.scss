@@ -1,0 +1,19 @@
+.front {
+  position: absolute;
+  padding: 214px 15px 0;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 100%;
+  background-image: url('/stone.jpg');
+  background-size: cover;
+  color: rgba(255,255,255,0.4);
+  flex-direction: column;
+  text-align: justify;
+  font-size: 0.8em;
+
+  p {
+    margin-bottom: 1em;
+    max-width: 750px;
+  }
+}

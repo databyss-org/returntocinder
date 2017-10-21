@@ -1,0 +1,50 @@
+.doc {
+  display: flex;
+  margin-top: 14vh;
+  height: 86vh;
+  position: relative;
+  transition: left 300ms ease;
+
+  &.exited, &.exiting {
+    overflow: scroll;
+    left: 0;
+    width: 100%;
+
+    main {
+      width: 100%;
+      overflow: visible;
+    }
+  },
+  &.entered, &.entering {
+    overflow: hidden;
+    width: 200%;
+    left: -100%;
+
+    main {
+      width: 100%;
+      overflow: scroll;
+      padding-right: 2em;
+    }
+  }
+
+  &.entered {
+    aside section, aside h2 {
+      opacity: 1;
+    }
+  }
+
+  main {
+    max-width: 750px;
+    padding-top: 1em;
+  }
+
+  aside {
+    width: 100%;
+    padding: 1em 3em 0 1.5em;
+    overflow: scroll;
+
+    section, h2 {
+      opacity: 0;
+    }
+  }
+}

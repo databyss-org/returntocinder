@@ -13,6 +13,8 @@ import loader from './Loader.jsx';
 import defer from './Defer.jsx';
 import actions from '../redux/app/actions';
 
+import styles from '../app.scss';
+
 const actionQ = [
   [
     {
@@ -83,14 +85,14 @@ class Main extends PureComponent {
     };
     return (
       <Router>
-        <div>
+        <div className={styles.app}>
           <Transition
             in={appState.showMask}
             timeout={150}
           >
             {(state) => {
               return (
-                <div style={maskStyles[state]}>
+                <div className={styles.mask} style={maskStyles[state]}>
                   <this.DocContainer />
                 </div>
               );
