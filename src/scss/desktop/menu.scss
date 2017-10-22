@@ -4,11 +4,12 @@
   width: 100%;
   overflow: hidden;
   pointer-events: none;
+  z-index: 500;
 
   .container {
     position: relative;
     top: -100vh;
-    transition: top 500ms ease-in-out;
+    transition: top 250ms ease-in-out;
     background: #fff;
     padding: 0 1em;
     max-height: 91vh;

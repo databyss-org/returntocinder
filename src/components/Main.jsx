@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
+import cx from 'classnames';
 
 import Navbar from './Navbar.jsx';
 import Menu from './Menu.jsx';
@@ -43,17 +44,6 @@ const actionQ = [
   ]
 ];
 
-const maskStyles = {
-  exited: {
-    filter: 'blur(0)'
-  },
-  entered: {
-    filter: 'blur(15px)'
-  }
-};
-maskStyles.entering = maskStyles.exited;
-maskStyles.exiting = maskStyles.entered;
-
 class Main extends PureComponent {
   constructor(props) {
     super(props);
@@ -80,32 +70,36 @@ class Main extends PureComponent {
     };
     return (
       <Router>
-        <div className={styles.app}>
-          <Transition
-            in={appState.showMask}
-            timeout={150}
-          >
-            {(state) => {
-              return (
-                <div className={styles.mask} style={maskStyles[state]}>
+        <Transition
+          in={appState.showMask}
+          timeout={50}
+        >
+          {(state) => {
+            return (
+              <div className={cx(styles.app, {
+                [styles.showWithMask]: state === 'entered'
+              })}>
+                <div className={cx(styles.mask, {
+                  [styles.show]: state === 'entering' || state === 'entered'
+                })}>
                   <this.DocContainer />
                 </div>
-              );
-            }}
-          </Transition>
-          <ModalRoute
-            path={sourcePath}
-            component={this.Source}
-            passProps={props => ({ sid: sidFromPath(props) })}
-            title={sidFromPath}
-          />
-          <Navbar />
-          <Menu path='(.*)#!menu' />
-          <Loader
-            queue={actionQ}
-            onComplete={() => this.props.setStatus('READY')}
-          />
-        </div>
+                <ModalRoute
+                  path={sourcePath}
+                  component={this.Source}
+                  passProps={props => ({ sid: sidFromPath(props) })}
+                  title={sidFromPath}
+                />
+                <Navbar withMaskClassName={styles.withMask} />
+                <Menu path='(.*)#!menu' />
+                <Loader
+                  queue={actionQ}
+                  onComplete={() => this.props.setStatus('READY')}
+                />
+              </div>
+            );
+          }}
+        </Transition>
       </Router>
     );
   }

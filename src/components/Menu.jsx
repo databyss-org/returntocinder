@@ -21,7 +21,7 @@ class Menu extends PureComponent {
     return (
       <Transition
         in={inProp}
-        timeout={100}
+        timeout={250}
         onEntering={() => this.onTransition(true)}
         onExiting={() => this.onTransition(false)}
         appear

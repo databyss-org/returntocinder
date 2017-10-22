@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import latinize from 'latinize';
+import _ from 'lodash';
 import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
 import theme from '../app.scss';
@@ -25,14 +26,19 @@ class Search extends PureComponent {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+    this.onSuggestionsFetchRequested = _.debounce(
+      this.onSuggestionsFetchRequested.bind(this),
+      300, { leading: true, trailing: true }
+    );
     this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this);
     this.onClearInput = this.onClearInput.bind(this);
     this.renderInputComponent = this.renderInputComponent.bind(this);
     this.renderSuggestion = this.renderSuggestion.bind(this);
+    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
     this.getSuggestions = this.getSuggestions.bind(this);
   }
   componentDidMount() {
@@ -174,6 +180,17 @@ class Search extends PureComponent {
   getSuggestionValue(suggestion) {
     return suggestion.id;
   }
+  renderSuggestionsContainer({ containerProps, children, query }) {
+    const props = {
+      ...containerProps,
+      className: cx(containerProps.className, this.props.withMaskClassName)
+    };
+    return (
+      <div {...props}>
+        {children}
+      </div>
+    );
+  }
   renderSuggestion(suggestion) {
     return {
       motif: (
@@ -194,7 +211,9 @@ class Search extends PureComponent {
               style={{ paddingLeft: '0.5em', fontSize: '0.6em' }}
             >[PRESS&nbsp;ENTER]</span>
           </div>
-          <div>{this.props.searchState.resultCount} results</div>
+          <div style={{ textAlign: 'right' }}>
+            {this.props.searchState.resultCount} results
+          </div>
         </div>
       )
     }[suggestion.type];
@@ -202,13 +221,20 @@ class Search extends PureComponent {
   onChange(event, { newValue, method }) {
     if (newValue === '') {
       this.onClearInput();
+      this.onBlur();
     }
     if (newValue && method === 'type') {
       this.setQuery(newValue);
       this.setState({
         value: newValue
       });
+      // if (!this.props.appState.showMask) {
+      //   this.props.showMask(true);
+      // }
     }
+  }
+  onBlur() {
+    // this.props.showMask(false);
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
@@ -224,7 +250,11 @@ class Search extends PureComponent {
       highlightedSuggestion: suggestion
     });
   }
-  onSuggestionsFetchRequested({ value }) {
+  onSuggestionsFetchRequested({ value, reason }) {
+    console.log('onSuggestionsFetchRequested', value)
+    if (reason === 'input-focused') {
+      // this.props.showMask(true);
+    }
     this.setState({
       suggestions: this.getSuggestions(value)
     });
@@ -281,7 +311,7 @@ class Search extends PureComponent {
     return (
       <Transition
         in={searchIsVisible}
-        timeout={300}
+        timeout={200}
         onEntered={() => this.inputElement.focus()}
       >
         {(state) => {
@@ -299,6 +329,7 @@ class Search extends PureComponent {
                 onSuggestionHighlighted={this.onSuggestionHighlighted}
                 getSuggestionValue={this.getSuggestionValue}
                 renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={this.renderSuggestionsContainer}
                 renderInputComponent={this.renderInputComponent}
                 renderSectionTitle={this.renderSectionTitle}
                 getSectionSuggestions={this.getSectionSuggestions}
@@ -308,6 +339,7 @@ class Search extends PureComponent {
                   placeholder: 'Search for motif, source or phrase',
                   value,
                   onChange: this.onChange,
+                  onBlur: this.onBlur,
                   onKeyDown: this.onKeyDown
                 }}
                 ref={(autosuggest) => {

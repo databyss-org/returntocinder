@@ -64,6 +64,7 @@ class Navbar extends PureComponent {
               <Search
                 isVisible={this.state.searchIsVisible}
                 withMenu={hamburgerIsActive}
+                withMaskClassName={this.props.withMaskClassName}
               />
             </div>
           );

@@ -29,6 +29,7 @@
     "component-tween": "^1.2.0",
     "compression": "latest",
     "css-loader": "latest",
+    "debounce": "^1.0.2",
     "diff": "latest",
     "es6-promise": "latest",
     "express": "latest",
@@ -39,6 +40,7 @@
     "js-search": "latest",
     "json-loader": "latest",
     "latinize": "latest",
+    "lodash": "^4.17.4",
     "node-sass": "latest",
     "path-to-regexp": "^2.0.0",
     "promise-worker": "latest",
@@ -63,6 +65,7 @@
     "shallowequal": "^1.0.2",
     "style-loader": "latest",
     "svg-react-loader": "latest",
+    "throttle-debounce": "^1.0.1",
     "url-loader": "latest",
     "webpack": "latest",
     "worker-loader": "latest"

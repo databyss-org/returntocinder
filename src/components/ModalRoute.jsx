@@ -3,32 +3,11 @@ import React, { PureComponent } from 'react';
 import Transition from 'react-transition-group/Transition';
 import { withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
+import cx from 'classnames';
 import { lockBodyScroll } from '../lib/dom';
 import actions from '../redux/app/actions';
 import styles from '../app.scss';
 import CloseIcon from '../icons/close.svg';
-
-const tranStyles = {
-  exited: {
-    container: {
-      top: '100%'
-    },
-    mask: {
-      opacity: 0
-    }
-  },
-  entered: {
-    container: {
-      top: 0
-    },
-    mask: {
-      opacity: 0.1,
-      pointerEvents: 'all'
-    }
-  }
-};
-tranStyles.entering = tranStyles.exited;
-tranStyles.exiting = tranStyles.entered;
 
 class ModalRoute extends PureComponent {
   constructor(props) {
@@ -76,13 +55,11 @@ class ModalRoute extends PureComponent {
       >
         {(state) => {
           return (
-            <div
-              className={styles.modal}
-              style={tranStyles[state].container}
-            >
+            <div className={cx(styles.modal, {
+              [styles.show]: state === 'entered'
+            })}>
               <div
                 className={styles.mask}
-                style={tranStyles[state].mask}
                 onClick={() => history.goBack()}
               />
               <div className={styles.contentHeader}>

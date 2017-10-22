@@ -1,6 +1,17 @@
+&.showWithMask {
+  .withMask {
+    opacity: 1 !important;
+  }
+}
 .mask {
   display: flex;
   position: absolute;
   flex-direction: column;
   z-index: 5;
+  filter: blur(0);
+  transition: filter 75ms linear;
+
+  &.show {
+    filter: blur(10px);
+  }
 }

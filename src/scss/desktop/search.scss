@@ -11,7 +11,7 @@
   width: 100%;
   left: 100%;
   height: $height;
-  transition: left 300ms ease-in-out;
+  transition: left 200ms ease-in-out;
 
   &.entering, &.entered {
     left: 0;
@@ -85,11 +85,12 @@
   .suggestionsContainerOpen {
     box-sizing: border-box;
     display: block;
-    position: absolute;
-    top: 48px;
+    position: fixed;
+    top: 9vh;
     width: 100%;
     border: none;
     border-top: 1px dotted #efefef;
+    border-bottom: 2px solid #efefef;
     background-color: #fff;
     font-family: $font-family;
     font-weight: 300;
@@ -97,16 +98,18 @@
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     z-index: 300;
+    padding-bottom: 1em;
   }
 
   .suggestionsList {
     margin: 0;
     padding: 0;
     list-style-type: none;
+    width: 100%;
   }
 
   .suggestion {
-    padding: 5px 20px;
+    padding: 0.5em 3em 0.5em 1em;
   }
 
   .motifSuggestion {
