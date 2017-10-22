@@ -3,6 +3,7 @@
   top: 9vh;
   width: 100%;
   overflow: hidden;
+  pointer-events: none;
 
   .container {
     position: relative;
@@ -10,12 +11,16 @@
     transition: top 500ms ease-in-out;
     background: #fff;
     padding: 0 1em;
-    max-height: 90vh;
+    max-height: 91vh;
     overflow: scroll;
   }
 
-  &.show .container {
-    top: 0;
+  &.show {
+    pointer-events: all;
+
+    .container {
+      top: 0;
+    }
   }
 
   .title {

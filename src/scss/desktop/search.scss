@@ -1,6 +1,6 @@
 .search {
   $font-size: 1em;
-  $font-family: 'DINNextLTPro-Light', sans-serif;
+  $font-family: 'Open Sans', sans-serif;
   $height: 9vh;
   $border-color: #aaa;
   $border-radius: 0;
@@ -17,8 +17,13 @@
     left: 0;
   }
 
-  &.entered .input::placeholder {
-    opacity: 1;
+  &.entered {
+    .input::placeholder {
+      opacity: 1;
+    }
+    .clear {
+      opacity: 1;
+    }
   }
 
   .container {
@@ -42,7 +47,6 @@
 
   .input {
     box-sizing: border-box;
-    width: 100%;
     position: relative;
     top: 0.1em;
     padding-left: 3em;
@@ -51,6 +55,7 @@
     font-size: $font-size;
     background: transparent;
     border: 0;
+    flex-grow: 1;
 
     -webkit-appearance: none;
 
@@ -83,7 +88,7 @@
     position: absolute;
     top: 48px;
     width: 100%;
-    border: 1px solid $border-color;
+    border: none;
     border-top: 1px dotted #efefef;
     background-color: #fff;
     font-family: $font-family;
@@ -91,7 +96,7 @@
     font-size: $font-size;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
-    z-index: 2;
+    z-index: 300;
   }
 
   .suggestionsList {
@@ -130,22 +135,21 @@
   }
 
   .clear {
-    width: $height;
-    height: $height;
+    width: 2.8em;
+    height: 2.8em;
     border-radius: 50%;
     border: 0px;
     padding: 0px;
-    background: #ccc;
     position: absolute;
     right: 10px;
-    top: 10px;
+    opacity: 0;
 
     &:active {
       background: #aaa;
     }
 
     path {
-      stroke: #fff;
+      stroke: rgba(151,151,151,0.38);
       fill: transparent;
       stroke-linecap: round;
       stroke-width: 5;

@@ -10,7 +10,7 @@ import DocContainer from './DocContainer.jsx';
 import Search from './Search.jsx';
 import Source from './Source.jsx';
 import ModalRoute from './ModalRoute.jsx';
-import loader from './Loader.jsx';
+import Loader from './Loader.jsx';
 import defer from './Defer.jsx';
 import actions from '../redux/app/actions';
 
@@ -58,12 +58,6 @@ class Main extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.Search = loader({
-      Wrapped: Search,
-      queue: actionQ,
-      onComplete: () => this.props.setStatus('READY')
-    });
-
     this.DocContainer = defer({
       Wrapped: DocContainer,
       untilStatus: 'READY',
@@ -107,6 +101,10 @@ class Main extends PureComponent {
           />
           <Navbar />
           <Menu path='(.*)#!menu' />
+          <Loader
+            queue={actionQ}
+            onComplete={() => this.props.setStatus('READY')}
+          />
         </div>
       </Router>
     );

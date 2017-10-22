@@ -6,7 +6,8 @@ import Autosuggest from 'react-autosuggest';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import latinize from 'latinize';
-import actions from '../redux/search/actions';
+import searchActions from '../redux/search/actions';
+import appActions from '../redux/app/actions';
 import theme from '../app.scss';
 import { textify } from '../lib/_helpers';
 
@@ -233,11 +234,14 @@ class Search extends PureComponent {
       suggestions: []
     });
   }
-  onClearInput() {
+  onClearInput(andClose) {
     this.setState({
       value: '',
-      highlightedSuggestion: null
+      highlightedSuggestion: null,
     });
+    if (andClose) {
+      this.props.toggleSearchIsVisible();
+    }
   }
   onSearch(path) {
     this.props.history.push({
@@ -252,18 +256,15 @@ class Search extends PureComponent {
     }
   }
   renderInputComponent(inputProps) {
-    return (
-      <div>
-        <input className={theme.input} {...inputProps} />
-        <button
-          className={theme.clear}
-          onClick={this.onClearInput}
-          style={{ opacity: this.state.value ? 1 : 0 }}
-        >
-          <CloseIcon />
-        </button>
-      </div>
-    );
+    return [
+      <input className={theme.input} {...inputProps} key={0} />,
+      <button key={1}
+        className={theme.clear}
+        onClick={() => this.onClearInput(true)}
+      >
+        <CloseIcon />
+      </button>
+    ];
   }
   renderSectionTitle(section) {
     return (
@@ -275,11 +276,11 @@ class Search extends PureComponent {
   }
   render() {
     const { suggestions, value } = this.state;
-    const { isVisible } = this.props;
+    const { searchIsVisible } = this.props.appState;
 
     return (
       <Transition
-        in={isVisible}
+        in={searchIsVisible}
         timeout={300}
         onEntered={() => this.inputElement.focus()}
       >
@@ -327,4 +328,4 @@ class Search extends PureComponent {
 export default withRouter(connect(state => ({
   appState: state.app,
   searchState: state.search
-}), actions)(Search));
+}), { ...appActions, ...searchActions })(Search));

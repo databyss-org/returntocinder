@@ -37,7 +37,7 @@ class Menu extends PureComponent {
                   <ul key={idx}>
                     {items.map((item, idx) => (
                       <li key={idx}>
-                        <Link to={item.path}>{item.title}</Link>
+                        <Link to={item.path} replace>{item.title}</Link>
                       </li>
                     ))}
                   </ul>

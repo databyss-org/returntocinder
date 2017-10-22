@@ -1,9 +1,11 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
 import { withRouter, matchPath } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import styles from '../app.scss';
+import actions from '../redux/app/actions';
 import SearchIcon from '../icons/search.svg';
 import DatabyssIcon from '../icons/databyss.svg';
 import Search from './Search.jsx';
@@ -23,8 +25,8 @@ class Navbar extends PureComponent {
     }
   }
   render() {
-    const { location } = this.props;
-    const inProp = Boolean(matchPath(location.pathname, { path: '/' }));
+    const { location, appState, toggleSearchIsVisible } = this.props;
+    const inProp = Boolean(matchPath(location.pathname, { path: '/', exact: true }));
     const hamburgerIsActive = location.hash === '#!menu';
 
     return (
@@ -39,7 +41,7 @@ class Navbar extends PureComponent {
                 <button
                   className={cx(styles.menuButton, styles.hamburger, {
                     [styles.isActive]: hamburgerIsActive,
-                    [styles.showOverSearch]: this.state.searchIsVisible
+                    [styles.showOverSearch]: appState.searchIsVisible
                   })}
                   onClick={() => this.onMenuClick(hamburgerIsActive)}
                 >
@@ -54,7 +56,7 @@ class Navbar extends PureComponent {
                 <button
                   name="searchButton"
                   className={styles.searchButton}
-                  onClick={() => this.setState({ searchIsVisible: true })}
+                  onClick={() => toggleSearchIsVisible()}
                 >
                   <SearchIcon />
                 </button>
@@ -71,4 +73,6 @@ class Navbar extends PureComponent {
   }
 }
 
-export default withRouter(Navbar);
+export default withRouter(connect(state => ({
+  appState: state.app
+}), actions)(Navbar));

@@ -68,5 +68,10 @@ export default {
       type: 'SHOW_MASK',
       payload: show
     };
+  },
+  toggleSearchIsVisible() {
+    return {
+      type: 'TOGGLE_SEARCH_IS_VISIBLE'
+    };
   }
 };
