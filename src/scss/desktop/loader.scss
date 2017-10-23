@@ -1,12 +1,11 @@
 .loader {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: rgba(200,200,200,0.38);
+  svg {
+    opacity: 0.5;
+    width: 10vh;
+    height: 10vh;
+    margin-bottom: 1em;
+  }
+  p {
+    margin: 1em;
+  }
 }

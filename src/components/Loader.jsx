@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
 import styles from '../app.scss';
+import LoadingIcon from '../icons/loading.svg';
 
 class Loader extends PureComponent {
   constructor(props) {
@@ -19,7 +20,7 @@ class Loader extends PureComponent {
 
     if (!this.state.queue.length) {
       this.setState({ processing: null });
-      onComplete && onComplete();
+      onComplete && onComplete(this.props);
       return;
     }
     // shift the first item from the queue and process it
@@ -50,9 +51,7 @@ class Loader extends PureComponent {
   render() {
     return this.state.processing ?
       <div className={styles.loader}>
-        {this.state.processing.map((a, idx) => (
-          <div key={idx}>{a.message}</div>
-        ))}
+        <LoadingIcon />
       </div> : null;
   }
 }

@@ -251,7 +251,6 @@ class Search extends PureComponent {
     });
   }
   onSuggestionsFetchRequested({ value, reason }) {
-    console.log('onSuggestionsFetchRequested', value)
     if (reason === 'input-focused') {
       // this.props.showMask(true);
     }

@@ -106,6 +106,7 @@ $hamburger-types: (minus);
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0.65;
   }
   .databyss {
     flex-grow: 1;
@@ -115,6 +116,7 @@ $hamburger-types: (minus);
     align-items: center;
     justify-content: center;
     z-index: 10;
+    opacity: 0.75;
 
     svg {
       height: 26px;
@@ -140,14 +142,10 @@ $hamburger-types: (minus);
     cursor: pointer;
     display: flex;
     align-items: center;
+    opacity: 0.65;
 
     svg {
       height: 21px;
     }
   }
-  .front {
-    opacity: 0;
-    display: none;
-  }
-
 }

@@ -9,6 +9,7 @@ import actions from '../redux/app/actions';
 import SearchIcon from '../icons/search.svg';
 import DatabyssIcon from '../icons/databyss.svg';
 import Search from './Search.jsx';
+import Front from './Front.jsx';
 
 class Navbar extends PureComponent {
   constructor(props) {
@@ -66,6 +67,7 @@ class Navbar extends PureComponent {
                 withMenu={hamburgerIsActive}
                 withMaskClassName={this.props.withMaskClassName}
               />
+              <Front />
             </div>
           );
         }}
