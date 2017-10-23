@@ -6,6 +6,9 @@ const path = require('path');
 const app = express();
 
 app.set('port', (process.env.PORT || 5000));
+
+console.log('PROTECT', process.env.PROTECT);
+
 app.use(compression(), basicAuth({
   users: { 'babydaddy': 'borderline' },
   challenge: true,
@@ -13,7 +16,6 @@ app.use(compression(), basicAuth({
 }), express.static('./public'));
 
 app.get('/*', (req, res) => {
-  console.log('req host', req.headers.host);
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
