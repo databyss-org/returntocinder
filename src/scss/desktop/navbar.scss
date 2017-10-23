@@ -24,7 +24,6 @@ $hamburger-types: (minus);
   height: 9vh;
   transition: height 300ms ease-in-out;
   z-index: 10;
-  overflow: hidden;
 
   &.showFull {
     height: 100vh;

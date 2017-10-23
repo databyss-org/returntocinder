@@ -22,6 +22,7 @@
 
     main {
       width: 100vw;
+      overflow: hidden;
       overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
       padding-right: 2em;
