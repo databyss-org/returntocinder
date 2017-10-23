@@ -31,5 +31,12 @@
     @import 'scss/desktop/menu';
     @import 'scss/desktop/loader';
     @import 'scss/desktop/motifs';
+    @import 'scss/desktop/defer';
+  }
+}
+
+@media (min-width: 1280px) {
+  .app {
+    @import 'scss/landscape/front';
   }
 }

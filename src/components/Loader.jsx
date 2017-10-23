@@ -17,6 +17,9 @@ class Loader extends PureComponent {
 
   processAction() {
     const { onComplete } = this.props;
+    if (!this.state.queue) {
+      return;
+    }
 
     if (!this.state.queue.length) {
       this.setState({ processing: null });
@@ -49,9 +52,10 @@ class Loader extends PureComponent {
   }
 
   render() {
-    return this.state.processing ?
+    return this.state.processing || this.props.displayOnly ?
       <div className={styles.loader}>
         <LoadingIcon />
+        <p>loading&nbsp;and<br />indexing</p>
       </div> : null;
   }
 }

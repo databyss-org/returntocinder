@@ -22,6 +22,7 @@ class Main extends PureComponent {
     this.DocContainer = defer({
       Wrapped: DocContainer,
       untilStatus: 'READY',
+      showLoader: true
     });
 
     this.Source = defer({

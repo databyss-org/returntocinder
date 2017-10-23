@@ -71,6 +71,7 @@ class Front extends PureComponent {
               <div className={cx(styles.body, {
                 [styles.show]: state === 'entered'
               })}>
+                <Loader displayOnly />
                 <this.Motifs />
               </div>
             </div>

@@ -1,7 +1,7 @@
 .doc {
   display: flex;
-  margin-top: 14vh;
-  height: 86vh;
+  margin-top: 9vh;
+  height: 91vh;
   position: relative;
 
   &.exited, &.exiting {
@@ -29,12 +29,12 @@
 
   main {
     max-width: 750px;
-    padding-top: 1em;
+    padding-top: 2em;
   }
 
   aside {
     width: 45%;
-    padding: 1em 3em 0 1em;
+    padding: 2em 3em 0 1em;
     overflow: scroll;
 
     section, h2 {

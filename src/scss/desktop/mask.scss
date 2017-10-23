@@ -8,6 +8,7 @@
   position: absolute;
   flex-direction: column;
   z-index: 5;
+  width: 100vw;
   filter: blur(0);
   transition: filter 75ms linear;
 

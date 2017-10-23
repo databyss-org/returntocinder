@@ -9,7 +9,8 @@
   font-size: 0.8em;
   height: 91vh;
   color: rgba(255, 255, 255, 0.65);
-  overflow: scroll;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 
   .head {
     height: 91vh;
@@ -32,6 +33,10 @@
     height: 0vh;
     width: 65%;
     transition: opacity 100ms ease;
+
+    .loader {
+      display: none;
+    }
 
     &.show {
       opacity: 1;

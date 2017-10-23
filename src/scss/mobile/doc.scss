@@ -1,7 +1,7 @@
 .doc {
   display: flex;
-  margin-top: 14vh;
-  height: 86vh;
+  margin-top: 9vh;
+  height: 91vh;
   position: relative;
   transition: left 300ms ease;
 
@@ -22,7 +22,8 @@
 
     main {
       width: 100vw;
-      overflow: scroll;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
       padding-right: 2em;
     }
   }
@@ -35,13 +36,14 @@
 
   main {
     max-width: 750px;
-    padding-top: 1em;
+    padding-top: 2em;
   }
 
   aside {
     width: 100vw;
-    padding: 1em 3em 0 1.5em;
-    overflow: scroll;
+    padding: 2em 3em 0 1.5em;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 
     section, h2 {
       opacity: 0;

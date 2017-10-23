@@ -30,8 +30,15 @@
     opacity: 0;
     height: 0vh;
     width: 63%;
-    overflow: scroll;
+    overflow-y: scroll;
     transition: opacity 100ms ease;
+    max-width: 500px;
+    position: relative;
+    left: 1vw;
+
+    .loader {
+      display: none;
+    }
 
     &.show {
       opacity: 1;
@@ -57,6 +64,7 @@
     line-height: 1.4em;
     width: 53%;
     position: relative;
+    max-width: 375px;
 
     a, a:hover, a:active, a:visited {
       text-decoration: underline;
