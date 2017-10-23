@@ -13,7 +13,7 @@ app.use(compression(), basicAuth({
 }), express.static('./public'));
 
 app.get('/*', (req, res) => {
-  console.log('req host', req.headers.hostname);
+  console.log('req host', req.headers.host);
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
