@@ -17,11 +17,11 @@
   },
   &.entered, &.entering {
     overflow: hidden;
-    width: 200%;
-    left: -100%;
+    width: 200vw;
+    left: -100vw;
 
     main {
-      width: 100%;
+      width: 100vw;
       overflow: scroll;
       padding-right: 2em;
     }
@@ -39,7 +39,7 @@
   }
 
   aside {
-    width: 100%;
+    width: 100vw;
     padding: 1em 3em 0 1.5em;
     overflow: scroll;
 

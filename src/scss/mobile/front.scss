@@ -1,0 +1,72 @@
+.front {
+  position: absolute;
+  left: 0;
+  top: 9vh;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8em;
+  height: 91vh;
+  color: rgba(255, 255, 255, 0.65);
+  overflow: scroll;
+
+  .head {
+    height: 91vh;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    transition: height 200ms ease-in-out;
+  }
+
+  &.withMotifs .head{
+    height: 35vh;
+    padding-top: 3vh;
+  }
+
+  .body {
+    justify-content: flex-end;
+    opacity: 0;
+    height: 0vh;
+    width: 65%;
+    transition: opacity 100ms ease;
+
+    &.show {
+      opacity: 1;
+    }
+  }
+
+  &.withMotifs .body {
+    height: 56vh;
+  }
+
+  .title {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+    font-family: 'BaskervilleLT-RegularOldFace', serif;
+    letter-spacing: -0.05em;
+  }
+
+  p {
+    font-size: 1.3em;
+    margin-bottom: 1em;
+    max-width: 750px;
+    text-align: justify;
+    line-height: 1.4em;
+    width: 65%;
+    position: relative;
+
+    a, a:hover, a:active, a:visited {
+      text-decoration: underline;
+      position: absolute;
+      right: 0;
+      color: rgba(255, 255, 255, 0.45);
+      transition: color 50ms ease;
+    }
+    a:hover {
+      color: rgba(255, 255, 255, 0.65);
+    }
+  }
+}

@@ -6,10 +6,14 @@
     @import 'scss/desktop/mixins';
     @import 'scss/desktop/mask';
     @import 'scss/mobile/doc';
-    @import 'scss/desktop/front';
-    @import 'scss/desktop/modal';
+    @import 'scss/mobile/front';
+    @import 'scss/mobile/modal';
     @import 'scss/desktop/search';
     @import 'scss/desktop/source';
+    @import 'scss/desktop/navbar';
+    @import 'scss/desktop/menu';
+    @import 'scss/desktop/loader';
+    @import 'scss/mobile/motifs';
   }
 }
 @media (min-width: 481px) {
