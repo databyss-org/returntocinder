@@ -7,11 +7,19 @@ const app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
-app.use(compression(), basicAuth({
-  users: { 'babydaddy': 'borderline' },
-  challenge: process.env.PROTECT === '1',
-  realm: 'Return to Cinder'
-}), express.static('./public'));
+const middleware = [
+  compression(),
+  ...(process.env.PROTECT === '1' ? [
+    basicAuth({
+      users: { 'babydaddy': 'borderline' },
+      challenge: true,
+      realm: 'Return to Cinder'
+    })
+  ] : []),
+  express.static('./public')
+];
+
+app.use(...middleware);
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
