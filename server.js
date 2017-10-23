@@ -7,11 +7,9 @@ const app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
-console.log('PROTECT', process.env.PROTECT);
-
 app.use(compression(), basicAuth({
   users: { 'babydaddy': 'borderline' },
-  challenge: true,
+  challenge: process.env.PROTECT === '1',
   realm: 'Return to Cinder'
 }), express.static('./public'));
 
