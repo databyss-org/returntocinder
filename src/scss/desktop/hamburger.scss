@@ -1,0 +1,90 @@
+.hamburger {
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.65;
+  padding: $hamburger-padding-y $hamburger-padding-x;
+  display: inline-block;
+  cursor: pointer;
+
+  transition-property: opacity, filter;
+  transition-duration: $hamburger-hover-transition-duration;
+  transition-timing-function: $hamburger-hover-transition-timing-function;
+
+  // Normalize (<button>)
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+  overflow: visible;
+
+  &.isActive {
+    .hamburgerInner {
+      &::before,
+      &::after {
+        opacity: 0;
+        transition: bottom 0.08s ease-out,
+                    top 0.08s ease-out,
+                    opacity 0s 0.08s linear;
+      }
+      &::before {
+        top: 0;
+      }
+
+      &::after {
+        bottom: 0;
+      }
+    }
+  }
+
+  .hamburgerBox {
+    width: $hamburger-layer-width;
+    height: $hamburger-layer-height * 3 + $hamburger-layer-spacing * 2;
+    display: inline-block;
+    position: relative;
+  }
+
+  .hamburgerInner {
+    display: block;
+    top: 50%;
+    margin-top: $hamburger-layer-height / -2;
+
+    &,
+    &::before,
+    &::after {
+      width: $hamburger-layer-width;
+      height: $hamburger-layer-height;
+      background-color: $hamburger-layer-color;
+      border-radius: $hamburger-layer-border-radius;
+      position: absolute;
+      transition-property: transform;
+      transition-duration: 0.15s;
+      transition-timing-function: ease;
+      transition: background-color 150ms 300ms linear;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+      display: block;
+      transition: bottom 300ms 0s ease-out,
+                  background-color 150ms 300ms linear,
+                  top 300ms 0s ease-out,
+                  opacity 0s linear;
+    }
+
+    &::before {
+      top: ($hamburger-layer-spacing + $hamburger-layer-height) * -1;
+    }
+
+    &::after {
+      bottom: ($hamburger-layer-spacing + $hamburger-layer-height) * -1;
+    }
+  }
+}

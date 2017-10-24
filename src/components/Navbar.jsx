@@ -10,6 +10,7 @@ import SearchIcon from '../icons/search.svg';
 import DatabyssIcon from '../icons/databyss.svg';
 import Search from './Search.jsx';
 import Front from './Front.jsx';
+import Hamburger from './Hamburger.jsx';
 
 class Navbar extends PureComponent {
   constructor(props) {
@@ -26,11 +27,11 @@ class Navbar extends PureComponent {
     }
   }
   render() {
-    const { location, appState, toggleSearchIsVisible } = this.props;
+    const { location, toggleSearchIsVisible, appState } = this.props;
     const inProp = Boolean(matchPath(location.pathname, { path: '/', exact: true }));
     const hamburgerIsActive = location.hash === '#!menu';
 
-    return (
+    return [
       <Transition
         in={inProp}
         timeout={300}
@@ -39,17 +40,10 @@ class Navbar extends PureComponent {
           return (
             <div className={cx(styles.navbar, { [styles.showFull]: state === 'entered' }) }>
               <div className={styles.bar}>
-                <button
-                  className={cx(styles.menuButton, styles.hamburger, {
-                    [styles.isActive]: hamburgerIsActive,
-                    [styles.showOverSearch]: appState.searchIsVisible
-                  })}
+                <Hamburger
+                  isActive={hamburgerIsActive}
                   onClick={() => this.onMenuClick(hamburgerIsActive)}
-                >
-                  <span className={styles.hamburgerBox}>
-                    <span className={styles.hamburgerInner} />
-                  </span>
-                </button>
+                />
                 <div className={styles.glow} />
                 <div className={styles.databyss}>
                   <DatabyssIcon />
@@ -62,17 +56,24 @@ class Navbar extends PureComponent {
                   <SearchIcon />
                 </button>
               </div>
-              <Search
-                isVisible={this.state.searchIsVisible}
-                withMenu={hamburgerIsActive}
-                withMaskClassName={this.props.withMaskClassName}
-              />
               <Front />
             </div>
           );
         }}
-      </Transition>
-    );
+      </Transition>,
+      <div className={cx(styles.menuBar, {
+        [styles.show]: appState.searchIsVisible
+      })}>
+        <Search
+          withMenu={hamburgerIsActive || !inProp}
+          withMaskClassName={this.props.withMaskClassName}
+        />
+        <Hamburger
+          isActive={hamburgerIsActive}
+          onClick={() => this.onMenuClick(hamburgerIsActive)}
+        />
+      </div>
+    ];
   }
 }
 

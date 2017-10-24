@@ -1,3 +1,13 @@
+$hamburger-padding-x                       : 0;
+$hamburger-padding-y                       : 0;
+$hamburger-layer-width                     : 20px;
+$hamburger-layer-height                    : 3px;
+$hamburger-layer-spacing                   : 4px;
+$hamburger-layer-color                     : #fff;
+$hamburger-layer-border-radius             : 0;
+$hamburger-hover-transition-duration       : 0.15s;
+$hamburger-hover-transition-timing-function: linear;
+
 /* mobile */
 @media (max-width: 480px) {
   @import 'scss/desktop/global';
@@ -15,6 +25,7 @@
     @import 'scss/desktop/loader';
     @import 'scss/mobile/motifs';
     @import 'scss/desktop/defer';
+    @import 'scss/desktop/hamburger';
   }
 }
 @media (min-width: 481px) {
@@ -33,6 +44,7 @@
     @import 'scss/desktop/loader';
     @import 'scss/desktop/motifs';
     @import 'scss/desktop/defer';
+    @import 'scss/desktop/hamburger';
   }
 }
 

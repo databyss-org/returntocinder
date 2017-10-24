@@ -4,26 +4,31 @@
   height: 91vh;
   position: relative;
   transition: left 300ms ease;
+  overflow: hidden;
+  left: 0;
+  width: 100%;
 
-  &.exited, &.exiting {
-    overflow: scroll;
-    left: 0;
-    width: 100%;
+  main, aside {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    width: 100vw;
+    max-width: 750px;
+    padding: 2em 3em 0 1em;
+  }
 
-    main {
-      width: 100%;
-      overflow-y: visible;
+  aside {
+    section, h2 {
+      opacity: 0;
     }
-  },
+  }
+
   &.entered, &.entering {
-    overflow: hidden;
     width: 200vw;
     left: -100vw;
 
     main {
       width: 100vw;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
+
       padding-right: 2em;
     }
   }
@@ -34,19 +39,4 @@
     }
   }
 
-  main {
-    max-width: 750px;
-    padding-top: 2em;
-  }
-
-  aside {
-    width: 100vw;
-    padding: 2em 3em 0 1.5em;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-
-    section, h2 {
-      opacity: 0;
-    }
-  }
 }
