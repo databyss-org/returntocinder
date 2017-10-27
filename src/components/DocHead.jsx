@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import pluralize from 'pluralize';
+import cx from 'classnames';
 import styles from '../app.scss';
 
 class DocHead extends PureComponent {
   renderColumnHead(params) {
     const { doc, biblio, entriesBySource } = this.props.appState;
-    const { results, resultStats } = this.props.searchState;
+    const { resultsMeta, isWorking } = this.props.searchState;
 
     const mode = params[0];
 
@@ -23,22 +25,26 @@ class DocHead extends PureComponent {
       }),
       search: term => ({
         title: `Results for: ${term}`,
-        entryCount: results.length,
-        motifCount: resultStats.motifCount,
-        sourceCount: resultStats.sourceCount
+        entryCount: resultsMeta.count,
+        motifCount: resultsMeta.motifList.length,
+        sourceCount: resultsMeta.sourceList.length
       })
     }[mode](params.term);
 
     const display = {
-      entries: (<span>{stats.entryCount} entries, </span>),
+      entries: (
+        <span>
+          {stats.entryCount} {pluralize('entry', stats.entryCount)}
+        </span>
+      ),
       motifs: (
         <span>
-          {stats.motifCount} motifs
+          {stats.motifCount} {pluralize('motif', stats.motifCount)}
         </span>
       ),
       sources: (
         <span>
-          {stats.sourceCount} sources
+          {stats.sourceCount} {pluralize('source', stats.sourceCount)}
         </span>
       )
     };
@@ -48,7 +54,9 @@ class DocHead extends PureComponent {
         <div className={styles.title}>
           <span dangerouslySetInnerHTML={{ __html: stats.title }} />
         </div>
-        <div className={styles.stats}>
+        <div className={cx(styles.stats, {
+            [styles.show]: !isWorking
+          })}>
           {display.entries}
           {mode !== 'motif' && display.motifs}
           {mode !== 'source' && display.sources}
@@ -58,7 +66,7 @@ class DocHead extends PureComponent {
   }
   render() {
     return (
-      <div className={styles.docHead}>
+      <div className={cx(styles.docHead, styles[this.props.transitionState])}>
         <Route
           path='/(motif|source|search)/:term'
           render={props => this.renderColumnHead(props.match.params)}

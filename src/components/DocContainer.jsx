@@ -3,13 +3,9 @@ import { Route, matchPath } from 'react-router-dom';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
+import DocHead from './DocHead.jsx';
+import defer from './Defer.jsx';
 import styles from '../app.scss';
-
-const tranStyles = {
-
-};
-tranStyles.entering = tranStyles.entered;
-tranStyles.exiting = tranStyles.exited;
 
 export default class DocContainer extends PureComponent {
   constructor(props) {
@@ -19,6 +15,11 @@ export default class DocContainer extends PureComponent {
     this.state = {
       query: this.getQuery(this.props)
     };
+
+    this.DocHead = defer({
+      Wrapped: DocHead,
+      untilStatus: 'READY'
+    });
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -38,7 +39,8 @@ export default class DocContainer extends PureComponent {
   render() {
     return (
       <Transition in={this.state.query.aside} timeout={300}>
-        {state => (
+        {state => [
+          <this.DocHead transitionState={state} />,
           <div className={cx(styles.doc, styles[state])}>
             <Route
               path='/(motif|source|search)/:term'
@@ -67,7 +69,7 @@ export default class DocContainer extends PureComponent {
               )}
             />
           </div>
-        )}
+        ]}
       </Transition>
     );
   }

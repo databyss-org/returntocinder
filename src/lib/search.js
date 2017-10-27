@@ -16,7 +16,32 @@ export function indexEntries(entryList) {
   return search;
 }
 
-export function searchEntries({ index, query, processResults }) {
-  const results = index.search(query);
-  return processResults ? processResults(results) : results;
+export function searchEntries({ index, query, processResults, withMeta }) {
+  const entries = index.search(query);
+  const results = processResults ? processResults(entries) : entries;
+  const motifs = {};
+
+  if (withMeta) {
+    entries.forEach((entry) => {
+      entry.motif.forEach((m) => {
+        motifs[m.id] = m;
+      });
+    });
+  }
+
+  return {
+    results,
+    resultsMeta: {
+      count: entries.length,
+      ...(withMeta ? {
+        sourceList: Object.keys(results),
+        motifList: (Object.keys(motifs).reduce(
+          (list, mid) => list.concat(motifs[mid]), []
+        )).sort((a, b) => a.id < b.id ? -1 : 1)
+      } : {
+        sourceList: [],
+        motifList: []
+      })
+    }
+  };
 }

@@ -10,6 +10,7 @@ $hamburger-hover-transition-timing-function: linear;
 
 /* mobile */
 @media (max-width: 480px) {
+  @import 'scss/desktop/mixins';
   @import 'scss/desktop/global';
 
   .app {
@@ -26,14 +27,14 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/mobile/motifs';
     @import 'scss/desktop/defer';
     @import 'scss/desktop/hamburger';
-    @import 'scss/desktop/docHead';
+    @import 'scss/mobile/docHead';
   }
 }
 @media (min-width: 481px) {
+  @import 'scss/desktop/mixins';
   @import 'scss/desktop/global';
 
   .app {
-    @import 'scss/desktop/mixins';
     @import 'scss/desktop/mask';
     @import 'scss/desktop/doc';
     @import 'scss/desktop/front';

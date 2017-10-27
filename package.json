@@ -43,6 +43,7 @@
     "lodash": "^4.17.4",
     "node-sass": "latest",
     "path-to-regexp": "^2.0.0",
+    "pluralize": "^7.0.0",
     "promise-worker": "latest",
     "query-string": "latest",
     "raf": "^3.4.0",

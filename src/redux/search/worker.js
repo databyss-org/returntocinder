@@ -15,11 +15,12 @@ registerPromiseWorker((action) => {
       return true;
     }
     case 'SEARCH': {
-      const { query, processResults } = action.payload;
+      const { query, processResults, withMeta } = action.payload;
       return searchEntries({
         index,
         query,
-        processResults: processMap[processResults]
+        processResults: processMap[processResults],
+        withMeta
       });
     }
   }

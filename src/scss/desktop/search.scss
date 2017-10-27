@@ -94,11 +94,12 @@
     background-color: #fff;
     font-family: $font-family;
     font-weight: 300;
-    font-size: $font-size;
+    font-size: 0.9m;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     z-index: 300;
     padding-bottom: 1em;
+    left: 0;
   }
 
   .suggestionsList {
@@ -109,7 +110,7 @@
   }
 
   .suggestion {
-    padding: 0.5em 3em 0.5em 1em;
+    padding: 0.3em 3em 0.5em 1em;
   }
 
   .motifSuggestion {
@@ -143,7 +144,7 @@
     border-radius: 50%;
     border: 0px;
     padding: 0px;
-    position: absolute;
+    position: relative;
     right: 10px;
     opacity: 0;
 
@@ -158,5 +159,23 @@
       stroke-width: 5;
     }
 
+  }
+
+  .searchEntryContainer {
+    display: flex;
+    align-items: center;
+
+    .query {
+      flex-grow: 1;
+
+      span {
+        padding-left: 0.5em;
+        font-size: 0.6em;
+      }
+    }
+
+    .resultCount {
+      text-align: right;
+    }
   }
 }

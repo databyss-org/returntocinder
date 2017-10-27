@@ -16,3 +16,14 @@
   text-align: center;
   text-decoration: none;
 }
+
+@mixin commas() {
+  &:after {
+    content: ',';
+    padding-right: 0.4em;
+  }
+  &:last-child:after {
+    content: '';
+    padding-right: 0;
+  }
+}

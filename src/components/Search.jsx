@@ -57,7 +57,8 @@ class Search extends PureComponent {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.searchState.resultCount !== nextProps.searchState.resultCount) {
+    const { queryMeta } = this.props.searchState;
+    if (queryMeta.count !== nextProps.searchState.queryMeta.count) {
       this.onSuggestionsFetchRequested({ value: this.state.value });
     }
   }
@@ -159,7 +160,6 @@ class Search extends PureComponent {
 
     return [
       {
-        title: 'Find',
         suggestions: [
           {
             type: 'entry',
@@ -204,15 +204,13 @@ class Search extends PureComponent {
         </div>
       ),
       entry: (
-        <div style={{ display: 'flex' }}>
-          <div style={{ flexGrow: 1 }}>
+        <div className={theme.searchEntryContainer}>
+          <div className={theme.query}>
             {this.getQuery()}
-            <span
-              style={{ paddingLeft: '0.5em', fontSize: '0.6em' }}
-            >[PRESS&nbsp;ENTER]</span>
+            <span>[PRESS&nbsp;ENTER]</span>
           </div>
-          <div style={{ textAlign: 'right' }}>
-            {this.props.searchState.resultCount} results
+          <div className={theme.resultCount}>
+            {this.props.searchState.queryMeta.count} results
           </div>
         </div>
       )
@@ -224,10 +222,11 @@ class Search extends PureComponent {
       this.onBlur();
     }
     if (newValue && method === 'type') {
-      this.setQuery(newValue);
       this.setState({
         value: newValue
       });
+      this.setQuery(newValue);
+
       // if (!this.props.appState.showMask) {
       //   this.props.showMask(true);
       // }

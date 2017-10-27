@@ -8,7 +8,6 @@ import cx from 'classnames';
 import Navbar from './Navbar.jsx';
 import Menu from './Menu.jsx';
 import DocContainer from './DocContainer.jsx';
-import DocHead from './DocHead.jsx';
 import Source from './Source.jsx';
 import ModalRoute from './ModalRoute.jsx';
 import defer from './Defer.jsx';
@@ -29,11 +28,6 @@ class Main extends PureComponent {
     this.Source = defer({
       Wrapped: Source,
       untilStatus: 'READY',
-    });
-
-    this.DocHead = defer({
-      Wrapped: DocHead,
-      untilStatus: 'READY'
     });
   }
   render() {
@@ -60,7 +54,6 @@ class Main extends PureComponent {
                 <div className={cx(styles.mask, {
                   [styles.show]: state === 'entering' || state === 'entered'
                 })}>
-                  <this.DocHead />
                   <this.DocContainer />
                 </div>
                 <ModalRoute

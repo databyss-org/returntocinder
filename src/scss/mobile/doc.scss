@@ -1,6 +1,5 @@
 .doc {
   display: flex;
-  margin-top: 9vh;
   height: 91vh;
   position: relative;
   transition: left 300ms ease;
@@ -19,6 +18,7 @@
   aside {
     section, h2 {
       opacity: 0;
+      transition: opacity 300ms ease;
     }
   }
 

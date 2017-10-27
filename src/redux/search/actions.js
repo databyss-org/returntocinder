@@ -24,18 +24,22 @@ export default {
     return async (dispatch, getState) => {
       dispatch({
         type: 'SEARCH_ENTRIES',
+        payload: {
+          query
+        }
       });
       const results = await searchWorker.postMessage({
         type: 'SEARCH',
         payload: {
           query: query || getState().search.query,
-          processResults: 'GROUP_BY_SOURCE'
+          processResults: 'GROUP_BY_SOURCE',
+          withMeta: true
         }
       });
       dispatch({
         type: 'SEARCH_ENTRIES_RESULTS',
         payload: {
-          results,
+          ...results,
           query
         }
       });
@@ -54,7 +58,7 @@ export default {
       dispatch({
         type: 'SET_QUERY_RESULTS',
         payload: {
-          results,
+          ...results,
           query
         }
       });

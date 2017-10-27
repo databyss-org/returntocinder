@@ -2,8 +2,16 @@ const initialState = {
   isIndexing: false,
   isIndexed: false,
   results: [],
+  resultsMeta: {
+    count: 0,
+    motifList: [],
+    sourceList: []
+  },
+  queryMeta: {
+    count: 0
+  },
   query: '',
-  resultCount: 0
+  isWorking: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -28,24 +36,27 @@ export default function appReducer(state = initialState, action) {
       };
     }
     case 'SET_QUERY_RESULTS': {
-      const { results, query } = action.payload;
+      const { resultsMeta, query } = action.payload;
       return {
         ...state,
         query,
-        resultCount: results.length
+        queryMeta: {
+          count: resultsMeta.count
+        }
       };
     }
-    case 'SEARCH': {
+    case 'SEARCH_ENTRIES': {
       return {
         ...state,
-        query: action.payload.query
+        query: action.payload.query,
+        isWorking: true
       };
     }
     case 'SEARCH_ENTRIES_RESULTS': {
       return {
         ...state,
-        results: action.payload.results,
-        resultCount: action.payload.results.length
+        ...action.payload,
+        isWorking: false
       };
     }
 

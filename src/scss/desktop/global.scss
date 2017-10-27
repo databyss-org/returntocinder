@@ -71,14 +71,7 @@ section {
         cursor: pointer;
         color: #000;
 
-        &:after {
-          content: ',';
-          padding-right: 0.4em;
-        }
-        &:last-child:after {
-          content: '';
-          padding-right: 0;
-        }
+        @include commas();
       }
     }
   }
