@@ -171,3 +171,17 @@ export function groupEntriesBySource(entryList) {
     return sources;
   }, {});
 }
+
+export function addMotifsToBiblio(biblio, entriesBySource) {
+  const bib = { ...biblio };
+  Object.keys(entriesBySource).forEach((sid) => {
+    const motifs = entriesBySource[sid].reduce((motifs, entry) => {
+      entry.motif.forEach((m) => { motifs[m.id] = m; });
+      return motifs;
+    }, {});
+    bib[sid].motifs = Object.keys(motifs).reduce((motifList, mid) => (
+      motifList.concat(motifs[mid])
+    ), []);
+  });
+  return bib;
+}

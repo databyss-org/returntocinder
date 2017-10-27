@@ -9,7 +9,6 @@ class EntriesByMotif extends PureComponent {
 
     return [
       <article key={mid} style={style}>
-        <h2 dangerouslySetInnerHTML={{ __html: motif.title }} />
         {Object.keys(motif.sources).map((sid, sidx) => (
           <section key={motif + sid}>
             <Entries

@@ -26,6 +26,7 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/mobile/motifs';
     @import 'scss/desktop/defer';
     @import 'scss/desktop/hamburger';
+    @import 'scss/desktop/docHead';
   }
 }
 @media (min-width: 481px) {
@@ -45,6 +46,7 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/motifs';
     @import 'scss/desktop/defer';
     @import 'scss/desktop/hamburger';
+    @import 'scss/desktop/docHead';
   }
 }
 

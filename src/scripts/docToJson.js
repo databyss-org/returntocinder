@@ -17,6 +17,7 @@ function rtfToJson(doc) {
   const chapters = {};
   let sections;
   let entries;
+  let entryCount;
 
   // console.error(doc.content);
 
@@ -27,6 +28,7 @@ function rtfToJson(doc) {
       continue;
     }
     sections = {};
+    entryCount = 0;
 
     do {
       if (getHeading(doc.content[i + 1])) {
@@ -106,6 +108,7 @@ function rtfToJson(doc) {
       } else {
         sections[sid] = entries;
       }
+      entryCount += entries.length;
     } while (i < doc.content.length);
 
     const chapterTitleText = textify(chapterTitle);
@@ -117,7 +120,8 @@ function rtfToJson(doc) {
 
     chapters[urlify(chapterTitleText)] = {
       title: chapterTitle,
-      sources: sections
+      sources: sections,
+      entryCount
     };
   }
 

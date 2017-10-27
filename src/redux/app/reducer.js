@@ -1,3 +1,5 @@
+import { addMotifsToBiblio } from '../../lib/indexers';
+
 const initialState = {
   doc: null,
   biblio: null,
@@ -15,9 +17,15 @@ export default function appReducer(state = initialState, action) {
   switch (action.type) {
     case 'RECEIVE_DOC':
     case 'RECEIVE_BIBLIO':
+      return {
+        ...state,
+        ...action.payload
+      };
+
     case 'RECEIVE_ENTRIES':
       return {
         ...state,
+        biblio: addMotifsToBiblio(state.biblio, action.payload.entriesBySource),
         ...action.payload
       };
 

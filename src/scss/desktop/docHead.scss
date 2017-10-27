@@ -1,0 +1,44 @@
+.docHead {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  align-items: stretch;
+  font-size: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #D6D6D6;
+  box-shadow: 0 11px 15px 12px #FFFFFF;
+  margin-top: 9vh;
+  position: relative;
+  z-index: 10;
+  padding: 1.5em 1em 1.2em 0;
+
+  header {
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      font-family: 'DINNextLTPro-MediumCond';
+      font-size: 1.2em;
+      line-height: 1.2em;
+      margin-bottom: 1.2em;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .stats {
+      font-family: 'DINNextLTPro-Light';
+      font-size: 0.9em;
+      flex-grow: 0;
+    }
+
+    &:first-of-type {
+      width: 55%;
+      padding-left: 1em;
+    }
+
+    &:nth-of-type(2) {
+      width: 45%;
+      padding-left: 1.5em;
+    }
+  }
+}
