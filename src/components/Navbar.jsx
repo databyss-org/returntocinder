@@ -19,10 +19,15 @@ class Navbar extends PureComponent {
       searchIsVisible: false
     };
   }
+  hideMenu() {
+    this.props.history.goBack();
+  }
   onMenuClick(hamburgerIsActive) {
+    const { hideSearch } = this.props;
     if (hamburgerIsActive) {
       this.props.history.goBack();
     } else {
+      hideSearch();
       this.props.history.push('#!menu');
     }
   }
@@ -51,7 +56,10 @@ class Navbar extends PureComponent {
                 <button
                   name="searchButton"
                   className={styles.searchButton}
-                  onClick={() => toggleSearchIsVisible()}
+                  onClick={() => {
+                    hamburgerIsActive && this.hideMenu();
+                    toggleSearchIsVisible();
+                  }}
                 >
                   <SearchIcon />
                 </button>

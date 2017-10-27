@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { Route, matchPath } from 'react-router-dom';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
@@ -7,7 +8,7 @@ import DocHead from './DocHead.jsx';
 import defer from './Defer.jsx';
 import styles from '../app.scss';
 
-export default class DocContainer extends PureComponent {
+class DocContainer extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -41,7 +42,9 @@ export default class DocContainer extends PureComponent {
       <Transition in={this.state.query.aside} timeout={300}>
         {state => [
           <this.DocHead transitionState={state} />,
-          <div className={cx(styles.doc, styles[state])}>
+          <div className={cx(styles.doc, styles[state], {
+              [styles.show]: !this.props.searchState.isWorking
+            })}>
             <Route
               path='/(motif|source|search)/:term'
               render={props => (
@@ -74,3 +77,7 @@ export default class DocContainer extends PureComponent {
     );
   }
 }
+
+export default connect(state => ({
+  searchState: state.search
+}), null)(DocContainer);

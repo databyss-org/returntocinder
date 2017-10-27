@@ -6,6 +6,7 @@ import Autosuggest from 'react-autosuggest';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import latinize from 'latinize';
+import pluralize from 'pluralize';
 import _ from 'lodash';
 import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
@@ -210,7 +211,8 @@ class Search extends PureComponent {
             <span>[PRESS&nbsp;ENTER]</span>
           </div>
           <div className={theme.resultCount}>
-            {this.props.searchState.queryMeta.count} results
+            {this.props.searchState.queryMeta.count}&nbsp;
+            {pluralize('result', this.props.searchState.queryMeta.count)}
           </div>
         </div>
       )
