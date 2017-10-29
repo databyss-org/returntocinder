@@ -18,9 +18,9 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
-app.get('/oauth', (req, res) => {
+app.get('/dropbox-webhook', (req, res) => {
   console.log(req);
-  res.status(200).end();
+  res.send(req.query.challenge);
 });
 
 app.listen(app.get('port'), () => {
