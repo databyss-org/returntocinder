@@ -14,13 +14,13 @@ const middleware = [
 
 app.use(...middleware);
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/index.html'));
-});
-
 app.get('/dropbox-webhook', (req, res) => {
   console.log(req);
   res.send(req.query.challenge);
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
 app.listen(app.get('port'), () => {
