@@ -1,0 +1,29 @@
+.subnav {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  border-top: 1px solid rgba(151,151,151,0.38);
+
+  li {
+    text-align: left;
+    font-family: 'DINNextLTPro-Light';
+    font-size: 1em;
+    padding: 1em 1em 0 0;
+    text-transform: uppercase;
+    cursor: pointer;
+    flex-grow: 1;
+
+    a, a:active, a:hover, a:visited {
+      color: #4A4A4A;
+      text-decoration: none;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+
+    &.active {
+      border-top: 2px solid #9B9B9B;
+    }
+  }
+}

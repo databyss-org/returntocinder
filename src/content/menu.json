@@ -7,34 +7,30 @@
   ],
   [
     {
-      "title": "About",
-      "path": "/about"
+      "title": "Frontis",
+      "path": "/about/frontis"
     },
     {
-      "title": "Motifs",
-      "path": "/motifs"
+      "title": "Grammar",
+      "path": "/about/grammar"
+    },
+    {
+      "title": "Epigraphs",
+      "path": "/about/epigraphs"
     },
     {
       "title": "Bibliography",
-      "path": "/bibliography"
-    },
-    {
-      "title": "Baby–Daddy",
-      "path": "/about/baby–daddy"
+      "path": "/about/bibliography"
     }
   ],
   [
     {
-      "title": "User's Manual",
-      "path": "/about/usersmanual"
+      "title": "Open Manifest",
+      "path": "/about/manifest"
     },
     {
-      "title": "Contribute",
-      "path": "/about/contribute"
-    },
-    {
-      "title": "Feedback",
-      "path": "/about/feedback"
+      "title": "Contact",
+      "path": "/about/contact"
     }
   ]
 ]
