@@ -19,7 +19,7 @@ app.get('/dropbox-webhook', (req, res) => {
 });
 
 app.post('/dropbox-webhook', (req, res) => {
-  console.log('---DBX---', req);
+  console.log('---DBX---', req.body);
 });
 
 
