@@ -2,8 +2,8 @@ import express from 'express';
 import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
+import _ from 'lodash';
 import { checkAndProcessDoc } from './lib/dropbox';
-import _ from 'underscore';
 
 const app = express();
 
