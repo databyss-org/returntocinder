@@ -28,6 +28,8 @@ export async function checkAndProcessDoc(lastModified) {
   if (lastModified === null) {
     return newLastMod;
   }
+  console.log('CURRENT MODIFIED', lastModified);
+  console.log('NEW MODIFIED', newLastMod);
   if (lastModified !== newLastMod) {
     await downloadDoc();
     return newLastMod;
