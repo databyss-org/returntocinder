@@ -24,7 +24,11 @@ app.get('/dropbox-webhook', (req, res) => {
 
 app.post('/dropbox-webhook', (req, res) => {
   console.log('---DBX---', req.body);
-  lastModified = checkAndProcessDoc(lastModified);
+  try {
+    lastModified = checkAndProcessDoc(lastModified);
+  } catch (err) {
+    console.log('ERROR - checkAndProcessDoc', err);
+  }
 });
 
 
@@ -36,4 +40,8 @@ app.listen(app.get('port'), () => {
   console.log('server started on port', app.get('port'));
 });
 
-lastModified = checkAndProcessDoc(lastModified);
+try {
+  lastModified = checkAndProcessDoc(lastModified);
+} catch (err) {
+  console.log('STARTUP ERROR - checkAndProcessDoc', err);
+}
