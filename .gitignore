@@ -5,6 +5,7 @@ public/images/
 npm-debug.log
 bundle.js
 bundle.js.map
+build/
 
 # OSX
 #

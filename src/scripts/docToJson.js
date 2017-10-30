@@ -5,13 +5,19 @@ import roman from 'roman-numerals';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
-parse.stream(fs.createReadStream('../doc/full.rtf'), (err, doc) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  fs.writeFile('./public/full.json', rtfToJson(doc));
-});
+export default function docToJson({ input, output }) {
+  console.log('DOC2JSON', input);
+  return new Promise((resolve, fail) => {
+    parse.stream(fs.createReadStream(input), (err, doc) => {
+      if (err) {
+        fail(err);
+        return;
+      }
+      fs.writeFileSync(output, rtfToJson(doc));
+      resolve();
+    });
+  });
+}
 
 function rtfToJson(doc) {
   const chapters = {};
@@ -288,3 +294,5 @@ function isBold(chunk) {
     , true)
   );
 }
+
+// docToJson({ input: '../doc/full.rtf', output: './public/full.json' });
