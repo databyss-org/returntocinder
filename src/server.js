@@ -3,6 +3,7 @@ import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { checkAndProcessDoc } from './lib/dropbox';
+import _ from 'underscore';
 
 const app = express();
 
@@ -18,13 +19,18 @@ const middleware = [
 app.use(...middleware);
 app.use(bodyParser.json());
 
+// throttling
+const throttledCheckAndProcessDoc = _.debounce(checkAndProcessDoc, 600000, {
+  leading: false, trailing: true
+});
+
 app.get('/dropbox-webhook', (req, res) => {
   res.send(req.query.challenge);
 });
 
 app.post('/dropbox-webhook', (req, res) => {
   console.log('---DBX---', req.body);
-  checkAndProcessDoc(lastModified).then((res) => {
+  throttledCheckAndProcessDoc(lastModified).then((res) => {
     lastModified = res;
   }).catch((err) => {
     console.log('ERROR - checkAndProcessDoc', err);
@@ -41,6 +47,7 @@ app.listen(app.get('port'), () => {
 });
 
 checkAndProcessDoc(lastModified).then((res) => {
+  console.log('STARTUP LAST MODIFIED', res)
   lastModified = res;
 }).catch((err) => {
   console.log('STARTUP ERROR - checkAndProcessDoc', err);
