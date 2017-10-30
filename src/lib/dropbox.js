@@ -36,7 +36,7 @@ export async function checkAndProcessDoc(lastModified) {
   }
   console.log('CURRENT MODIFIED', lastModified);
   console.log('NEW MODIFIED', newLastMod);
-  if (lastModified !== newLastMod) {
+  if (lastModified.getTime() !== newLastMod.getTime()) {
     downloadAndProcessDoc();
     return newLastMod;
   }
