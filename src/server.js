@@ -26,8 +26,10 @@ app.post('/dropbox-webhook', (req, res) => {
   console.log('---DBX---', req.body);
   checkAndProcessDoc(lastModified).then((res) => {
     lastModified = res;
+    res.status(200).end();
   }).catch((err) => {
     console.log('ERROR - checkAndProcessDoc', err);
+    res.status(301).end();
   })
 });
 
