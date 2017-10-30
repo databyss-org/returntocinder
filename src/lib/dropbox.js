@@ -19,8 +19,9 @@ export async function downloadDoc() {
 }
 
 export async function processDoc() {
-  await docToJson({ input: './BBDD.rtf', output: './public/full.json' });
   console.log('PROCESS DOC');
+  await docToJson({ input: './BBDD.rtf', output: './public/full.json' });
+  console.log('PROCESS DOC COMPLETE');
 }
 
 export async function checkAndProcessDoc(lastModified) {
@@ -32,6 +33,7 @@ export async function checkAndProcessDoc(lastModified) {
   console.log('NEW MODIFIED', newLastMod);
   if (lastModified !== newLastMod) {
     await downloadDoc();
+    await processDoc();
     return newLastMod;
   }
   return lastModified;
