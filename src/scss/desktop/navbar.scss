@@ -79,7 +79,7 @@
   align-items: center;
   height: 9vh;
   width: 100%;
-  padding: 0 1em;
+  padding-right: 1em;
   position: absolute;
   top: 0;
 
@@ -92,6 +92,11 @@
     z-index: 200;
     opacity: 0;
     transition: opacity 300ms ease;
+    height: 9vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 3em;
 
     .hamburgerInner, .hamburgerInner::before, .hamburgerInner::after {
       background-color: #ccc;

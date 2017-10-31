@@ -73,5 +73,10 @@ export default {
     return {
       type: 'TOGGLE_SEARCH_IS_VISIBLE'
     };
+  },
+  hideSearch() {
+    return {
+      type: 'HIDE_SEARCH'
+    };
   }
 };

@@ -6,6 +6,12 @@
   overflow: hidden;
   left: 0;
   width: 100%;
+  opacity: 0;
+  transition: opacity 150ms ease;
+
+  &.show {
+    opacity: 1;
+  }
 
   main, aside {
     overflow-y: scroll;

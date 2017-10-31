@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Frontis",
+    "path": "/about/frontis"
+  },
+  {
+    "title": "Grammar",
+    "path": "/about/grammar"
+  },
+  {
+    "title": "Epigraphs",
+    "path": "/about/epigraphs"
+  },
+  {
+    "title": "Bibliography",
+    "path": "/about/bibliography"
+  },
+  {
+    "title": "Open<br/>Manifest",
+    "path": "/about/manifest"
+  },
+  {
+    "title": "Contact",
+    "path": "/about/contact"
+  }
+]

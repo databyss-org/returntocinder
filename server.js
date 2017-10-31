@@ -9,13 +9,6 @@ app.set('port', (process.env.PORT || 5000));
 
 const middleware = [
   compression(),
-  ...(process.env.PROTECT === '1' ? [
-    basicAuth({
-      users: { 'babydaddy': 'borderline' },
-      challenge: true,
-      realm: 'Return to Cinder'
-    })
-  ] : []),
   express.static('./public')
 ];
 

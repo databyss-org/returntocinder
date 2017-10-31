@@ -40,6 +40,10 @@ export default function appReducer(state = initialState, action) {
     case 'TOGGLE_SEARCH_IS_VISIBLE': {
       return { ...state, searchIsVisible: !state.searchIsVisible };
     }
+    
+    case 'HIDE_SEARCH': {
+      return { ...state, searchIsVisible: false };
+    }
 
     default: {
       return state;

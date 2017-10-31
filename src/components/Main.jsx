@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, matchPath } from 'react-router-dom';
+import { BrowserRouter as Router, matchPath, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
@@ -10,6 +10,7 @@ import Menu from './Menu.jsx';
 import DocContainer from './DocContainer.jsx';
 import Source from './Source.jsx';
 import ModalRoute from './ModalRoute.jsx';
+import About from './About.jsx';
 import defer from './Defer.jsx';
 import actions from '../redux/app/actions';
 
@@ -56,6 +57,7 @@ class Main extends PureComponent {
                 })}>
                   <this.DocContainer />
                 </div>
+                <Route path="/about/:page" component={About} />
                 <ModalRoute
                   path={sourcePath}
                   component={this.Source}
