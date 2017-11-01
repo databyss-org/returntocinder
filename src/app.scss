@@ -22,13 +22,13 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/search';
     @import 'scss/desktop/source';
     @import 'scss/desktop/navbar';
-    @import 'scss/desktop/menu';
+    @import 'scss/mobile/menu';
     @import 'scss/desktop/loader';
     @import 'scss/mobile/motifs';
     @import 'scss/desktop/defer';
     @import 'scss/desktop/hamburger';
     @import 'scss/mobile/docHead';
-    @import 'scss/desktop/about';
+    @import 'scss/mobile/about';
     @import 'scss/desktop/subnav';
   }
 }
