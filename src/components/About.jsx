@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Subnav from './Subnav.jsx';
 import styles from '../app.scss';
@@ -7,7 +8,11 @@ import * as data from '../content/about';
 
 class About extends PureComponent {
   render() {
-    const content = data[this.props.match.params.page];
+    const _content = data[this.props.match.params.page];
+    const content = typeof _content === 'function'
+      ? _content(this.props)
+      : _content;
+
     return (
       <div className={styles.about}>
         <div className={styles.head}>
@@ -45,4 +50,6 @@ class About extends PureComponent {
   }
 }
 
-export default withRouter(About);
+export default withRouter(connect(state => ({
+  appState: state.app,
+}), null)(About));
