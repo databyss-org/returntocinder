@@ -1,4 +1,10 @@
 {
   "title": "Return to Cinder",
-  "inscription": "an enormous (but violently incomplete) database of the work of Jacques Derrida"
+  "inscription": "an enormous (but violently incomplete) database of the work of Jacques Derrida",
+  "contentFiles": [
+    {
+      "path": "/Baby Daddy/BBDD.rtf",
+      "out": "./public/full.json"
+    }
+  ]
 }

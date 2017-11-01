@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Subnav from './Subnav.jsx';
 import styles from '../app.scss';
 import config from '../content/config.json';
@@ -17,7 +17,9 @@ class About extends PureComponent {
       <div className={styles.about}>
         <div className={styles.head}>
           <div className={styles.title}>
-            {config.title}
+            <Link to="/">
+              {config.title}
+            </Link>
           </div>
           <Subnav menu={data.menu} />
         </div>

@@ -22,7 +22,7 @@ const bibliography = (props) => {
   return {
     title: 'bibliography',
     body: biblioList.map(b => (
-      `${b.id} ${b.citations[0]} ${b.citations.join('<br />')}`
+      `${b.id} ${b.citations.join('<br />')}`
     ))
   };
 };

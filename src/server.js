@@ -2,11 +2,14 @@ import express from 'express';
 import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
-import { checkAndProcessDoc } from './lib/dropbox';
+import { checkAndProcessDocs } from './lib/dropbox';
+import config from './content/config.json';
 
 const app = express();
 
-let lastModified = null;
+let lastModified = config.contentFiles.map(f => ({
+  path: f.input, out: f.output, lastModified: null
+}));
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -24,7 +27,7 @@ app.get('/dropbox-webhook', (req, res) => {
 
 app.post('/dropbox-webhook', (req, res) => {
   console.log('---DBX---', req.body);
-  checkAndProcessDoc(lastModified).then((lastMod) => {
+  checkAndProcessDocs(lastModified).then((lastMod) => {
     lastModified = lastMod;
     res.status(200).end();
   }).catch((err) => {
@@ -42,7 +45,7 @@ app.listen(app.get('port'), () => {
   console.log('server started on port', app.get('port'));
 });
 
-checkAndProcessDoc(lastModified).then((lastMod) => {
+checkAndProcessDocs(lastModified).then((lastMod) => {
   console.log('STARTUP LAST MODIFIED', lastMod)
   lastModified = lastMod;
 }).catch((err) => {
