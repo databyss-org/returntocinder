@@ -38,6 +38,7 @@ export async function processDoc({ filename, out }) {
 }
 
 export async function checkAndProcessDoc({ path, out, compile, lastModified }) {
+  console.log('checkAndProcessDoc', path);
   const newLastMod = await docLastModified(path);
   if (!lastModified) {
     return { path, lastModified: newLastMod };

@@ -1,15 +1,16 @@
+/* eslint-disable no-console */
+
 import express from 'express';
 import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { checkAndProcessDocs } from './lib/dropbox';
-
-const config = require('./content/config.json');
+import contentFiles from './content';
 
 const app = express();
 
-let lastModified = config.contentFiles.map(f => ({
-  path: f.input, out: f.output, lastModified: null
+let lastModified = contentFiles.map(f => ({
+  ...f, lastModified: null
 }));
 
 app.set('port', (process.env.PORT || 5000));
@@ -34,7 +35,7 @@ app.post('/dropbox-webhook', (req, res) => {
   }).catch((err) => {
     console.log('ERROR - checkAndProcessDoc', err);
     res.status(301).end();
-  })
+  });
 });
 
 
@@ -47,7 +48,7 @@ app.listen(app.get('port'), () => {
 });
 
 checkAndProcessDocs(lastModified).then((lastMod) => {
-  console.log('STARTUP LAST MODIFIED', lastMod)
+  console.log('STARTUP LAST MODIFIED', lastMod);
   lastModified = lastMod;
 }).catch((err) => {
   console.log('STARTUP ERROR - checkAndProcessDoc', err);
