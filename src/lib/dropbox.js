@@ -21,7 +21,7 @@ export async function downloadAndProcessDoc({ path, out, compile }) {
     await processDoc({ filename, out });
   }
   if (compile) {
-    compile();
+    await compile();
   }
 }
 
