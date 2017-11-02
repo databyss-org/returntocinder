@@ -6,9 +6,6 @@
 	"license": "ISC",
 	"author": "pzhine",
 	"main": "index.js",
-	"engines": {
-		"node": "8.9.0"
-	},
 	"scripts": {
 		"heroku-postbuild": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --progress",
 		"start": "node build/server.js",
@@ -93,5 +90,8 @@
 		"eslint-plugin-react": "latest",
 		"eslint-plugin-react-native": "latest",
 		"webpack-dev-server": "latest"
+	},
+	"engines": {
+		"node": "8.9.0"
 	}
 }

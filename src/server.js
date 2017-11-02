@@ -3,7 +3,8 @@ import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
 import { checkAndProcessDocs } from './lib/dropbox';
-import config from './content/config.json';
+
+const config = require('./content/config.json');
 
 const app = express();
 
