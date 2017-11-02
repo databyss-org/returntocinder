@@ -25,7 +25,7 @@ export async function downloadAndProcessDoc({ path, out, compile }) {
     }
     if (compile) {
       console.log('WRITE DOC', out);
-      fs.writeFileSync(out, doc.fileBinary);
+      fs.writeFileSync(out, doc.fileBlob);
       await build();
     }
   } catch (err) {
