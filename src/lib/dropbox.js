@@ -14,14 +14,18 @@ export async function docLastModified(path) {
 
 export async function downloadAndProcessDoc({ path, out, compile }) {
   try {
+    console.log('DOWNLOAD DOC', path);
     const dropbox = new Dropbox({ accessToken: process.env.DBX });
-    const rtf = await dropbox.filesDownload({ path });
+    const doc = await dropbox.filesDownload({ path });
     const filename = (p => p[p.length - 1])(path.split('/'));
-    fs.writeFileSync(filename, rtf.fileBinary);
     if (filename.match('.rtf')) {
+      console.log('WRITE DOC', filename);
+      fs.writeFileSync(filename, doc.fileBinary);
       await processDoc({ filename, out });
     }
     if (compile) {
+      console.log('WRITE DOC', out);
+      fs.writeFileSync(out, doc.fileBinary);
       await compile();
     }
   } catch (err) {
@@ -33,9 +37,10 @@ export async function downloadAndProcessDoc({ path, out, compile }) {
 }
 
 export async function compile() {
+  console.log('COMPILE');
   const exec = util.promisify(childProcess.exec);
   const { stdout, stderr } = await exec('webpack -p --progress');
-  console.log('COMPILE', stdout, stderr);
+  console.log('COMPILE COMPLETE', stdout, stderr);
 }
 
 export async function processDoc({ filename, out }) {
