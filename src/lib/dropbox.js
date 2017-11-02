@@ -1,5 +1,9 @@
+/* eslint-disable no-console */
+
 import Dropbox from 'dropbox';
 import fs from 'fs';
+import util from 'util';
+import childProcess from 'child_process';
 import docToJson from '../scripts/docToJson';
 
 export async function docLastModified(path) {
@@ -8,7 +12,7 @@ export async function docLastModified(path) {
   return new Date(res.entries[0].client_modified);
 }
 
-export async function downloadAndProcessDoc({ path, out }) {
+export async function downloadAndProcessDoc({ path, out, compile }) {
   const dropbox = new Dropbox({ accessToken: process.env.DBX });
   const rtf = await dropbox.filesDownload({ path });
   const filename = (p => p[p.length - 1])(path.split('/'));
@@ -16,6 +20,15 @@ export async function downloadAndProcessDoc({ path, out }) {
   if (filename.match('.rtf')) {
     await processDoc({ filename, out });
   }
+  if (compile) {
+    compile();
+  }
+}
+
+export async function compile() {
+  const exec = util.promisify(childProcess.exec);
+  const { stdout, stderr } = await exec('webpack -p --progress');
+  console.log('COMPILE', stdout, stderr);
 }
 
 export async function processDoc({ filename, out }) {
@@ -24,7 +37,7 @@ export async function processDoc({ filename, out }) {
   console.log('PROCESS DOC COMPLETE');
 }
 
-export async function checkAndProcessDoc({ path, out, lastModified }) {
+export async function checkAndProcessDoc({ path, out, compile, lastModified }) {
   const newLastMod = await docLastModified(path);
   if (!lastModified) {
     return { path, lastModified: newLastMod };
