@@ -26,7 +26,7 @@ export async function downloadAndProcessDoc({ path, out, compile }) {
     if (compile) {
       console.log('WRITE DOC', out);
       fs.writeFileSync(out, doc.fileBinary);
-      await compile();
+      await build();
     }
   } catch (err) {
     console.log('ERROR - downloadAndProcessDoc', err);
@@ -36,7 +36,7 @@ export async function downloadAndProcessDoc({ path, out, compile }) {
   }
 }
 
-export async function compile() {
+export async function build() {
   console.log('COMPILE');
   const exec = util.promisify(childProcess.exec);
   const { stdout, stderr } = await exec('webpack -p --progress');
