@@ -13,15 +13,22 @@ export async function docLastModified(path) {
 }
 
 export async function downloadAndProcessDoc({ path, out, compile }) {
-  const dropbox = new Dropbox({ accessToken: process.env.DBX });
-  const rtf = await dropbox.filesDownload({ path });
-  const filename = (p => p[p.length - 1])(path.split('/'));
-  fs.writeFileSync(filename, rtf.fileBinary);
-  if (filename.match('.rtf')) {
-    await processDoc({ filename, out });
-  }
-  if (compile) {
-    await compile();
+  try {
+    const dropbox = new Dropbox({ accessToken: process.env.DBX });
+    const rtf = await dropbox.filesDownload({ path });
+    const filename = (p => p[p.length - 1])(path.split('/'));
+    fs.writeFileSync(filename, rtf.fileBinary);
+    if (filename.match('.rtf')) {
+      await processDoc({ filename, out });
+    }
+    if (compile) {
+      await compile();
+    }
+  } catch (err) {
+    console.log('ERROR - downloadAndProcessDoc', err);
+    console.log('path', path);
+    console.log('out', out);
+    console.log('compile', compile);
   }
 }
 
@@ -46,7 +53,7 @@ export async function checkAndProcessDoc({ path, out, compile, lastModified }) {
   console.log('CURRENT MODIFIED', lastModified);
   console.log('NEW MODIFIED', newLastMod);
   if (lastModified.getTime() !== newLastMod.getTime()) {
-    downloadAndProcessDoc(path);
+    downloadAndProcessDoc({ path, out, compile });
     return { path, lastModified: newLastMod };
   }
   return { path, lastModified };
