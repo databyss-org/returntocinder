@@ -13,6 +13,8 @@ let lastModified = contentFiles.map(f => ({
   ...f, lastModified: null
 }));
 
+console.log(contentFiles);
+
 app.set('port', (process.env.PORT || 5000));
 
 const middleware = [

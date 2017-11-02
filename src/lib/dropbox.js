@@ -49,19 +49,20 @@ export async function processDoc({ filename, out }) {
   console.log('PROCESS DOC COMPLETE');
 }
 
-export async function checkAndProcessDoc({ path, out, compile, lastModified }) {
+export async function checkAndProcessDoc(spec) {
+  const { path, out, compile, lastModified } = spec;
   console.log('checkAndProcessDoc', path);
   const newLastMod = await docLastModified(path);
   if (!lastModified) {
-    return { path, lastModified: newLastMod };
+    return { ...spec, lastModified: newLastMod };
   }
   console.log('CURRENT MODIFIED', lastModified);
   console.log('NEW MODIFIED', newLastMod);
   if (lastModified.getTime() !== newLastMod.getTime()) {
     downloadAndProcessDoc({ path, out, compile });
-    return { path, lastModified: newLastMod };
+    return { ...spec, lastModified: newLastMod };
   }
-  return { path, lastModified };
+  return { ...spec, lastModified };
 }
 
 export async function checkAndProcessDocs(files) {
