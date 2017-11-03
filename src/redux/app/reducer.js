@@ -15,17 +15,17 @@ const initialState = {
 
 export default function appReducer(state = initialState, action) {
   switch (action.type) {
-    case 'RECEIVE_DOC':
+    case 'RECEIVE_ENTRIES':
     case 'RECEIVE_BIBLIO':
       return {
         ...state,
         ...action.payload
       };
 
-    case 'RECEIVE_ENTRIES':
+    case 'RECEIVE_DOC':
       return {
         ...state,
-        biblio: addMotifsToBiblio(state.biblio, action.payload.entriesBySource),
+        biblio: addMotifsToBiblio(state.biblio, state.entriesBySource),
         ...action.payload
       };
 
@@ -40,7 +40,7 @@ export default function appReducer(state = initialState, action) {
     case 'TOGGLE_SEARCH_IS_VISIBLE': {
       return { ...state, searchIsVisible: !state.searchIsVisible };
     }
-    
+
     case 'HIDE_SEARCH': {
       return { ...state, searchIsVisible: false };
     }

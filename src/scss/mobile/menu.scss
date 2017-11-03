@@ -6,12 +6,17 @@
   pointer-events: none;
   z-index: 500;
 
+  a, a:hover, a:active, a:visited {
+    color: #4A4A4A;
+    text-decoration: none;
+  }
+
   .container {
     position: relative;
     top: -100vh;
     transition: top 250ms ease-in-out;
     background: #fff;
-    padding: 0 1em;
+    padding: 2em 1em 1em 1em;
     height: 91vh;
     overflow: scroll;
   }
@@ -25,15 +30,7 @@
   }
 
   .title {
-    font-family: 'BaskervilleLT-RegularOldFace', serif;
-    letter-spacing: -0.05em;
-    font-size: 2em;
-    color: #4A4A4A;
-    line-height: 0.7em;
-    padding-top: 1.8em;
-    margin-bottom: 1em;
-    padding-left: 0.2em;
-    border-bottom: 1px solid rgba(151,151,151,0.38);
+    display: none;
   }
 
   ul {
@@ -52,11 +49,6 @@
 
     li {
       margin-bottom: 1em;
-
-      a, a:hover, a:active, a:visited {
-        color: #4A4A4A;
-        text-decoration: none;
-      }
     }
   }
 

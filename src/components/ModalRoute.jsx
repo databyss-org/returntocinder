@@ -39,7 +39,8 @@ class ModalRoute extends PureComponent {
     } = this.props;
 
     const inProp = Boolean(matchPath(location.pathname, { path }))
-      && appState.status === 'READY';
+      && appState.status === 'READY'
+      && location.hash !== '#!menu';
 
     const passProps = typeof this.props.passProps === 'function'
       ? this.props.passProps(this.props)

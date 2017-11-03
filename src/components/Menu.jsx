@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
 import Transition from 'react-transition-group/Transition';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import styles from '../app.scss';
@@ -12,7 +12,9 @@ import config from '../content/config.json';
 
 class Menu extends PureComponent {
   onTransition(isIn) {
-    this.props.showMask(isIn);
+    if (!matchPath(this.props.location.pathname, '(.*)/source::sid/(.*)?')) {
+      this.props.showMask(isIn);
+    }
   }
   render() {
     const { location } = this.props;
@@ -30,9 +32,9 @@ class Menu extends PureComponent {
           return (
             <div className={cx(styles.menu, { [styles.show]: state === 'entered' }) }>
               <div className={styles.container}>
-                <div className={styles.title}>
+                <Link className={styles.title} to='/'>
                   {config.title}
-                </div>
+                </Link>
                 {menuData.map((items, idx) => (
                   <ul key={idx}>
                     {items.map((item, idx) => (

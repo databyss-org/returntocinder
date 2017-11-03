@@ -6,12 +6,17 @@
   pointer-events: none;
   z-index: 500;
 
+  a, a:hover, a:active, a:visited {
+    color: #4A4A4A;
+    text-decoration: none;
+  }
+
   .container {
     position: relative;
     top: -100vh;
     transition: top 250ms ease-in-out;
     background: #fff;
-    padding: 0 1em;
+    padding: 2em 1em 1em 1em;
     height: 91vh;
     overflow: scroll;
   }
@@ -25,6 +30,7 @@
   }
 
   .title {
+    display: none;
     font-family: 'BaskervilleLT-RegularOldFace', serif;
     letter-spacing: -0.05em;
     font-size: 2em;
@@ -52,11 +58,6 @@
 
     li {
       margin-bottom: 1em;
-
-      a, a:hover, a:active, a:visited {
-        color: #4A4A4A;
-        text-decoration: none;
-      }
     }
   }
 
