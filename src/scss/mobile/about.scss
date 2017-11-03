@@ -13,22 +13,25 @@
 
   .body {
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     height: 91vh;
-    padding: 16vh 0 3vh;
+    padding: 10vh 0 3vh;
 
     .title {
       color: #9B9B9B;
       font-family: 'DINNextLTPro-MediumCond';
       font-size: 2em;
       padding-bottom: 1.5em;
+      width: 100%;
+      text-align: center;
     }
 
     p {
       color: #4A4A4A;
       font-size: 1.1em;
       line-height: 1.5em;
-      margin-bottom: 1.5em;
-      width: 80%;
+      width: 85%;
+      margin: 0 auto 1.5em;
       max-width: 575px;
     }
 

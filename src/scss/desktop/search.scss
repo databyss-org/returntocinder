@@ -8,18 +8,24 @@
   position: absolute;
   z-index: 100;
   top: 0;
-  width: 100%;
-  left: 100%;
+  width: 0;
+  left: 100vw;
   height: $height;
-  transition: left 200ms ease-in-out;
+  transition: left 200ms ease-in-out,
+              width 200ms ease-in-out;
 
   &.entering, &.entered {
     left: 0;
+    width: 100vw;
   }
 
   &.entered {
-    .input::placeholder {
-      opacity: 1;
+    .input {
+      display: block;
+
+      &::placeholder {
+        opacity: 1;
+      }
     }
     .clear {
       opacity: 1;
@@ -56,6 +62,7 @@
     background: transparent;
     border: 0;
     flex-grow: 1;
+    display: none;
 
     -webkit-appearance: none;
 

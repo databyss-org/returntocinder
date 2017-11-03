@@ -33,7 +33,7 @@ app.post('/dropbox-webhook', (req, res) => {
   }).catch((err) => {
     console.log('ERROR - checkAndProcessDoc', err);
     res.status(301).end();
-  })
+  });
 });
 
 

@@ -12,6 +12,7 @@
   height: 100vh;
   filter: blur(0);
   transition: filter 75ms linear;
+  overflow: hidden;
 
   &.show {
     filter: blur(10px);
