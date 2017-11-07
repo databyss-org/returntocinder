@@ -2,13 +2,13 @@
 
 import Dropbox from 'dropbox';
 import fs from 'fs';
-import util from 'util';
+import { promisify } from 'util';
 import childProcess from 'child_process';
 import queue from 'queue';
 import docToJson from '../scripts/docToJson';
 import notify from './notify';
 
-const exec = util.promisify(childProcess.exec);
+const exec = promisify(childProcess.exec);
 
 export default class Dbx {
   constructor({ fileList, gitUrl }) {
