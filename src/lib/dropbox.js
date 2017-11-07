@@ -12,6 +12,7 @@ const exec = promisify(childProcess.exec);
 
 export default class Dbx {
   constructor({ fileList, gitUrl }) {
+    console.log('CREATE DROPBOX SYNC', fileList, gitUrl);
     this.lastModified = fileList.map(f => ({
       ...f, lastModified: null
     }));
@@ -27,7 +28,11 @@ export default class Dbx {
 
   requestSync() {
     this.q.push(async () => {
-      this.lastModified = await this.checkAndProcessDoc(this.lastModified);
+      try {
+        this.lastModified = await this.checkAndProcessDoc(this.lastModified);
+      } catch (err) {
+        console.log('JOB ERROR', JSON.stringify(err, null, 2));
+      }
     });
   }
 
