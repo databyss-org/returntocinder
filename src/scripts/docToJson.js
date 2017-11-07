@@ -168,8 +168,8 @@ function parseLocations(entry) {
       // xx-xxiv
       // xvi-221
       const prange = range.map(n => parseFloat(
-        n.match(/[ivxlcdm]/i) ? `0.${roman.toArabic(n)}` : n
-      , 10));
+        n.match(/[ivxlcdm]/i) ? `0.${roman.toArabic(n)}` : n, 10
+      ));
       // [123, 24] => [123, 124]
       if (prange[1] < prange[0]) {
         prange[1] = parseFloat(range[0].charAt(0) + range[1], 10);
@@ -235,7 +235,7 @@ function getLocations(entry) {
   let matches = content.match(re1);
   if (matches) {
     // console.log('--RE1', matches[0]);
-    locations.raw = matches[0];
+    [locations.raw] = matches;
     return { content: removeLocations(re1), locations };
   }
 
@@ -244,7 +244,7 @@ function getLocations(entry) {
   matches = content.match(re1a);
   if (matches) {
     // console.log('--RE1A', matches[0]);
-    locations.raw = matches[0];
+    [locations.raw] = matches;
     return { content: removeLocations(re1a), locations };
   }
 
@@ -256,7 +256,7 @@ function getLocations(entry) {
   matches = content.match(re1b);
   if (matches) {
     // console.log('--RE1B', matches[0]);
-    locations.raw = matches[0];
+    [locations.raw] = matches;
     return { content: removeLocations(re1b), locations };
   }
 
@@ -265,7 +265,7 @@ function getLocations(entry) {
   matches = content.match(re2);
   if (matches) {
     // console.log('--RE2', matches[0]);
-    locations.raw = matches[0];
+    [locations.raw] = matches;
     return { content: removeLocations(re2), locations };
   }
 
@@ -290,9 +290,11 @@ function isBold(chunk) {
       chunk.style.font.name.match(/bold/i)
     ) ||
     chunk.content.reduce((allBold, c) =>
-      allBold && c.style.font && c.style.font.name && c.style.font.name.match(/bold/i)
-    , true)
+      allBold && c.style.font && c.style.font.name && c.style.font.name.match(/bold/i),
+    true)
   );
 }
 
-// docToJson({ input: '../doc/full.rtf', output: './public/full.json' });
+if (require.main === module) {
+  docToJson({ input: '../doc/full.rtf', output: './public/full.json' });
+}
