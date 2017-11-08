@@ -12,8 +12,8 @@
 		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
 		"doc": "babel-node src/scripts/docToJson.js",
 		"biblio": "babel-node src/scripts/biblioToJson.js",
-		"index": "babel-node src/scripts/indexEntries.js",
-		"simplify": "babel-node src/scripts/simplifyEntries.js",
+		"index": "babel-node src/scripts/indexEntries.js ./public",
+		"simplify": "babel-node src/scripts/simplifyEntries.js ./public",
 		"dump-motifs": "babel-node src/scripts/dumpMotifs.js"
 	},
 	"dependencies": {

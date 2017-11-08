@@ -2,11 +2,15 @@
 import fs from 'fs';
 import { simplify } from '../lib/_helpers';
 
-const entries = JSON.parse(fs.readFileSync('./public/entries.json'));
+export default function simplifyEntries({ path }) {
+  const entries = JSON.parse(fs.readFileSync(`${path}/entries.json`));
+  const simplified = entries.map(entry => ({
+    ...entry,
+    content: simplify(entry.content)
+  }));
+  fs.writeFileSync(`${path}/entries.json`, JSON.stringify(simplified));
+}
 
-const simplified = entries.map(entry => ({
-  ...entry,
-  content: simplify(entry.content)
-}));
-
-fs.writeFile('./public/entries.json', JSON.stringify(simplified));
+if (require.main === module) {
+  simplifyEntries({ path: process.argv[2] });
+}

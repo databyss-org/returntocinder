@@ -88,8 +88,8 @@ export default class Dbx {
 
   async indexAndPush() {
     console.log('INDEX', this.gitUrl);
-    await exec('npm run index > /app/public/index.log');
-    await exec('npm run simplify');
+    await exec('npm run index ./repo/public > ./repo/public/indexlog.txt');
+    await exec('npm run simplify ./repo/public');
     await this.push();
   }
 

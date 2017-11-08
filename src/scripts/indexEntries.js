@@ -7,9 +7,9 @@ import {
   mergeEntries
 } from '../lib/indexers';
 
-export default function indexEntries() {
-  const doc = JSON.parse(fs.readFileSync('./public/full.json'));
-  const biblio = JSON.parse(fs.readFileSync('./public/biblio.json'));
+export default function indexEntries({ path }) {
+  const doc = JSON.parse(fs.readFileSync(`${path}/full.json`));
+  const biblio = JSON.parse(fs.readFileSync(`${path}/biblio.json`));
 
   // get entries by source
   const allSources = sourcesFromEntries(entriesFromMotifs(doc, biblio));
@@ -46,9 +46,9 @@ export default function indexEntries() {
   console.log(`BEFORE MERGE: ${entryCount} entries`);
   console.log(`AFTER MERGE: ${mergedEntryCount} entries`);
 
-  fs.writeFile('./public/entries.json', JSON.stringify(mergedEntries));
+  fs.writeFile(`${path}/entries.json`, JSON.stringify(mergedEntries));
 }
 
 if (require.main === module) {
-  indexEntries();
+  indexEntries({ path: process.argv[2] });
 }
