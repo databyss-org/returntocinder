@@ -24,6 +24,14 @@ export default class Dbx {
       autostart: true
     });
     this.q.on('end', () => this.onQueueEnd());
+
+    // SET INITIAL LAST MODIFIEDS
+    this.checkAndProcessDocs(this.lastModified).then((lastMod) => {
+      console.log('STARTUP LAST MODIFIED', lastMod);
+      this.lastModified = lastMod;
+    }).catch((err) => {
+      console.log('STARTUP ERROR - checkAndProcessDocs', err);
+    });
   }
 
   requestSync() {
