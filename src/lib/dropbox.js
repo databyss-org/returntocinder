@@ -91,7 +91,7 @@ export default class Dbx {
   async indexAndPush() {
     console.log('INDEX');
     try {
-      await exec('npm run index ./repo/public > ./repo/public/mergelog.txt');
+      await exec('npm run index ./repo/public');
       await exec('npm run simplify ./repo/public');
       await this.push();
     } catch (err) {
