@@ -94,7 +94,7 @@ export function rangeOverlapExists(range1, range2) {
     (range2.high >= range1.low && range2.high <= range1.high);
 }
 
-export function mergeEntries(entryList, minCount, mergedList = [], log) {
+export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
   if (!entryList.length) {
     return mergedList;
   }
@@ -147,7 +147,12 @@ export function mergeEntries(entryList, minCount, mergedList = [], log) {
   log(' ');
 
   // tail-recurse on new list with merged entries removed
-  return mergeEntries(filteredEntries, minCount, mergeResult);
+  return mergeEntries({
+    entryList: filteredEntries,
+    minCount,
+    mergedList: mergeResult,
+    log
+  });
 }
 
 export function compare(s1, s2, minCount) {

@@ -36,7 +36,11 @@ export default function indexEntries({ path, logPath }) {
     log(sid);
     log(' ');
 
-    const merged = mergeEntries(sources[sid].entries, 5);
+    const merged = mergeEntries({
+      entryList: sources[sid].entries,
+      minCount: 5,
+      log
+    });
     mergedEntries = mergedEntries.concat(merged);
 
     log(`Runtime: ${new Date() - t2}`);
