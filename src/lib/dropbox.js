@@ -8,7 +8,17 @@ import queue from 'queue';
 import docToJson from '../scripts/docToJson';
 import notify from './notify';
 
-const exec = promisify(childProcess.exec);
+const _exec = promisify(childProcess.exec);
+
+const exec = async (cmd) => {
+  const { stdout, stderr, error } = await _exec(cmd);
+  if (error) {
+    throw new Error(error);
+  }
+  console.log(stdout);
+  console.log(stderr);
+  return stdout;
+};
 
 export default class Dbx {
   constructor({ fileList, gitUrl }) {
@@ -91,8 +101,8 @@ export default class Dbx {
   async indexAndPush() {
     console.log('INDEX');
     try {
-      await exec('npm run index ./repo/public');
-      await exec('npm run simplify ./repo/public');
+      await exec('npm run index-repo');
+      await exec('npm run simplify-repo');
       await this.push();
     } catch (err) {
       console.log('ERROR - indexAndPush', err);
@@ -108,10 +118,10 @@ export default class Dbx {
 
   async push() {
     const url = this.gitUrl;
-    const { stdout } = await exec('cd repo && git status');
+    const text = await exec('cd repo && git status');
     console.log('COMMIT AND PUSH', url);
     await exec('cd repo && git commit -a -m "content update" && git pull && git push');
-    const res = await notify({ subject: 'Dropbox changes pushed', text: stdout });
+    const res = await notify({ subject: 'Dropbox changes pushed', text });
     console.log(res);
   }
 

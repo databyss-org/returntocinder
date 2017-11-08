@@ -8,7 +8,10 @@ import Dbx from './lib/dropbox';
 import contentFiles from './content';
 
 const app = express();
-const dbx = new Dbx({ fileList: contentFiles, gitUrl: process.env.GIT_URL });
+let dbx = null;
+if (process.env.DBX) {
+  dbx = new Dbx({ fileList: contentFiles, gitUrl: process.env.GIT_URL });
+}
 
 app.set('port', (process.env.PORT || 5000));
 

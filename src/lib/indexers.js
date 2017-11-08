@@ -94,7 +94,7 @@ export function rangeOverlapExists(range1, range2) {
     (range2.high >= range1.low && range2.high <= range1.high);
 }
 
-export function mergeEntries(entryList, minCount, mergedList = []) {
+export function mergeEntries(entryList, minCount, mergedList = [], log) {
   if (!entryList.length) {
     return mergedList;
   }
@@ -105,17 +105,17 @@ export function mergeEntries(entryList, minCount, mergedList = []) {
   };
   const mergeResult = mergedList.concat(firstEntry);
 
-  console.log(firstEntry.content);
-  console.log(firstEntry.locations);
-  console.log(' ');
+  log(firstEntry.content);
+  log(firstEntry.locations);
+  log(' ');
 
   const filteredEntries = entries.filter((entry) => {
     const score = compare(firstEntry.content, entry.content, minCount);
     if (score) {
-      console.log(entry.content);
+      log(entry.content);
       // check for overlap of page ranges
       if (!rangeOverlapExists(firstEntry.locations, entry.locations)) {
-        console.log('❌', entry.locations);
+        log('❌', entry.locations);
         return true;
       }
 
@@ -124,15 +124,15 @@ export function mergeEntries(entryList, minCount, mergedList = []) {
       // Take the longest content
       if (entry.content.length > firstEntry.content.length) {
         firstEntry.content = entry.content;
-        console.log('⭐ content');
+        log('⭐ content');
       }
       // take the longest page range
       if (entry.locations.low < firstEntry.locations.low
       || entry.locations.high > firstEntry.locations.high) {
-        console.log('⭐ locations', entry.locations);
+        log('⭐ locations', entry.locations);
         firstEntry.locations = entry.locations;
       }
-      console.log(' ');
+      log(' ');
       return false;
     }
     return true;
@@ -143,8 +143,8 @@ export function mergeEntries(entryList, minCount, mergedList = []) {
     .reduce((arr, mid) => arr.concat(firstEntry.motif[mid]), [])
     .sort(m => m.name);
 
-  console.log(' ');
-  console.log(' ');
+  log(' ');
+  log(' ');
 
   // tail-recurse on new list with merged entries removed
   return mergeEntries(filteredEntries, minCount, mergeResult);
