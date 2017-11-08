@@ -14,7 +14,7 @@ app.set('port', (process.env.PORT || 5000));
 
 const middleware = [
   compression(),
-  express.static('./public')
+  ...(process.env.DBX ? [] : [express.static('./public')])
 ];
 
 app.use(...middleware);
