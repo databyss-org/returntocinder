@@ -1,5 +1,6 @@
 /* eslint-disable no-console, no-continue */
 import fs from 'fs';
+import os from 'os';
 
 import {
   entriesFromMotifs,
@@ -7,7 +8,7 @@ import {
   mergeEntries
 } from '../lib/indexers';
 
-export default function indexEntries({ path }) {
+export default function indexEntries({ path, logPath }) {
   const doc = JSON.parse(fs.readFileSync(`${path}/full.json`));
   const biblio = JSON.parse(fs.readFileSync(`${path}/biblio.json`));
 
@@ -22,33 +23,41 @@ export default function indexEntries({ path }) {
   let mergedEntryCount = 0;
   let mergedEntries = [];
 
+  if (logPath) {
+    fs.writeFileSync(logPath, '');
+  }
+
+  const log = msg => logPath
+    ? fs.appendFileSync(logPath, msg + os.EOL)
+    : console.log(msg);
+
   Object.keys(sources).forEach((sid) => {
-    console.log('🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊');
-    console.log(sid);
-    console.log(' ');
+    log('🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊🌊');
+    log(sid);
+    log(' ');
 
     const merged = mergeEntries(sources[sid].entries, 5);
     mergedEntries = mergedEntries.concat(merged);
 
-    console.log(`Runtime: ${new Date() - t2}`);
+    log(`Runtime: ${new Date() - t2}`);
     t2 = new Date();
 
-    console.log(`BEFORE MERGE: ${sources[sid].entries.length} entries`);
+    log(`BEFORE MERGE: ${sources[sid].entries.length} entries`);
     entryCount += sources[sid].entries.length;
 
-    console.log(`AFTER MERGE: ${merged.length} entries`);
+    log(`AFTER MERGE: ${merged.length} entries`);
     mergedEntryCount += merged.length;
 
-    console.log(' ');
+    log(' ');
   });
 
-  console.log(`Total Runtime: ${new Date() - t1}`);
-  console.log(`BEFORE MERGE: ${entryCount} entries`);
-  console.log(`AFTER MERGE: ${mergedEntryCount} entries`);
+  log(`Total Runtime: ${new Date() - t1}`);
+  log(`BEFORE MERGE: ${entryCount} entries`);
+  log(`AFTER MERGE: ${mergedEntryCount} entries`);
 
   fs.writeFile(`${path}/entries.json`, JSON.stringify(mergedEntries));
 }
 
 if (require.main === module) {
-  indexEntries({ path: process.argv[2] });
+  indexEntries({ path: process.argv[2], logPath: process.argv[3] });
 }

@@ -13,7 +13,7 @@
 		"doc": "babel-node src/scripts/docToJson.js",
 		"biblio": "babel-node src/scripts/biblioToJson.js",
 		"index": "babel-node src/scripts/indexEntries.js ./public",
-		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public",
+		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public ./repo/public/mergelog.txt",
 		"simplify": "babel-node src/scripts/simplifyEntries.js ./public",
 		"simplify-repo": "babel-node src/scripts/simplifyEntries.js ./repo/public",
 		"dump-motifs": "babel-node src/scripts/dumpMotifs.js"
