@@ -16,7 +16,7 @@ const mailer = mailgun(auth);
 
 export default function notify(msg) {
   return new Promise((resolve, reject) => {
-    mailer.send({
+    mailer.messages().send({
       ...config,
       ...msg
     }, (error, info) => {
