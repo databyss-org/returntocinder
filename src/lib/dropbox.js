@@ -101,7 +101,10 @@ export default class Dbx {
   async indexAndPush() {
     console.log('INDEX');
     try {
-      await notify({ subject: 'Full index started', text: '' });
+      await notify({
+        subject: 'Full index started',
+        text: 'You will receive another email when it is complete'
+      });
       await exec('npm run index-repo');
       await exec('npm run simplify-repo');
       await this.push();
