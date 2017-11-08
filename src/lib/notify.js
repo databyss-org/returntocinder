@@ -16,7 +16,7 @@ const mailer = mailgun(auth);
 
 export default function notify(msg) {
   return new Promise((resolve, reject) => {
-    mailer.sendMail({
+    mailer.send({
       ...config,
       ...msg
     }, (error, info) => {
@@ -30,6 +30,7 @@ export default function notify(msg) {
       } else {
         resolve(JSON.stringify({
           type: 'NOTIFY',
+          info,
           ...config,
           ...msg
         }, null, 2));
