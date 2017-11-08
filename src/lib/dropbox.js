@@ -8,7 +8,14 @@ import queue from 'queue';
 import docToJson from '../scripts/docToJson';
 import notify from './notify';
 
-const exec = promisify(childProcess.exec);
+const exec = async (cmd) => {
+  const _exec = promisify(childProcess.exec);
+  const { stdout, stderr } = await _exec(cmd);
+  if (stderr) {
+    throw new Error(stderr);
+  }
+  console.log(stdout);
+};
 
 export default class Dbx {
   constructor({ fileList, gitUrl }) {
