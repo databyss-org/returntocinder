@@ -11,11 +11,6 @@ export default function indexEntries({ path }) {
   const doc = JSON.parse(fs.readFileSync(`${path}/full.json`));
   const biblio = JSON.parse(fs.readFileSync(`${path}/biblio.json`));
 
-  if (process.env.DEBUG === '1') {
-    console.log('indexEntries', Object.keys(doc).length);
-    return;
-  }
-
   // get entries by source
   const allSources = sourcesFromEntries(entriesFromMotifs(doc, biblio));
   const sources = allSources;
