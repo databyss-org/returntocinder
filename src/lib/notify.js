@@ -2,19 +2,19 @@
 
 import mailgun from 'mailgun-js';
 
-const auth = {
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN
-};
-
-const config = {
-  from: process.env.NOTIFY_SENDER,
-  to: process.env.NOTIFY_RECIPIENTS.split(',')
-};
-
-const mailer = mailgun(auth);
-
 export default function notify(msg) {
+  const auth = {
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN
+  };
+
+  const mailer = mailgun(auth);
+
+  const config = {
+    from: process.env.NOTIFY_SENDER,
+    to: process.env.NOTIFY_RECIPIENTS.split(',')
+  };
+
   return new Promise((resolve, reject) => {
     mailer.messages().send({
       ...config,
