@@ -32,7 +32,11 @@ app.post('/dropbox-webhook', (req, res) => {
 
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname.replace('/build', ''), '/public/index.html'));
+  if (process.env.DBX) {
+    res.status(301).end();
+  } else {
+    res.sendFile(path.join(__dirname.replace('/build', ''), '/public/index.html'));
+  }
 });
 
 app.listen(app.get('port'), () => {

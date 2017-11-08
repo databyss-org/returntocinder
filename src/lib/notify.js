@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
 
-import nodemailer from 'nodemailer';
-import mg from 'nodemailer-mailgun-transport';
+import mailgun from 'mailgun-js';
 
 const auth = {
-  auth: {
-    api_key: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMAIN
-  }
+  api_key: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN
 };
 
 const config = {
@@ -15,7 +12,7 @@ const config = {
   to: process.env.NOTIFY_RECIPIENTS.split(',')
 };
 
-const mailer = nodemailer.createTransport(mg(auth));
+const mailer = mailgun(auth);
 
 export default function notify(msg) {
   return new Promise((resolve, reject) => {
