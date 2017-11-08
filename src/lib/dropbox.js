@@ -29,7 +29,7 @@ export default class Dbx {
   requestSync() {
     this.q.push(async () => {
       try {
-        this.lastModified = await this.checkAndProcessDoc(this.lastModified);
+        this.lastModified = await this.checkAndProcessDocs(this.lastModified);
       } catch (err) {
         console.log('JOB ERROR', JSON.stringify(err, null, 2));
       }
