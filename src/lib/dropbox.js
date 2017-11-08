@@ -25,6 +25,9 @@ export default class Dbx {
     });
     this.q.on('end', () => this.onQueueEnd());
 
+    // CLONE REPO
+    this.cloneRepo();
+
     // SET INITIAL LAST MODIFIEDS
     this.checkAndProcessDocs(this.lastModified).then((lastMod) => {
       console.log('STARTUP LAST MODIFIED', lastMod);
@@ -47,7 +50,7 @@ export default class Dbx {
   onQueueEnd() {
     if (this.needsPush) {
       this.needsPush = false;
-      this.push();
+      this.push().catch(err => console.log('PUSH ERROR', err));
     }
   }
 
@@ -85,29 +88,24 @@ export default class Dbx {
 
   async indexAndPush() {
     console.log('INDEX', this.gitUrl);
-    const { stdout1, stderr1 } = await exec('npm run index');
-    console.log('INDEX COMPLETE', stdout1, stderr1);
-    const { stdout2, stderr2 } = await exec('npm run simplify');
-    console.log('INDEX COMPLETE', stdout2, stderr2);
+    await exec('npm run index > /app/public/index.log');
+    await exec('npm run simplify');
     await this.push();
+  }
+
+  async cloneRepo() {
+    await exec('ssh-keyscan heroku.com >> ~/.ssh/known_hosts');
+    await exec(`git config --global user.email "${process.env.NOTIFY_SENDER}"`);
+    await exec('git config --global user.name "Dropbox Sync"');
+    await exec(`git clone ${this.gitUrl} repo`);
   }
 
   async push() {
     const url = this.gitUrl;
-    const { stdout1, stderr1 } = await exec('git status');
-    const text = `
-      FILES CHANGED:
-      ${stdout1}
-
-      ERRORS:
-      ${stderr1}
-    `;
+    const { stdout } = await exec('cd repo && git status');
     console.log('COMMIT AND PUSH', url);
-    const { stdout2, stderr2 } = await exec(
-      `git commit -a -m "content" && git pull ${url} && git push ${url} master`
-    );
-    console.log('PUSH COMPLETE', stdout2, stderr2);
-    const res = await notify({ subject: 'Dropbox changes pushed', text });
+    await exec('cd repo && git commit -a -m "content update" && git pull && git push');
+    const res = await notify({ subject: 'Dropbox changes pushed', text: stdout });
     console.log(res);
   }
 
