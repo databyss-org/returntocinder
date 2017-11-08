@@ -1,6 +1,7 @@
 export default [
   {
     path: '/Baby Daddy/BBDD.rtf',
+    testPath: '/Baby Daddy/BBDD-test.rtf',
     out: './repo/public/full.json'
   },
   {

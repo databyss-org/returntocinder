@@ -14,7 +14,9 @@ export default class Dbx {
   constructor({ fileList, gitUrl }) {
     console.log('CREATE DROPBOX SYNC', fileList, gitUrl);
     this.lastModified = fileList.map(f => ({
-      ...f, lastModified: null
+      ...f,
+      path: process.env.TEST_MODE === '1' ? f.testPath : f.path,
+      lastModified: null
     }));
     this.isIndexing = false;
     this.gitUrl = gitUrl;
@@ -88,9 +90,13 @@ export default class Dbx {
 
   async indexAndPush() {
     console.log('INDEX', this.gitUrl);
-    await exec('npm run index ./repo/public > ./repo/public/mergelog.txt');
-    await exec('npm run simplify ./repo/public');
-    await this.push();
+    try {
+      await exec('npm run index ./repo/public > ./repo/public/mergelog.txt');
+      await exec('npm run simplify ./repo/public');
+      await this.push();
+    } catch (err) {
+      console.log('ERROR - indexAndPush', err);
+    }
   }
 
   async cloneRepo() {
