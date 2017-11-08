@@ -8,13 +8,15 @@ import queue from 'queue';
 import docToJson from '../scripts/docToJson';
 import notify from './notify';
 
+const _exec = promisify(childProcess.exec);
+
 const exec = async (cmd) => {
-  const _exec = promisify(childProcess.exec);
-  const { stdout, stderr } = await _exec(cmd);
-  if (stderr) {
-    throw new Error(stderr);
+  const { stdout, stderr, error } = await _exec(cmd);
+  if (error) {
+    throw new Error(error);
   }
   console.log(stdout);
+  console.log(stderr);
 };
 
 export default class Dbx {
