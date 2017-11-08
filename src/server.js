@@ -30,7 +30,6 @@ app.post('/dropbox-webhook', (req, res) => {
   res.status(200).end();
 });
 
-
 app.get('/*', (req, res) => {
   if (process.env.DBX) {
     res.status(301).end();
