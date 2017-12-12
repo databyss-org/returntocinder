@@ -35,37 +35,39 @@ class Navbar extends PureComponent {
 
     return (
       <div className={styles.navbar}>
-        <div className={styles.bar}>
-          <Hamburger
-            isActive={hamburgerIsActive}
-            onClick={() => this.onMenuClick(hamburgerIsActive)}
-          />
-          <Hamburger
-            homeLinkOnly={true}
-            isActive={hamburgerIsActive}
-          />
-          <ul className={styles.navLinks}>
-            {menuData.map(items => items.map((item, idx) => item.header && (
-              <li key={idx}>
-                <Link to={item.path}>{item.title}</Link>
-              </li>
-            )))}
-          </ul>
-          <div className={styles.searchContainer}>
-            <button
-              name="searchButton"
-              className={styles.searchButton}
-              onClick={() => {
-                hamburgerIsActive && this.hideMenu();
-                toggleSearchIsVisible();
-              }}
-              >
-              <SearchIcon />
-            </button>
-            <div className={cx(styles.menuBar, {
-                [styles.show]: appState.searchIsVisible
-              })}>
-              <Search withMaskClassName={this.props.withMaskClassName} />
+        <div className={styles.barContainer}>
+          <div className={styles.bar}>
+            <Hamburger
+              isActive={hamburgerIsActive}
+              onClick={() => this.onMenuClick(hamburgerIsActive)}
+            />
+            <Hamburger
+              homeLinkOnly={true}
+              isActive={hamburgerIsActive}
+            />
+            <ul className={styles.navLinks}>
+              {menuData.map(items => items.map((item, idx) => item.header && (
+                <li key={idx}>
+                  <Link to={item.path}>{item.title}</Link>
+                </li>
+              )))}
+            </ul>
+            <div className={styles.searchContainer}>
+              <button
+                name="searchButton"
+                className={styles.searchButton}
+                onClick={() => {
+                  hamburgerIsActive && this.hideMenu();
+                  toggleSearchIsVisible();
+                }}
+                >
+                <SearchIcon />
+              </button>
+              <div className={cx(styles.menuBar, {
+                  [styles.show]: appState.searchIsVisible
+                })}>
+                <Search withMaskClassName={this.props.withMaskClassName} />
+              </div>
             </div>
           </div>
         </div>

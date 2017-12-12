@@ -1,0 +1,16 @@
+.motifs {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+
+  li {
+    font-size: 1.3em;
+    width: 50%;
+    padding: 0.4em 2em;
+    cursor: pointer;
+
+    a, a:hover, a:visited, a:active {
+      color: inherit;
+    }
+  }
+}

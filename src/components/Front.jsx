@@ -58,10 +58,11 @@ class Front extends PureComponent {
         {(state) => {
           return (
             <div className={cx(styles.front, {
-              [styles.withMotifs]: state === 'entered' || state === 'entering',
               [styles.showFull]: showFull()
             })}>
-              <div className={styles.container}>
+              <div className={cx(styles.container, {
+                [styles.withMotifs]: state === 'entered' || state === 'entering',
+              })}>
                 <div className={styles.head}>
                   <div className={styles.title}>
                     {config.title}

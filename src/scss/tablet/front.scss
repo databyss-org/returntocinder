@@ -34,7 +34,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 65%;
+      width: 100%;
       transition: height 200ms ease-in-out;
     }
 
@@ -47,7 +47,8 @@
       justify-content: flex-end;
       opacity: 0;
       height: 0vh;
-      width: 250px;
+      width: 65%;
+      margin-left: 5%;
       transition: opacity 100ms ease;
 
       .loader {
@@ -69,7 +70,6 @@
       margin-bottom: 0.3em;
       font-family: 'BaskervilleLT-RegularOldFace', serif;
       letter-spacing: -0.05em;
-      white-space: nowrap;
     }
 
     p {

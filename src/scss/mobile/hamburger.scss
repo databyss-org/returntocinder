@@ -1,0 +1,35 @@
+.hamburger {
+  pointer-events: all;
+  margin-right: 4em;
+
+  &.homeLinkOnly {
+    display: none;
+  }
+
+  .databyss {
+    flex-grow: 1;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    z-index: 10;
+    opacity: 0.75;
+
+    svg {
+      height: 26px;
+    }
+  }
+  .glow {
+    background-image: radial-gradient(50% 77%, #ffffff 50%, rgba(25, 20, 31, 0) 79%);
+    transition: all 30ms ease;
+    width: 100px;
+    transform: rotate(23deg);
+    position: absolute;
+    margin: 0 auto;
+    z-index: 5;
+    height: 25px;
+    opacity: 0.2;
+    filter: blur(6px);
+    left: -15px;
+  }
+}

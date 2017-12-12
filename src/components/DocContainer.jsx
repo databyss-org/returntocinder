@@ -52,7 +52,7 @@ class DocContainer extends PureComponent {
                   <Doc
                     query={this.getQuery(props)} path={['main']}
                     ready={state === 'entered'}
-                  />
+                  />  
                 </main>
               )}
             />

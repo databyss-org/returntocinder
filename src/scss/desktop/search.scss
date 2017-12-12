@@ -3,7 +3,7 @@
   $font-family: 'Open Sans', sans-serif;
   $height: 5vh;
   $border-color: #aaa;
-  $border-radius: 0;
+  $border-radius: 3px;
 
   position: absolute;
   z-index: 100;
@@ -12,6 +12,7 @@
   background: rgba(255,255,255,0.25);
   left: 0;
   width: 100%;
+  border-radius: $border-radius;
 
   .container {
     height: $height;
@@ -73,9 +74,8 @@
     position: absolute;
     top: 5vh;
     width: 100%;
-    border: none;
-    border-top: 1px dotted #efefef;
-    border-bottom: 2px solid #efefef;
+    border: 2px solid #efefef;
+    border-top: none;
     background-color: #fff;
     font-family: $font-family;
     font-weight: 300;
