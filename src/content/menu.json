@@ -8,29 +8,35 @@
   [
     {
       "title": "Frontis",
-      "path": "/about/frontis"
+      "path": "/about/frontis",
+      "header": true
     },
     {
       "title": "Grammar",
-      "path": "/about/grammar"
+      "path": "/about/grammar",
+      "header": true
     },
     {
       "title": "Epigraphs",
-      "path": "/about/epigraphs"
+      "path": "/about/epigraphs",
+      "footer": true
     },
     {
       "title": "Bibliography",
-      "path": "/about/bibliography"
+      "path": "/about/bibliography",
+      "header": true
     }
   ],
   [
     {
       "title": "Open Manifest",
-      "path": "/about/manifest"
+      "path": "/about/manifest",
+      "footer": true
     },
     {
       "title": "Contact",
-      "path": "/about/contact"
+      "path": "/about/contact",
+      "footer": true
     }
   ]
 ]

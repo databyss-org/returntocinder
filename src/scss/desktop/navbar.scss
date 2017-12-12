@@ -1,25 +1,22 @@
 .navbar {
-  background-image: url('/stone.jpg');
-  background-size: cover;
   position: relative;
   display: flex;
   align-items: flex-start;
   width: 100%;
-  height: 9vh;
+  height: 100vh;
+  overflow: visible;
   transition: height 300ms ease-in-out;
   z-index: 10;
-
-  &.showFull {
-    height: 100vh;
-  }
+  pointer-events: none;
 
   .bar {
     display: flex;
     align-items: center;
-    height: 9vh;
     width: 100%;
     padding: 0 1em;
     position: relative;
+    z-index: 100;
+    @include maxAndCenter();
 
     &:after {
       content: '';
@@ -32,75 +29,58 @@
     }
   }
 
-  .databyss {
+  .navLinks {
+    display: flex;
+    margin-left: 2em;
+    pointer-events: all;
+
+    a, a:visited, a:hover {
+      color: #fff;
+      opacity: 0.65;
+      margin-right: 1em;
+      text-decoration: none;
+    }
+  }
+
+  .searchContainer {
     flex-grow: 1;
-    flex-shrink: 0;
-    text-align: center;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    opacity: 0.75;
-
-    svg {
-      height: 26px;
-    }
-  }
-  .glow {
-    background-image: radial-gradient(50% 77%, #ffffff 50%, rgba(25, 20, 31, 0) 79%);
-    transition: all 30ms ease;
-    width: 100px;
-    transform: rotate(23deg);
-    position: absolute;
-    margin: 0 auto;
-    z-index: 5;
-    height: 25px;
-    opacity: 0.2;
-    filter: blur(6px);
-    left: 0;
-    right: 1.4em;
-  }
-  .searchButton {
-    flex-grow: 0;
-    flex-shrink: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    opacity: 0.65;
-
-    svg {
-      height: 21px;
-    }
-  }
-}
-
-.menuBar {
-  display: flex;
-  align-items: center;
-  height: 9vh;
-  width: 100%;
-  padding-right: 1em;
-  position: absolute;
-  top: 0;
-
-  &.show .hamburger {
-    opacity: 1;
-  }
-
-  .hamburger {
+    justify-content: flex-end;
     position: relative;
-    z-index: 200;
-    opacity: 0;
-    transition: opacity 300ms ease;
     height: 9vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 3em;
+    align-items: center;
+    pointer-events: all;
 
-    .hamburgerInner, .hamburgerInner::before, .hamburgerInner::after {
-      background-color: #ccc;
+    .searchButton {
+      display: none;
+    }
+
+    .menuBar {
+      display: flex;
+      align-items: center;
+      width: 80%;
+      padding-right: 1em;
+      position: absolute;
+      height: 5vh;
+
+      &.show .hamburger {
+        opacity: 1;
+      }
+
+      .hamburger {
+        position: relative;
+        z-index: 200;
+        opacity: 0;
+        transition: opacity 300ms ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 3em;
+
+        .hamburgerInner, .hamburgerInner::before, .hamburgerInner::after {
+          background-color: #ccc;
+        }
+      }
     }
   }
-
 }

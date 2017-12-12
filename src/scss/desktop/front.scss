@@ -1,80 +1,81 @@
 .front {
-  position: absolute;
+  position: fixed;
   left: 0;
-  top: 9vh;
-  display: flex;
+  top: 0;
+  background-image: url('/stone.jpg');
+  background-size: cover;
   width: 100%;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.8em;
-  height: 91vh;
-  color: rgba(255, 255, 255, 0.65);
+  height: 9vh;
+  transition: height 300ms ease;
+  z-index: 5;
+  overflow: hidden;
 
-  .head {
-    height: 91vh;
-    justify-content: center;
+  &.showFull {
+    height: 100vh;
+  }
+
+  .container {
+    position: absolute;
+    left: 0;
+    top: 9vh;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     width: 100%;
-    transition: height 200ms ease-in-out;
-  }
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 0.8em;
+    height: 91vh;
+    color: rgba(255, 255, 255, 0.65);
+    @include maxAndCenter();
 
-  &.withMotifs .head{
-    height: 35vh;
-    padding-top: 3vh;
-  }
+    .head {
+      justify-content: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 43%;
+      margin-right: 5%;
+      transition: height 200ms ease-in-out;
 
-  .body {
-    justify-content: flex-end;
-    opacity: 0;
-    height: 0vh;
-    width: 63%;
-    overflow-y: scroll;
-    transition: opacity 100ms ease;
-    max-width: 500px;
-    position: relative;
-    left: 1vw;
-
-    .loader {
-      display: none;
+      .loader {
+        display: none;
+      }
     }
 
-    &.show {
-      opacity: 1;
+    .body {
+      width: 46%;
+      transition: opacity 100ms ease;
+      align-self: flex-start;
+      height: 84vh;
+      overflow-y: scroll;
     }
-  }
 
-  &.withMotifs .body {
-    height: 56vh;
-  }
-
-  .title {
-    font-size: 3em;
-    margin-bottom: 0.5em;
-    font-family: 'BaskervilleLT-RegularOldFace', serif;
-    letter-spacing: -0.05em;
-  }
-
-  p {
-    font-size: 1.3em;
-    margin-bottom: 1em;
-    max-width: 750px;
-    text-align: justify;
-    line-height: 1.4em;
-    width: 53%;
-    position: relative;
-    max-width: 375px;
-
-    a, a:hover, a:active, a:visited {
-      text-decoration: underline;
-      position: absolute;
-      right: 0;
-      color: rgba(255, 255, 255, 0.45);
-      transition: color 50ms ease;
+    .title {
+      font-size: 3em;
+      line-height: 1em;
+      margin-bottom: 0.3em;
+      font-family: 'BaskervilleLT-RegularOldFace', serif;
+      letter-spacing: -0.05em;
     }
-    a:hover {
-      color: rgba(255, 255, 255, 0.65);
+
+    p {
+      font-size: 1.3em;
+      max-width: 750px;
+      text-align: justify;
+      line-height: 1.4em;
+      position: relative;
+      max-width: 375px;
+
+      a, a:hover, a:active, a:visited {
+        text-decoration: underline;
+        position: absolute;
+        right: 0;
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 50ms ease;
+      }
+      a:hover {
+        color: rgba(255, 255, 255, 0.65);
+      }
     }
   }
 }

@@ -11,6 +11,7 @@
   position: relative;
   z-index: 10;
   padding: 1.5em 1em 1.2em 0;
+  @include maxAndCenter();
 
   header {
     display: flex;
@@ -38,12 +39,12 @@
     }
 
     &:first-of-type {
-      width: 55%;
+      width: 50%;
       padding-left: 1em;
     }
 
     &:nth-of-type(2) {
-      width: 45%;
+      width: 50%;
       padding-left: 1.5em;
     }
 

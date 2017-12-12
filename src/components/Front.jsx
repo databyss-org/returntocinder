@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import Transition from 'react-transition-group/Transition';
@@ -9,6 +9,7 @@ import styles from '../app.scss';
 import defer from './Defer.jsx';
 import Loader from './Loader.jsx';
 import Motifs from './Motifs.jsx';
+import Footer from './Footer.jsx';
 
 const actionQ = [
   [
@@ -43,36 +44,43 @@ class Front extends PureComponent {
 
     this.Motifs = defer({
       Wrapped: Motifs,
-      untilStatus: 'READY'
+      untilStatus: 'READY',
+      showLoader: true
     });
   }
   render() {
     const inProp = this.props.appState.status === 'READY';
+    const showFull = () => (
+      Boolean(matchPath(this.props.location.pathname, { path: '/', exact: true }))
+    );
     return (
       <Transition in={inProp} timeout={200}>
         {(state) => {
           return (
             <div className={cx(styles.front, {
-              [styles.withMotifs]: state === 'entered' || state === 'entering'
+              [styles.withMotifs]: state === 'entered' || state === 'entering',
+              [styles.showFull]: showFull()
             })}>
-              <div className={styles.head}>
-                <div className={styles.title}>
-                  {config.title}
+              <div className={styles.container}>
+                <div className={styles.head}>
+                  <div className={styles.title}>
+                    {config.title}
+                  </div>
+                  <p>
+                    {config.inscription}
+                    <Link to='/about/frontis'>read more</Link>
+                  </p>
+                  <Loader
+                    queue={actionQ}
+                    onComplete={props => props.setStatus('READY')}
+                  />
                 </div>
-                <p>
-                  {config.inscription}
-                  <Link to='/about/frontis'>read more</Link>
-                </p>
-                <Loader
-                  queue={actionQ}
-                  onComplete={props => props.setStatus('READY')}
-                />
-              </div>
-              <div className={cx(styles.body, {
-                [styles.show]: state === 'entered'
-              })}>
-                <Loader displayOnly />
-                <this.Motifs />
+                <div className={cx(styles.body, {
+                  [styles.show]: state === 'entered'
+                })}>
+                  <this.Motifs />
+                </div>
+                <Footer />
               </div>
             </div>
           );
@@ -82,6 +90,6 @@ class Front extends PureComponent {
   }
 }
 
-export default connect(state => ({
+export default withRouter(connect(state => ({
   appState: state.app,
-}), null)(Front);
+}), null)(Front));

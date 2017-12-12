@@ -11,6 +11,7 @@ import DocContainer from './DocContainer.jsx';
 import Source from './Source.jsx';
 import ModalRoute from './ModalRoute.jsx';
 import About from './About.jsx';
+import Front from './Front.jsx';
 import defer from './Defer.jsx';
 import actions from '../redux/app/actions';
 
@@ -58,13 +59,14 @@ class Main extends PureComponent {
                   <this.DocContainer />
                 </div>
                 <Route path="/about/:page" component={About} />
+                <Navbar withMaskClassName={styles.withMask} />
                 <ModalRoute
                   path={sourcePath}
                   component={this.Source}
                   passProps={props => ({ sid: sidFromPath(props) })}
                   title={sidFromPath}
                 />
-                <Navbar withMaskClassName={styles.withMask} />
+                <Front />
                 <Menu path='(.*)#!menu' />
               </div>
             );

@@ -336,7 +336,7 @@ class Search extends PureComponent {
                 focusInputOnSuggestionClick={false}
                 multiSection={true}
                 inputProps={{
-                  placeholder: 'Search for motif, source or phrase',
+                  placeholder: 'Search by word, phrase, name, motif, or source text',
                   value,
                   onChange: this.onChange,
                   onBlur: this.onBlur,

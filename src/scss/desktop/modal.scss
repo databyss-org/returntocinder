@@ -27,6 +27,7 @@
     align-items: center;
     position: relative;
     margin-bottom: 0.6em;
+    @include maxAndCenter();
 
     span {
       font-size: 1em;
@@ -58,6 +59,7 @@
     background-color: #fff;
     padding: 1.2em 1em 0.5em;
     z-index: 100;
+    @include maxAndCenter();
   }
 
   .mask {
