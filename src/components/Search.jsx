@@ -27,6 +27,7 @@ class Search extends PureComponent {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onSuggestionsFetchRequested = _.debounce(
@@ -74,8 +75,8 @@ class Search extends PureComponent {
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
 
-    if (!searchWords.length) {
-      return [];
+    if (!searchWords.length || searchWords[0] === '') {
+      return [{ suggestions: [] }];
     }
 
     this.setState({ searchWords });
@@ -188,6 +189,9 @@ class Search extends PureComponent {
     };
     return (
       <div {...props}>
+        <div className={theme.instructions}>
+          Search by word, phrase, name, motif, or source text
+        </div>
         {children}
       </div>
     );
@@ -235,7 +239,11 @@ class Search extends PureComponent {
     }
   }
   onBlur() {
-    // this.props.showMask(false);
+    this.props.searchFocused(false);
+    this.inputElement.blur();
+  }
+  onFocus() {
+    this.props.searchFocused(true);
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
@@ -336,10 +344,11 @@ class Search extends PureComponent {
                 focusInputOnSuggestionClick={false}
                 multiSection={true}
                 inputProps={{
-                  placeholder: 'Search by word, phrase, name, motif, or source text',
+                  placeholder: 'Search',
                   value,
                   onChange: this.onChange,
                   onBlur: this.onBlur,
+                  onFocus: this.onFocus,
                   onKeyDown: this.onKeyDown
                 }}
                 ref={(autosuggest) => {

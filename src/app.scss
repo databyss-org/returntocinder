@@ -13,7 +13,6 @@ $hamburger-hover-transition-timing-function: linear;
 
 .app {
   @import 'scss/desktop/mask';
-  @import 'scss/desktop/search';
   @import 'scss/desktop/source';
   @import 'scss/desktop/loader';
   @import 'scss/desktop/defer';
@@ -30,7 +29,6 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/mobile/docHead';
     @import 'scss/mobile/about';
     @import 'scss/mobile/footer';
-    @import 'scss/mobile/navbar';
     @import 'scss/mobile/hamburger';
   }
 }
@@ -40,6 +38,8 @@ $hamburger-hover-transition-timing-function: linear;
   .app {
     @import 'scss/mobile/front';
     @import 'scss/mobile/motifs';
+    @import 'scss/mobile/navbar';
+    @import 'scss/mobile/search';
   }
 }
 
@@ -48,6 +48,8 @@ $hamburger-hover-transition-timing-function: linear;
   .app {
     @import 'scss/tablet/front';
     @import 'scss/tablet/motifs';
+    @import 'scss/tablet/navbar';
+    @import 'scss/desktop/search';
   }
 }
 
@@ -64,5 +66,6 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/footer';
     @import 'scss/desktop/navbar';
     @import 'scss/desktop/hamburger';
+    @import 'scss/desktop/search';
   }
 }

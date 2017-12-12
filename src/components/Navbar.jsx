@@ -34,7 +34,9 @@ class Navbar extends PureComponent {
     const hamburgerIsActive = location.hash === '#!menu';
 
     return (
-      <div className={styles.navbar}>
+      <div className={cx(styles.navbar, {
+        [styles.searchFocused]: appState.searchFocused
+      })}>
         <div className={styles.barContainer}>
           <div className={styles.bar}>
             <Hamburger

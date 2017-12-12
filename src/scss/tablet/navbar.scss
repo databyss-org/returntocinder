@@ -5,36 +5,17 @@
   width: 100%;
   height: 100vh;
   overflow: visible;
-  transition: all 300ms ease-in-out;
+  transition: height 300ms ease-in-out;
   z-index: 10;
   pointer-events: none;
 
-  .search {
-    transition: all 300ms ease-in-out;
-  }
-
-  &.searchFocused {
-    .hamburger {
-      display: none;
-    }
-    .bar:after {
-      border-bottom: none;
-    }
-    .search {
-      position: fixed;
-      top: 0;
-      height: 9vh;
-      display: flex;
-      align-items: center;
-    }
-    .suggestionsContainer {
-      display: flex;
-    }
+  &.searchFocused .suggestionsContainer {
+    display: flex;
   }
 
   .barContainer {
     background: url('/stone.png');
-    background-size: 130%;
+    background-size: 120%;
     width: 100%;
   }
 

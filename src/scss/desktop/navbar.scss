@@ -9,6 +9,10 @@
   z-index: 10;
   pointer-events: none;
 
+  &.searchFocused .suggestionsContainer {
+    display: flex;
+  }
+
   .barContainer {
     background: url('/stone.png');
     background-size: cover;

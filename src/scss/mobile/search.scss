@@ -74,7 +74,8 @@
     align-items: stretch;
     justify-content: flex-start;
     position: absolute;
-    top: 5vh;
+    top: 7vh;
+    height: 93vh;
     width: 100%;
     border: 2px solid #efefef;
     border-top: none;
@@ -86,7 +87,7 @@
     border-bottom-right-radius: $border-radius;
     z-index: 300;
     left: 0;
-    min-height: 5vh;
+    min-height: 15vh;
     transition: height 100ms ease-in-out;
   }
 

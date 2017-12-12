@@ -10,7 +10,8 @@ const initialState = {
   query: '',
   status: 'STARTUP',
   showMask: false,
-  searchIsVisible: false
+  searchIsVisible: false,
+  searchFocused: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -43,6 +44,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'HIDE_SEARCH': {
       return { ...state, searchIsVisible: false };
+    }
+
+    case 'SEARCH_FOCUSED': {
+      return { ...state, searchFocused: action.payload }
     }
 
     default: {
