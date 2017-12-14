@@ -28,6 +28,10 @@
       }
     }
 
+    header {
+      display: none;
+    }
+
     .body {
       overflow-y: scroll;
       -webkit-overflow-scrolling: touch;

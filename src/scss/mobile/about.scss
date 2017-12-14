@@ -9,10 +9,19 @@
     display: none;
   }
 
+  header {
+    width: 100vw;
+    font-family: 'DINNextLTPro-MediumCond';
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding: 1.5em 4em 1em 1.2em;
+    border-bottom: 1px solid #D6D6D6;
+  }
+
   .body {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    height: 91vh;
+    height: 80vh;
     padding: 10vh 0 3vh;
 
     .title {
@@ -34,10 +43,10 @@
     }
 
     .footnotes {
-      margin-top: 3em;
+      margin: 3em auto;
       padding-top: 1em;
       border-top: 1px solid rgba(151,151,151,0.38);
-      width: 70%;
+      width: 85%;
       max-width: 500px;
 
       li {

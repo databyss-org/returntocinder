@@ -17,12 +17,15 @@ const About = ({ match, appState, toggleSearchIsFocused }) => {
   return (
     <div
       className={styles.about}
-      onClick={() => toggleSearchIsFocused(false)}>
+      onClick={() => toggleSearchIsFocused(false)}
     >
       <div className={styles.container}>
         <div className={styles.head}>
           <Subnav menu={data.menu} basePath={'/!about'} />
         </div>
+        <header>
+          {content.title}
+        </header>
         <div className={styles.body}>
           {content.body.map((para, idx) => (
             <p key={idx} dangerouslySetInnerHTML={{ __html: para }} />

@@ -59,7 +59,8 @@ class Main extends PureComponent {
                   className={cx(styles.mask, {
                     [styles.show]: state === 'entering' || state === 'entered'
                   })}
-                  onClick={() => toggleSearchIsFocused(false)}>
+                  onClick={() => toggleSearchIsFocused(false)}
+                >
                   <this.DocContainer />
                 </div>
                 <Route path="(.*)about/:page" children={({ match }) =>

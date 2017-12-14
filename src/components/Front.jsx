@@ -62,7 +62,7 @@ class Front extends PureComponent {
               className={cx(styles.front, {
                 [styles.showFull]: showFull()
               })}
-              onClick={() => this.props.toggleSearchIsFocused(false)}>
+              onClick={() => this.props.toggleSearchIsFocused(false)}
             >
               <div className={cx(styles.container, {
                 [styles.withMotifs]: state === 'entered' || state === 'entering',
