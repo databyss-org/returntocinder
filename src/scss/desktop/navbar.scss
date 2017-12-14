@@ -9,7 +9,7 @@
   z-index: 10;
   pointer-events: none;
 
-  &.searchFocused .suggestionsContainer {
+  &.searchIsFocused .suggestionsContainer {
     display: flex;
   }
 
@@ -41,7 +41,7 @@
 
   .navLinks {
     display: flex;
-    margin-left: 2em;
+    margin: 0 2em;
     pointer-events: all;
 
     a, a:visited, a:hover {
@@ -68,7 +68,7 @@
     .menuBar {
       display: flex;
       align-items: center;
-      width: 80%;
+      width: 100%;
       padding-right: 1em;
       position: absolute;
       height: 5vh;

@@ -34,7 +34,6 @@ class Search extends PureComponent {
       this.onSuggestionsFetchRequested.bind(this),
       300, { leading: true, trailing: true }
     );
-    this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this);
     this.onClearInput = this.onClearInput.bind(this);
@@ -71,6 +70,9 @@ class Search extends PureComponent {
     return this.props.searchState.query;
   }
   getSuggestions(value) {
+    if (!value) {
+      return [{ suggestions: [] }];
+    }
     const { motifList, sourceList } = this.props.appState;
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
@@ -136,7 +138,7 @@ class Search extends PureComponent {
       if (trim) {
         res = trim(res);
       }
-      return res;
+      return res.map((r, idx) => { r.idx = idx; return r; });
     };
 
     const compileDefaults = {
@@ -157,7 +159,7 @@ class Search extends PureComponent {
     const sourceMatches = compile({
       ...compileDefaults,
       collection: sourceList,
-      trim: trimTo(2)
+      trim: trimTo(5)
     });
 
     return [
@@ -189,7 +191,9 @@ class Search extends PureComponent {
     };
     return (
       <div {...props}>
-        <div className={theme.instructions}>
+        <div className={cx(theme.instructions, {
+          [theme.show]: !this.state.value.length
+        })}>
           Search by word, phrase, name, motif, or source text
         </div>
         {children}
@@ -199,12 +203,12 @@ class Search extends PureComponent {
   renderSuggestion(suggestion) {
     return {
       motif: (
-        <div className={theme.motifSuggestion}>
+        <div className={cx(theme.motifSuggestion, theme[`row${suggestion.idx}`])}>
           {suggestion.name}
         </div>
       ),
       source: (
-        <div className={theme.sourceSuggestion}>
+        <div className={cx(theme.sourceSuggestion, theme[`row${suggestion.idx}`])}>
           {suggestion.display}
         </div>
       ),
@@ -239,11 +243,12 @@ class Search extends PureComponent {
     }
   }
   onBlur() {
-    this.props.searchFocused(false);
+    // this.props.toggleSearchIsFocused(false);
     this.inputElement.blur();
   }
   onFocus() {
-    this.props.searchFocused(true);
+    console.log('focus')
+    this.props.toggleSearchIsFocused(true);
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
@@ -267,18 +272,14 @@ class Search extends PureComponent {
       suggestions: this.getSuggestions(value)
     });
   }
-  onSuggestionsClearRequested() {
-    this.setState({
-      suggestions: []
-    });
-  }
   onClearInput(andClose) {
+    console.log('clear')
     this.setState({
       value: '',
       highlightedSuggestion: null,
     });
     if (andClose) {
-      this.props.toggleSearchIsVisible();
+      this.props.toggleSearchIsFocused(false);
     }
   }
   onSearch(path) {
@@ -286,6 +287,7 @@ class Search extends PureComponent {
       pathname: path,
     });
     this.onClearInput();
+    this.props.toggleSearchIsFocused(false);
     this.inputElement.blur();
   }
   onKeyDown(event) {
@@ -297,7 +299,9 @@ class Search extends PureComponent {
     return [
       <input className={theme.input} {...inputProps} key={0} />,
       <button key={1}
-        className={theme.clear}
+        className={cx(theme.clear, {
+          [theme.show]: this.props.appState.searchIsFocused
+        })}
         onClick={() => this.onClearInput(true)}
       >
         <CloseIcon />
@@ -331,8 +335,8 @@ class Search extends PureComponent {
             })}>
               <Autosuggest
                 suggestions={suggestions}
+                alwaysRenderSuggestions={true}
                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 onSuggestionSelected={this.onSuggestionSelected}
                 onSuggestionHighlighted={this.onSuggestionHighlighted}
                 getSuggestionValue={this.getSuggestionValue}

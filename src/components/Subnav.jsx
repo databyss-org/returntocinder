@@ -3,33 +3,39 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import styles from '../app.scss';
 
-class About extends PureComponent {
+class Subnav extends PureComponent {
   constructor(props) {
     super(props);
 
     this.activeElem = null;
   }
+  makePath(path) {
+    return `${this.props.basePath}/${path}`;
+  }
   setActive(elem, item) {
     if (!elem) {
       return;
     }
-    if (this.props.location.pathname !== item.path) {
+    if (!this.props.location.pathname.match(this.makePath(item.path))) {
       return;
     }
-    console.log(this.activeElem)
     if (this.activeElem) {
       this.activeElem.style.left = `${elem.offsetLeft}px`;
       this.activeElem.innerHTML = item.title;
     }
   }
   render() {
+    const { location, menu } = this.props;
+
     return (
       <div className={styles.subnav}>
         <div className={styles.active} ref={(e) => { this.activeElem = e; }} />
         <ul>
-          {this.props.menu.map((item, idx) => (
+          {menu.map((item, idx) => (
             <li key={idx} ref={e => this.setActive(e, item)}>
-              <Link to={item.path}>
+              <Link to={
+                location.pathname.replace(/\/!about\/.+/, this.makePath(item.path))
+              }>
                 <span dangerouslySetInnerHTML={{ __html: item.title }} />
               </Link>
             </li>
@@ -40,4 +46,4 @@ class About extends PureComponent {
   }
 }
 
-export default withRouter(About);
+export default withRouter(Subnav);

@@ -16,9 +16,13 @@ class Menu extends PureComponent {
       this.props.showMask(isIn);
     }
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.props.toggleMenuIsVisible(false);
+    }
+  }
   render() {
-    const { location } = this.props;
-    const inProp = location.hash === '#!menu';
+    const inProp = this.props.appState.menuIsVisible;
 
     return (
       <Transition

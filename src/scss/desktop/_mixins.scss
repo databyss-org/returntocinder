@@ -28,8 +28,8 @@
   }
 }
 
-@mixin maxAndCenter() {
-  max-width: 1024px;
+@mixin maxAndCenter($width:1024px) {
+  max-width: $width;
   margin-left: auto;
   margin-right: auto;
   left: 0;

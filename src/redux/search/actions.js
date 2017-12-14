@@ -63,11 +63,5 @@ export default {
         }
       });
     };
-  },
-  searchFocused(focused) {
-    return {
-      type: 'SEARCH_FOCUSED',
-      payload: focused
-    };
   }
 };

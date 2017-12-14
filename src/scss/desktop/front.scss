@@ -46,8 +46,10 @@
       width: 46%;
       transition: opacity 100ms ease;
       align-self: flex-start;
-      height: 84vh;
       overflow-y: scroll;
+      position: relative;
+      top: 5vh;
+      height: 80vh;
     }
 
     .title {

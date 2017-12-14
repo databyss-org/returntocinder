@@ -1,0 +1,30 @@
+.modalMenu {
+  position: absolute;
+  top: 9vh;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+
+  a, a:hover, a:active, a:visited {
+    color: #4A4A4A;
+    text-decoration: none;
+  }
+
+  .container {
+    position: relative;
+    top: -100vh;
+    transition: top 250ms ease-in-out;
+    background: #fff;
+    height: 91vh;
+    overflow: hidden;
+  }
+
+  &.show {
+    pointer-events: all;
+
+    .container {
+      top: 0;
+    }
+  }
+}

@@ -10,6 +10,7 @@ import defer from './Defer.jsx';
 import Loader from './Loader.jsx';
 import Motifs from './Motifs.jsx';
 import Footer from './Footer.jsx';
+import actions from '../redux/app/actions';
 
 const actionQ = [
   [
@@ -57,9 +58,12 @@ class Front extends PureComponent {
       <Transition in={inProp} timeout={200}>
         {(state) => {
           return (
-            <div className={cx(styles.front, {
-              [styles.showFull]: showFull()
-            })}>
+            <div
+              className={cx(styles.front, {
+                [styles.showFull]: showFull()
+              })}
+              onClick={() => this.props.toggleSearchIsFocused(false)}>
+            >
               <div className={cx(styles.container, {
                 [styles.withMotifs]: state === 'entered' || state === 'entering',
               })}>
@@ -69,7 +73,7 @@ class Front extends PureComponent {
                   </div>
                   <p>
                     {config.inscription}
-                    <Link to='/about/frontis'>read more</Link>
+                    <Link to='/!about/frontis'>read more</Link>
                   </p>
                   <Loader
                     queue={actionQ}
@@ -81,7 +85,6 @@ class Front extends PureComponent {
                 })}>
                   <this.Motifs />
                 </div>
-                <Footer />
               </div>
             </div>
           );
@@ -93,4 +96,4 @@ class Front extends PureComponent {
 
 export default withRouter(connect(state => ({
   appState: state.app,
-}), null)(Front));
+}), actions)(Front));

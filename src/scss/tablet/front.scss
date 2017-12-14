@@ -19,14 +19,15 @@
   .container {
     position: absolute;
     left: 0;
-    top: 9vh;
+    top: 12vh;
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
     font-size: 0.8em;
-    height: 91vh;
+    height: 85vh;
     color: rgba(255, 255, 255, 0.65);
+    overflow-y: scroll;
 
     .head {
       height: 91vh;

@@ -5,18 +5,18 @@ import epigraphs from './epigraphs.json';
 import manifest from './manifest.json';
 import contact from './contact.json';
 
-const bibliography = (props) => {
+const bibliography = (appState) => {
   const content = {
     title: 'bibliography'
   };
-  if (!props.appState.biblio) {
+  if (!appState.biblio) {
     return {
       ...content,
       body: ['loading...']
     };
   }
-  const biblioList = Object.keys(props.appState.biblio).reduce((list, sid) =>
-    list.concat(props.appState.biblio[sid]), []
+  const biblioList = Object.keys(appState.biblio).reduce((list, sid) =>
+    list.concat(appState.biblio[sid]), []
   );
   biblioList.sort((a, b) => a.id < b.id ? -1 : 1);
   return {

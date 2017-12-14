@@ -13,7 +13,7 @@
     transition: all 300ms ease-in-out;
   }
 
-  &.searchFocused {
+  &.searchIsFocused {
     .hamburger {
       display: none;
     }

@@ -1,11 +1,13 @@
 .subnav {
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
+  margin: 0 auto;
   position: relative;
+  padding-bottom: 1em;
 
   li, .active {
     font-family: 'DINNextLTPro-Light';
-    font-size: 1em;
+    font-size: 0.9em;
     text-transform: uppercase;
   }
 
@@ -14,7 +16,7 @@
     left: 0;
     top: 0;
     color: rgba(255,255,255,0);
-    border-top: 2px solid #9B9B9B;
+    border-top: 4px solid rgb(215,69,182);
     transition: all 200ms ease-in;
     pointer-events: none;
   }
@@ -23,7 +25,6 @@
     display: flex;
     width: 100%;
     align-items: flex-start;
-    border-top: 1px solid rgba(151,151,151,0.38);
   }
 
   li {

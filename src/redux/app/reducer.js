@@ -11,7 +11,8 @@ const initialState = {
   status: 'STARTUP',
   showMask: false,
   searchIsVisible: false,
-  searchFocused: false
+  searchIsFocused: false,
+  menuIsVisible: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -47,7 +48,15 @@ export default function appReducer(state = initialState, action) {
     }
 
     case 'SEARCH_FOCUSED': {
-      return { ...state, searchFocused: action.payload }
+      return {
+        ...state,
+        searchIsFocused: action.payload,
+        menuIsVisible: action.payload ? false : state.menuIsVisible
+      };
+    }
+
+    case 'MENU_VISIBLE': {
+      return { ...state, menuIsVisible: action.payload };
     }
 
     default: {

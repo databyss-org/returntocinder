@@ -17,45 +17,52 @@ $hamburger-hover-transition-timing-function: linear;
   @import 'scss/desktop/loader';
   @import 'scss/desktop/defer';
   @import 'scss/desktop/subnav';
+  @import 'scss/desktop/modalMenu';
 }
 
 /* mobile and tablet */
 @media (max-width: 1024px) {
   .app {
-    @import 'scss/mobile/doc';
     @import 'scss/mobile/modal';
     @import 'scss/mobile/menu';
     @import 'scss/mobile/motifs';
-    @import 'scss/mobile/docHead';
-    @import 'scss/mobile/about';
     @import 'scss/mobile/footer';
-    @import 'scss/mobile/hamburger';
   }
 }
 
 /* mobile only */
 @media (max-width: 480px) {
   .app {
+    @import 'scss/mobile/doc';
+    @import 'scss/mobile/docHead';
+    @import 'scss/mobile/about';
     @import 'scss/mobile/front';
     @import 'scss/mobile/motifs';
     @import 'scss/mobile/navbar';
     @import 'scss/mobile/search';
+    @import 'scss/mobile/hamburger';
   }
 }
 
 /* tablet only */
 @media (min-width: 481px) and (max-width: 1024px) {
   .app {
+    @import 'scss/desktop/docContainer';
+    @import 'scss/desktop/doc';
+    @import 'scss/desktop/docHead';
+    @import 'scss/desktop/about';
     @import 'scss/tablet/front';
     @import 'scss/tablet/motifs';
-    @import 'scss/tablet/navbar';
+    @import 'scss/desktop/navbar';
     @import 'scss/desktop/search';
+    @import 'scss/desktop/hamburger';
   }
 }
 
 /* desktop */
 @media (min-width: 1025px) {
   .app {
+    @import 'scss/desktop/docContainer';
     @import 'scss/desktop/doc';
     @import 'scss/desktop/front';
     @import 'scss/desktop/modal';

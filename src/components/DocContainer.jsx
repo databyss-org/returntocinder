@@ -40,39 +40,43 @@ class DocContainer extends PureComponent {
   render() {
     return (
       <Transition in={this.state.query.aside} timeout={300}>
-        {state => [
-          <this.DocHead transitionState={state} />,
-          <div className={cx(styles.doc, styles[state], {
-              [styles.show]: !this.props.searchState.isWorking
-            })}>
-            <Route
-              path='/(motif|source|search)/:term'
-              render={props => (
-                <main>
-                  <Doc
-                    query={this.getQuery(props)} path={['main']}
-                    ready={state === 'entered'}
-                  />  
-                </main>
-              )}
-            />
-            <Route
-              path={this.asidePath}
-              render={props => (
-                <aside>
-                  <Doc
-                    query={{
-                      motif: true,
-                      term: props.match.params.term
-                    }}
-                    path={['aside']}
-                    ready={state === 'entered'}
-                  />
-                </aside>
-              )}
-            />
+        {state =>
+          <div className={cx(styles.docContainer, {
+            [styles.withAside]: this.state.query.aside
+          })}>
+            <this.DocHead transitionState={state} />
+            <div className={cx(styles.doc, styles[state], {
+                [styles.show]: !this.props.searchState.isWorking
+              })}>
+              <Route
+                path='/(motif|source|search)/:term'
+                render={props => (
+                  <main>
+                    <Doc
+                      query={this.getQuery(props)} path={['main']}
+                      ready={state === 'entered'}
+                    />
+                  </main>
+                )}
+              />
+              <Route
+                path={this.asidePath}
+                render={props => (
+                  <aside>
+                    <Doc
+                      query={{
+                        motif: true,
+                        term: props.match.params.term
+                      }}
+                      path={['aside']}
+                      ready={state === 'entered'}
+                    />
+                  </aside>
+                )}
+              />
+            </div>
           </div>
-        ]}
+        }
       </Transition>
     );
   }

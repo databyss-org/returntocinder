@@ -1,9 +1,8 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import menuData from '../content/menu.json';
 import styles from '../app.scss';
 import actions from '../redux/app/actions';
 import SearchIcon from '../icons/search.svg';
@@ -20,46 +19,50 @@ class Navbar extends PureComponent {
   hideMenu() {
     this.props.history.goBack();
   }
-  onMenuClick(hamburgerIsActive) {
-    const { hideSearch } = this.props;
-    if (hamburgerIsActive) {
-      this.props.history.goBack();
+  aboutIsVisible() {
+    return this.props.location.pathname.match('!about/');
+  }
+  onAboutClick() {
+    const { location, history } = this.props;
+    if (this.aboutIsVisible()) {
+      history.push(location.pathname.replace(/\/!about\/.+/, ''));
     } else {
-      hideSearch();
-      this.props.history.push('#!menu');
+      history.push(`${location.pathname === '/' ? '' : location.pathname}/!about/frontis`);
     }
   }
+  onMenuClick() {
+    this.props.toggleMenuIsVisible(!this.props.appState.menuIsVisible);
+  }
   render() {
-    const { location, toggleSearchIsVisible, appState } = this.props;
-    const hamburgerIsActive = location.hash === '#!menu';
+    const { toggleSearchIsVisible, appState } = this.props;
 
     return (
       <div className={cx(styles.navbar, {
-        [styles.searchFocused]: appState.searchFocused
+        [styles.searchIsFocused]: appState.searchIsFocused
       })}>
         <div className={styles.barContainer}>
           <div className={styles.bar}>
             <Hamburger
-              isActive={hamburgerIsActive}
-              onClick={() => this.onMenuClick(hamburgerIsActive)}
+              isActive={appState.menuIsVisible}
+              onClick={() => this.onMenuClick()}
             />
             <Hamburger
               homeLinkOnly={true}
-              isActive={hamburgerIsActive}
+              isActive={appState.menuIsVisible}
             />
-            <ul className={styles.navLinks}>
-              {menuData.map(items => items.map((item, idx) => item.header && (
-                <li key={idx}>
-                  <Link to={item.path}>{item.title}</Link>
-                </li>
-              )))}
-            </ul>
+            <div className={styles.navLinks}>
+              <Hamburger
+                navLink={'About'}
+                isActive={this.aboutIsVisible()}
+                onClick={() => this.onAboutClick()}
+              />
+            </div>
             <div className={styles.searchContainer}>
               <button
                 name="searchButton"
                 className={styles.searchButton}
                 onClick={() => {
-                  hamburgerIsActive && this.hideMenu();
+                  appState.menuIsVisible && this.hideMenu();
                   toggleSearchIsVisible();
                 }}
                 >

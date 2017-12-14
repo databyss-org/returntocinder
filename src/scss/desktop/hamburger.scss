@@ -1,9 +1,37 @@
 .hamburger {
   display: none;
 
+  .arrow {
+    display: none;
+  }
+
   &.homeLinkOnly {
     display: block;
     pointer-events: all;
+  }
+
+
+
+  &.navLink {
+    display: flex;
+    align-items: center;
+    pointer-events: all;
+
+    .arrow {
+      display: block;
+      margin-left: 0.8em;
+
+      svg {
+        height: 8px;
+        width: 8px;
+        transform: rotate(180deg);
+        transition: transform 300ms linear;
+
+        polyline {
+          stroke: rgba(215,69,182,1);
+        }
+      }
+    }
   }
 
   .databyss {
@@ -31,5 +59,17 @@
     opacity: 0.2;
     filter: blur(6px);
     left: -1.6%;
+  }
+  .linkText {
+    font-family: 'BaskervilleLT-RegularOldFace', serif;
+    font-size: 1.5em;
+    color: #fff;
+    opacity: 0.65;
+  }
+}
+
+.hamburger.isActive.navLink .arrow {
+  svg {
+    transform: rotate(0deg);
   }
 }

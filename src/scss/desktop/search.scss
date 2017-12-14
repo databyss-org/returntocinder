@@ -18,6 +18,11 @@
     padding: 1em 2em 1em 1em;
     color: #666;
     width: 80%;
+    display: none;
+
+    &.show {
+      display: block;
+    }
   }
 
   .container {
@@ -131,15 +136,19 @@
   }
 
   .clear {
-    width: 2.8em;
-    height: 2.8em;
-    border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
     border: 0px;
     padding: 0px;
     position: relative;
     right: 10px;
     top: 0.1em;
     opacity: 0;
+    pointer-events: all;
+
+    &.show {
+      opacity: 1;
+    }
 
     &:active {
       background: #aaa;

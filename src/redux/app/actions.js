@@ -78,5 +78,17 @@ export default {
     return {
       type: 'HIDE_SEARCH'
     };
+  },
+  toggleSearchIsFocused(focused) {
+    return {
+      type: 'SEARCH_FOCUSED',
+      payload: focused
+    };
+  },
+  toggleMenuIsVisible(visible) {
+    return {
+      type: 'MENU_VISIBLE',
+      payload: visible
+    };
   }
 };
