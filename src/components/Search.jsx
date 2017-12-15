@@ -229,25 +229,18 @@ class Search extends PureComponent {
   onChange(event, { newValue, method }) {
     if (newValue === '') {
       this.onClearInput();
-      this.onBlur();
     }
     if (newValue && method === 'type') {
       this.setState({
         value: newValue
       });
       this.setQuery(newValue);
-
-      // if (!this.props.appState.showMask) {
-      //   this.props.showMask(true);
-      // }
     }
   }
   onBlur() {
-    // this.props.toggleSearchIsFocused(false);
     this.inputElement.blur();
   }
   onFocus() {
-    console.log('focus')
     this.props.toggleSearchIsFocused(true);
   }
   onSuggestionSelected(event, { suggestion }) {
@@ -273,7 +266,6 @@ class Search extends PureComponent {
     });
   }
   onClearInput(andClose) {
-    console.log('clear')
     this.setState({
       value: '',
       highlightedSuggestion: null,
