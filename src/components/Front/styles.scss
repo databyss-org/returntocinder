@@ -1,0 +1,29 @@
+@import '../../shared-styles/index';
+@import './variables';
+
+.front {
+  p {
+    margin-bottom: 1em;
+    text-align: justify;
+    position: relative;
+
+    a, a:hover, a:active, a:visited {
+      text-decoration: underline;
+      position: absolute;
+      right: 0;
+      color: rgba(255, 255, 255, 0.45);
+      transition: color 50ms ease;
+    }
+    a:hover {
+      color: $color-front-text;
+    }
+  }
+}
+
+@include mobile {
+}
+@include tablet {
+}
+@include desktop {
+  @import './desktop'
+}

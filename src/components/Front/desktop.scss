@@ -1,0 +1,28 @@
+
+.front {
+  color: $color-front-text;
+
+  .head {
+
+  }
+
+  .body {
+
+  }
+
+  .title {
+    font: $title-font;
+    letter-spacing: $title-font-spacing;
+    margin-bottom: 0.5em;
+  }
+
+  p {
+    width: 53%;
+    max-width: 375px;
+
+
+    a:hover {
+      color: rgba(255, 255, 255, 0.65);
+    }
+  }
+}

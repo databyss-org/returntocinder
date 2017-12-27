@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "eslint-config-kyt"
+  ],
+  "env": {
+  },
+  "plugins": [
+  ],
+  "rules": {
+    "no-return-assign": ["error", "except-parens"],
+    "no-underscore-dangle": "off",
+    "no-warning-comments": "off",
+    "global-require": "off",
+    "import/no-dynamic-require": "off",
+    "react/prop-types": "off",
+    "react/sort-comp": "off",
+    "react/jsx-filename-extension": "off",
+    "react/require-default-props": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 80,
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "es5"
+      }
+    ]
+  }
+}

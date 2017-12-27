@@ -1,0 +1,28 @@
+@import '../../shared-styles/index';
+
+body {
+  font: $body-font;
+}
+
+button {
+  padding: 0;
+}
+
+a, a:visited, a:active {
+  color: $link-color;
+  text-decoration: underline;
+}
+
+em {
+  font-style: italic;
+}
+
+* {
+  outline: none;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.app {
+  padding: 0 24px;
+}
