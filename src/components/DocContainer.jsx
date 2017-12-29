@@ -6,6 +6,7 @@ import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
+import actions from '../redux/app/actions';
 import withLoader from '../hoc/withLoader';
 import styles from '../app.scss';
 
@@ -64,7 +65,7 @@ const DocContainer = ({ search, match, query }) =>
   </Transition>;
 
 export default compose(
-  connect(state => state),
+  connect(state => state, actions),
   withRouter,
   withLoader({
     propsToLoad: (props) => {

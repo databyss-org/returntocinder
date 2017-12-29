@@ -1,7 +1,7 @@
 import { addMotifsToBiblio } from '../../lib/indexers';
 
 const initialState = {
-  doc: null,
+  doc: {},
   biblio: null,
   entryList: null,
   entriesBySource: null,
@@ -29,6 +29,15 @@ export default function appReducer(state = initialState, action) {
         ...state,
         biblio: addMotifsToBiblio(state.biblio, state.entriesBySource),
         ...action.payload
+      };
+
+    case 'RECEIVE_MOTIF':
+      return {
+        ...state,
+        doc: {
+          ...state.doc,
+          [action.payload.mid]: action.payload.motif
+        }
       };
 
     case 'SET_STATUS': {

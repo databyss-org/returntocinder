@@ -6,6 +6,24 @@ import {
 } from '../../lib/indexers';
 
 export default {
+  fetchMotif(mid) {
+    return async (dispatch, getState) => {
+      dispatch({
+        type: 'FETCH_MOTIF',
+        payload: {
+          mid,
+        }
+      });
+      const motif = (await axios.get(`/motifs/${mid}.json`)).data;
+      return dispatch({
+        type: 'RECEIVE_MOTIF',
+        payload: {
+          mid,
+          motif,
+        }
+      });
+    };
+  },
   fetchDoc() {
     return async (dispatch) => {
       dispatch({

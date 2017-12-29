@@ -37,7 +37,9 @@ const Main = ({ app, toggleSearchIsFocused, location }) =>
               })}
               onClick={() => toggleSearchIsFocused(false)}
             >
-              <DocContainer />
+              <Route path="/(motif|source|search)/:term" children={({ match }) =>
+                <DocContainer match={match} />
+              }/>
             </div>
             <Route path="(.*)about/:page" children={({ match }) =>
               <ModalMenu isActive={match}>

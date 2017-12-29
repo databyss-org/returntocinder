@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import Loader from '../components/Loader.jsx';
 import styles from '../app.scss';
 
@@ -9,27 +9,43 @@ export default function withLoader({
   className = styles.defer,
 }) {
   return Wrapped =>
-    (props) => {
-      const loadedProps = propsToLoad(props);
-      const loaders = loaderActions(props);
-      console.log('withLoader', props, loadedProps, loaders);
-      const isAllLoaded = Object.keys(loadedProps).reduce((isLoaded, prop) => {
-        if (loadedProps[prop]) {
-          return isLoaded;
+    class WithLoader extends PureComponent {
+      constructor(props) {
+        super(props);
+        this.loading = {};
+      }
+      onMountAndUpdate(props) {
+        this.loadedProps = propsToLoad(props);
+        this.loaders = loaderActions(props);
+        this.isAllLoaded = Object.keys(this.loadedProps).reduce((isLoaded, prop) => {
+          if (this.loadedProps[prop]) {
+            return isLoaded;
+          }
+          if (!this.loading[prop]) {
+            this.loaders[prop]();
+            this.loading[prop] = true;
+          }
+          return false;
+        }, true);
+      }
+      componentWillMount() {
+        this.onMountAndUpdate(this.props);
+      }
+      componentWillReceiveProps(nextProps) {
+        this.onMountAndUpdate(nextProps);
+      }
+      render() {
+        if (this.isAllLoaded) {
+          return <Wrapped {...this.props} {...this.loadedProps} />;
         }
-        loaders[prop]();
-        return false;
-      }, true);
-      if (isAllLoaded) {
-        return <Wrapped {...props} {...loadedProps} />;
+        if (this.props.showLoader) {
+          return (
+            <div className={className}>
+              <Loader />
+            </div>
+          );
+        }
+        return null;
       }
-      if (showLoader) {
-        return (
-          <div className={className}>
-            <Loader />
-          </div>
-        );
-      }
-      return null;
     };
 }

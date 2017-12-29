@@ -67,8 +67,7 @@ class Doc extends PureComponent {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesByMotif
-          mid={index}
-          motif={doc[this._rows[index]]}
+          mid={term}
           key={key}
           style={style}
           path={path}
