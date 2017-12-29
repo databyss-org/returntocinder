@@ -1,37 +1,33 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
+import actions from '../redux/app/actions';
 import Entries from './Entries.jsx';
 
-class EntriesByMotif extends PureComponent {
-  render() {
-    const { mid, motif, style, path, setScroll } = this.props;
+const EntriesByMotif = ({ app, mid, location, style, path, setScroll }) =>
+  <article key={mid} style={style}>
+    {Object.keys(app.doc[mid].sources).map((sid, sidx) => (
+      <section key={mid + sid}>
+        <Entries
+          makeId={idx => mid + sid + idx}
+          entries={app.doc[mid].sources[sid]}
+          showRepeats
+          path={path.concat(sid)}
+          setScroll={setScroll}
+          inlineHead={(
+            <h3>
+              <Link to={`${location.pathname}/source:${sid}`}>
+                {sid}
+              </Link>
+            </h3>
+          )}
+        />
+      </section>
+    ))}
+  </article>;
 
-    return [
-      <article key={mid} style={style}>
-        {Object.keys(motif.sources).map((sid, sidx) => (
-          <section key={motif + sid}>
-            <Entries
-              makeId={idx => motif + sid + idx}
-              entries={motif.sources[sid]}
-              showRepeats
-              path={path.concat(sid)}
-              setScroll={setScroll}
-              inlineHead={(
-                <h3>
-                  <Link to={`${this.props.location.pathname}/source:${sid}`}>
-                    {sid}
-                  </Link>
-                </h3>
-              )}
-            />
-          </section>
-        ))}
-      </article>
-    ];
-  }
-}
-
-export default withRouter(connect(state => ({
-  appState: state.app
-}), null)(EntriesByMotif));
+export default compose(
+  withRouter,
+  connect(state => state, actions)
+)(EntriesByMotif);

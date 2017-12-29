@@ -3,7 +3,7 @@
 import React from 'react';
 import latinize from 'latinize';
 import * as JsDiff from 'diff';
-import { textify } from './_helpers';
+import { textify, urlify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
@@ -79,12 +79,17 @@ export function sourceListFromBiblio(biblio) {
   }), []);
 }
 
-export function motifListFromMotifs(motifs) {
-  return Object.keys(motifs).reduce((list, mid) => list.concat({
-    id: mid,
-    type: 'motif',
-    name: textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
-  }), []);
+export function motifListFromNames(motifNames) {
+  return motifNames.map(name => ({
+    id: urlify(name),
+    name,
+  }));
+}
+
+export function motifNamesFromMotifs(motifs) {
+  return Object.keys(motifs).map(mid =>
+    textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
+  );
 }
 
 export function rangeOverlapExists(range1, range2) {

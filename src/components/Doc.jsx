@@ -63,19 +63,17 @@ class Doc extends PureComponent {
     const { search, motif, source, term } = this.query;
     const { path } = this.props;
 
-    this._rows = Object.keys(doc);
-    this._rowComponent = ({ index, key, style }) =>
-      <EntriesByMotif
-        mid={index}
-        motif={doc[this._rows[index]]}
-        key={key}
-        style={style}
-        path={path}
-        setScroll={this.setScroll}
-      />;
-
     if (motif) {
       this._rows = [term];
+      this._rowComponent = ({ index, key, style }) =>
+        <EntriesByMotif
+          mid={index}
+          motif={doc[this._rows[index]]}
+          key={key}
+          style={style}
+          path={path}
+          setScroll={this.setScroll}
+          />;
     } else if (source) {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>

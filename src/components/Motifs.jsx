@@ -1,25 +1,17 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import actions from '../redux/app/actions';
+import motifNames from '../content/motifs.json';
+import { motifListFromNames } from '../lib/indexers';
 import styles from '../app.scss';
 
-class Motifs extends PureComponent {
-  render() {
-    const { doc } = this.props.appState;
-    return (
-      <ul className={styles.motifs}>
-        {Object.keys(doc).map(m => (
-          <li key={m}
-            dangerouslySetInnerHTML={{ __html: doc[m].title }}
-            onClick={() => this.props.history.push(`/motif/${m}`)}
-          />
-        ))}
-      </ul>
-    );
-  }
-}
+const Motifs = ({ history }) =>
+  <ul className={styles.motifs}>
+    {motifListFromNames(motifNames).map(m => (
+      <li key={m.id}
+        dangerouslySetInnerHTML={{ __html: m.name }}
+        onClick={() => history.push(`/motif/${m.id}`)}
+      />
+    ))}
+  </ul>;
 
-export default withRouter(connect(state => ({
-  appState: state.app,
-}), actions)(Motifs));
+export default withRouter(Motifs);

@@ -2,10 +2,13 @@
 import fs from 'fs';
 import parse from 'rtf-parser';
 import roman from 'roman-numerals';
+import childProcess from 'child_process';
+import { motifNamesFromMotifs } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
 export default function docToJson({ input, output }) {
+  childProcess.exec('pwd', {}, (err, stdout) => console.log(stdout));
   console.log('DOC2JSON', input);
   return new Promise((resolve, fail) => {
     parse.stream(fs.createReadStream(input), (err, doc) => {
@@ -13,7 +16,12 @@ export default function docToJson({ input, output }) {
         fail(err);
         return;
       }
-      fs.writeFileSync(output, rtfToJson(doc));
+      const full = rtfToJson(doc);
+      fs.writeFileSync(`${output.public}/full.json`, JSON.stringify(full));
+      fs.writeFileSync(`${output.content}/motifs.json`, JSON.stringify(motifNamesFromMotifs(full)));
+      Object.keys(full).forEach(mid =>
+        fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]))
+      );
       resolve();
     });
   });
@@ -132,7 +140,7 @@ function rtfToJson(doc) {
   }
 
   // console.log(chapters);
-  return JSON.stringify(chapters);
+  return chapters;
 }
 
 function parseLocations(entry) {
@@ -296,5 +304,5 @@ function isBold(chunk) {
 }
 
 if (require.main === module) {
-  docToJson({ input: '../doc/full.rtf', output: './public/full.json' });
+  docToJson({ input: '../doc/full.rtf', output: { public: './public', content: './src/content' } });
 }

@@ -2,7 +2,8 @@ export default [
   {
     path: '/Baby Daddy/BBDD.rtf',
     testPath: '/Baby Daddy/BBDD-test.rtf',
-    out: './repo/public/full.json'
+    out: { public: './repo/public', content: './repo/src/content' },
+    compile: true
   },
   {
     path: '/Baby Daddy/content/about/contact.json',
