@@ -23,7 +23,7 @@ $hamburger-hover-transition-timing-function: linear;
 /* mobile and tablet */
 @media (max-width: 1024px) {
   .app {
-    @import 'scss/mobile/modal';
+    @import 'scss/mobile/docModal';
     @import 'scss/mobile/menu';
     @import 'scss/mobile/motifs';
     @import 'scss/mobile/footer';
@@ -65,7 +65,7 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/docContainer';
     @import 'scss/desktop/doc';
     @import 'scss/desktop/front';
-    @import 'scss/desktop/modal';
+    @import 'scss/desktop/docModal';
     @import 'scss/desktop/menu';
     @import 'scss/desktop/motifs';
     @import 'scss/desktop/docHead';

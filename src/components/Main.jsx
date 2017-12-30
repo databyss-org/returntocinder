@@ -1,15 +1,18 @@
 /* eslint-disable arrow-body-style */
 import React from 'react';
-import { BrowserRouter as Router, matchPath, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
+import withLoader from '../hoc/withLoader';
+import freezeProps from '../hoc/freezeProps';
 
 import Navbar from './Navbar.jsx';
 import Menu from './Menu.jsx';
 import DocContainer from './DocContainer.jsx';
 import Source from './Source.jsx';
-import ModalRoute from './ModalRoute.jsx';
+import DocModal from './DocModal.jsx';
 import ModalMenu from './ModalMenu.jsx';
 import About from './About.jsx';
 import Front from './Front.jsx';
@@ -17,15 +20,15 @@ import actions from '../redux/app/actions';
 
 import styles from '../app.scss';
 
-const sourcePath = '(.*)/source::sid/(.*)?';
-const sidFromPath = (location) => {
-  const match = matchPath(location.pathname, '(.*)/source::sid/(.*)?');
-  return (match && match.params.sid) || null;
-};
+const SourceModal = freezeProps({
+  propsToFreeze: props => ({
+    sid: props.isActive
+  })
+})(Source);
 
 const Main = ({ app, toggleSearchIsFocused, location }) =>
   <Router>
-    <Transition in={app.showMask} timeout={50}>
+    <Transition in={app.maskIsVisible} timeout={50}>
       {(state) => {
         return (
           <div className={cx(styles.app, {
@@ -47,12 +50,11 @@ const Main = ({ app, toggleSearchIsFocused, location }) =>
               </ModalMenu>
             }/>
             <Navbar withMaskClassName={styles.withMask} />
-            <ModalRoute
-              path={sourcePath}
-              component={Source}
-              passProps={props => ({ sid: sidFromPath(props) })}
-              title={sidFromPath}
-            />
+            <Route path="(.*)/source::sid/(.*)?" children={({ match, ...props }) =>
+              <DocModal isActive={Boolean(match)} {...props}>
+                <SourceModal isActive={match} sid={match && match.params.sid} />
+              </DocModal>
+            }/>
             <Front />
             <Menu />
           </div>
@@ -61,4 +63,14 @@ const Main = ({ app, toggleSearchIsFocused, location }) =>
     </Transition>
   </Router>;
 
-export default connect(state => state, actions)(Main);
+export default compose(
+  connect(state => state, actions),
+  withLoader({
+    propsToLoad: props => ({
+      biblio: props.app.biblio,
+    }),
+    loaderActions: props => ({
+      biblio: () => props.fetchBiblio(),
+    })
+  }),
+)(Main);

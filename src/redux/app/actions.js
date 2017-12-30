@@ -82,9 +82,17 @@ export default {
     };
   },
   showMask(show) {
-    return {
-      type: 'SHOW_MASK',
-      payload: show
+    return (dispatch, getState) => {
+      if (getState().app.maskIsVisible && show) {
+        return null;
+      }
+      if (!getState().app.maskIsVisible && !show) {
+        return null;
+      }
+      return dispatch({
+        type: 'SHOW_MASK',
+        payload: show
+      });
     };
   },
   toggleSearchIsVisible() {

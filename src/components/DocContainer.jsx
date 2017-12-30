@@ -81,7 +81,7 @@ export default compose(
       const query = getQuery(props);
       return {
         ...(query.motif ? {
-          motif: () => props.fetchMotif(query.term)
+          motif: () => props.fetchMotif(query.term),
         } : {}),
       };
     },

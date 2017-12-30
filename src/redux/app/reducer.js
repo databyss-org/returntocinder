@@ -8,8 +8,8 @@ const initialState = {
   sourceList: null,
   motifList: null,
   query: '',
-  status: 'STARTUP',
-  showMask: false,
+  status: 'READY',
+  maskIsVisible: false,
   searchIsVisible: false,
   searchIsFocused: false,
   menuIsVisible: false
@@ -45,7 +45,7 @@ export default function appReducer(state = initialState, action) {
     }
 
     case 'SHOW_MASK': {
-      return { ...state, showMask: action.payload };
+      return { ...state, maskIsVisible: action.payload };
     }
 
     case 'TOGGLE_SEARCH_IS_VISIBLE': {
