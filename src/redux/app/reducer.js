@@ -8,15 +8,22 @@ const initialState = {
   sourceList: null,
   motifList: null,
   query: '',
-  status: 'READY',
   maskIsVisible: false,
   searchIsVisible: false,
   searchIsFocused: false,
-  menuIsVisible: false
+  menuIsVisible: false,
+  isLoading: false,
 };
 
 export default function appReducer(state = initialState, action) {
   switch (action.type) {
+    case 'FETCH_MOTIFS':
+    case 'FETCH_SOURCE_ENTRIES':
+      return {
+        ...state,
+        isLoading: true,
+      };
+
     case 'RECEIVE_ENTRIES':
     case 'RECEIVE_BIBLIO':
       return {
@@ -37,7 +44,7 @@ export default function appReducer(state = initialState, action) {
         doc: {
           ...state.doc,
           [action.payload.mid]: action.payload.motif
-        }
+        },
       };
 
     case 'RECEIVE_SOURCE_ENTRIES':
@@ -56,8 +63,8 @@ export default function appReducer(state = initialState, action) {
         },
       };
 
-    case 'SET_STATUS': {
-      return { ...state, status: action.payload };
+    case 'SET_LOADING': {
+      return { ...state, isLoading: action.payload };
     }
 
     case 'SHOW_MASK': {

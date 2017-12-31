@@ -93,10 +93,10 @@ export default {
       });
     };
   },
-  setStatus(status) {
+  setLoading(loading) {
     return {
-      type: 'SET_STATUS',
-      payload: status
+      type: 'SET_LOADING',
+      payload: loading
     };
   },
   showMask(show) {

@@ -11,7 +11,8 @@ export default function freezeProps({ propsToFreeze }) {
       updateProps(props) {
         const shouldFreeze = propsToFreeze(props);
         Object.keys(props).forEach((key) => {
-          if (shouldFreeze[key]) {
+          // only freeze the prop if it has a value (isn't undefined)
+          if (shouldFreeze[key] || this.frozenProps[key] === undefined) {
             this.frozenProps[key] = props[key];
           } else if (!(key in shouldFreeze)) {
             this.normalProps[key] = props[key];

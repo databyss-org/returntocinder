@@ -12,22 +12,28 @@ export default function withLoader({
     class WithLoader extends PureComponent {
       constructor(props) {
         super(props);
-        this.loading = {};
+        this.wasAllLoaded = false;
+        this.loadedProps = {};
+        this.loadingProps = {};
       }
       onMountAndUpdate(props) {
-        this.loadedProps = propsToLoad(props);
-        this.loaders = loaderActions(props);
-        this.isAllLoaded = Object.keys(this.loadedProps).reduce((isLoaded, prop) => {
-          if (this.loadedProps[prop]) {
-            this.loading[prop] = false;
+        const toLoad = propsToLoad(props);
+        const loaders = loaderActions(props);
+        this.isAllLoaded = Object.keys(toLoad).reduce((isLoaded, prop) => {
+          if (toLoad[prop]) {
+            this.loadingProps[prop] = false;
             return isLoaded;
           }
-          if (!this.loading[prop]) {
-            this.loaders[prop]();
-            this.loading[prop] = true;
+          if (!this.loadingProps[prop]) {
+            loaders[prop]();
+            this.loadingProps[prop] = true;
           }
           return false;
         }, true);
+        if (this.isAllLoaded) {
+          this.loadedProps = toLoad;
+          this.wasAllLoaded = true;
+        }
       }
       componentWillMount() {
         this.onMountAndUpdate(this.props);
@@ -36,8 +42,8 @@ export default function withLoader({
         this.onMountAndUpdate(nextProps);
       }
       render() {
-        if (this.isAllLoaded) {
-          return <Wrapped {...this.props} {...this.loadedProps} />;
+        if (this.wasAllLoaded) {
+          return <Wrapped {...this.props} {...this.loadedProps} isLoading={!this.isAllLoaded} />;
         }
         if (this.props.showLoader) {
           return (

@@ -46,6 +46,6 @@ app.get('/*', (req, res) => {
   }
 });
 
-app.listen(app.get('port'), () => {
+app.listen(app.get('port'), '0.0.0.0', () => {
   console.log('server started on port', app.get('port'));
 });
