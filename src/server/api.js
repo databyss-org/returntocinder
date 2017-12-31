@@ -7,11 +7,9 @@ import { groupEntriesBySource } from '../lib/indexers';
 
 const router = express.Router();
 
-
 const processMap = {
   'GROUP_BY_SOURCE': groupEntriesBySource
 };
-
 
 console.log('INDEXING ENTRIES');
 const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));

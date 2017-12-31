@@ -75,6 +75,9 @@ export default compose(
         ...(query.motif ? {
           motif: props.app.doc[query.term]
         } : {}),
+        ...(query.source ? {
+          source: props.app.entriesBySource[query.term]
+        } : {}),
       };
     },
     loaderActions: (props) => {
@@ -82,6 +85,9 @@ export default compose(
       return {
         ...(query.motif ? {
           motif: () => props.fetchMotif(query.term),
+        } : {}),
+        ...(query.source ? {
+          source: () => props.fetchSource(query.term),
         } : {}),
       };
     },

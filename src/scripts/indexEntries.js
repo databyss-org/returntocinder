@@ -5,7 +5,8 @@ import os from 'os';
 import {
   entriesFromMotifs,
   sourcesFromEntries,
-  mergeEntries
+  mergeEntries,
+  groupEntriesBySource,
 } from '../lib/indexers';
 
 export default function indexEntries({ path, logPath }) {
@@ -59,9 +60,25 @@ export default function indexEntries({ path, logPath }) {
   log(`BEFORE MERGE: ${entryCount} entries`);
   log(`AFTER MERGE: ${mergedEntryCount} entries`);
 
-  fs.writeFile(`${path}/entries.json`, JSON.stringify(mergedEntries));
+  fs.writeFileSync(`${path}/entries.json`, JSON.stringify(mergedEntries));
+
+  writeSourceJsons({ entries: mergedEntries, path });
+}
+
+function writeSourceJsons({ entries, path }) {
+  const entriesBySource = groupEntriesBySource(entries);
+  Object.keys(entriesBySource).forEach((sid) => {
+    fs.writeFileSync(`${path}/sources/${sid}.json`, JSON.stringify(entriesBySource[sid]));
+  });
 }
 
 if (require.main === module) {
-  indexEntries({ path: process.argv[2], logPath: process.argv[3] });
+  const path = process.argv[2];
+  if (process.argv[3] === '--sources') {
+    // only write sources from existing entries.json
+    const entries = JSON.parse(fs.readFileSync(`${path}/entries.json`));
+    writeSourceJsons({ entries, path });
+  } else {
+    indexEntries({ path, logPath: process.argv[3] });
+  }
 }

@@ -19,6 +19,7 @@ export default function withLoader({
         this.loaders = loaderActions(props);
         this.isAllLoaded = Object.keys(this.loadedProps).reduce((isLoaded, prop) => {
           if (this.loadedProps[prop]) {
+            this.loading[prop] = false;
             return isLoaded;
           }
           if (!this.loading[prop]) {

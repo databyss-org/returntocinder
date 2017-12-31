@@ -183,16 +183,18 @@ export function groupEntriesBySource(entryList) {
   }, {});
 }
 
+export function motifListFromEntries(entries) {
+  const motifs = entries.reduce((motifs, entry) => {
+    entry.motif.forEach((m) => { motifs[m.id] = m; });
+    return motifs;
+  }, {});
+  return Object.keys(motifs).map(mid => motifs[mid]);
+}
+
 export function addMotifsToBiblio(biblio, entriesBySource) {
   const bib = { ...biblio };
   Object.keys(entriesBySource).forEach((sid) => {
-    const motifs = entriesBySource[sid].reduce((motifs, entry) => {
-      entry.motif.forEach((m) => { motifs[m.id] = m; });
-      return motifs;
-    }, {});
-    bib[sid].motifs = Object.keys(motifs).reduce((motifList, mid) => (
-      motifList.concat(motifs[mid])
-    ), []);
+    bib[sid].motifs = motifListFromEntries(entriesBySource[sid]);
   });
   return bib;
 }

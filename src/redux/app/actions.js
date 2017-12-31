@@ -6,6 +6,24 @@ import {
 } from '../../lib/indexers';
 
 export default {
+  fetchSource(sid) {
+    return async (dispatch, getState) => {
+      dispatch({
+        type: 'FETCH_SOURCE_ENTRIES',
+        payload: {
+          sid,
+        }
+      });
+      const entries = (await axios.get(`/sources/${sid}.json`)).data;
+      return dispatch({
+        type: 'RECEIVE_SOURCE_ENTRIES',
+        payload: {
+          sid,
+          entries,
+        }
+      });
+    };
+  },
   fetchMotif(mid) {
     return async (dispatch, getState) => {
       dispatch({

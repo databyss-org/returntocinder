@@ -1,10 +1,10 @@
-import { addMotifsToBiblio } from '../../lib/indexers';
+import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
   doc: {},
+  entriesBySource: {},
   biblio: null,
   entryList: null,
-  entriesBySource: null,
   sourceList: null,
   motifList: null,
   query: '',
@@ -38,6 +38,22 @@ export default function appReducer(state = initialState, action) {
           ...state.doc,
           [action.payload.mid]: action.payload.motif
         }
+      };
+
+    case 'RECEIVE_SOURCE_ENTRIES':
+      return {
+        ...state,
+        entriesBySource: {
+          ...state.entriesBySource,
+          [action.payload.sid]: action.payload.entries
+        },
+        biblio: {
+          ...state.biblio,
+          [action.payload.sid]: {
+            ...state.biblio[action.payload.sid],
+            motifs: motifListFromEntries(action.payload.entries)
+          }
+        },
       };
 
     case 'SET_STATUS': {
