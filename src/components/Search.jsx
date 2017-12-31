@@ -8,10 +8,12 @@ import cx from 'classnames';
 import latinize from 'latinize';
 import pluralize from 'pluralize';
 import _ from 'lodash';
+import { motifListFromNames } from '../lib/indexers';
 import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
 import theme from '../app.scss';
-import { textify } from '../lib/_helpers';
+import { textify, urlify } from '../lib/_helpers';
+import motifNames from '../content/motifs.json';
 
 import CloseIcon from '../icons/close.svg';
 
@@ -73,7 +75,7 @@ class Search extends PureComponent {
     if (!value) {
       return [{ suggestions: [] }];
     }
-    const { motifList, sourceList } = this.props.appState;
+    const { sourceList } = this.props.appState;
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
 
@@ -148,7 +150,7 @@ class Search extends PureComponent {
 
     const motifMatches = compile({
       ...compileDefaults,
-      collection: motifList,
+      collection: motifListFromNames(motifNames),
       filter: c => c.map(m => ({
         ...m,
         name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')

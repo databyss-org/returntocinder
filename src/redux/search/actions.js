@@ -1,25 +1,9 @@
-import PromiseWorker from 'promise-worker';
-import SearchWorker from './worker';
+import axios from 'axios';
+import config from '../../config';
 
-const searchWorker = new PromiseWorker(new SearchWorker());
+let queryIdx = 0;
 
 export default {
-  indexEntries() {
-    return async (dispatch, getState) => {
-      dispatch({
-        type: 'INDEX_ENTRIES'
-      });
-      await searchWorker.postMessage({
-        type: 'INDEX',
-        payload: {
-          entryList: getState().app.entryList
-        }
-      });
-      dispatch({
-        type: 'ENTRIES_INDEXED'
-      });
-    };
-  },
   searchEntries(query) {
     return async (dispatch, getState) => {
       dispatch({
@@ -28,9 +12,8 @@ export default {
           query
         }
       });
-      const results = await searchWorker.postMessage({
-        type: 'SEARCH',
-        payload: {
+      const results = await axios.get(`${config.apiUrl}/search`, {
+        params: {
           query: query || getState().search.query,
           processResults: 'GROUP_BY_SOURCE',
           withMeta: true
@@ -39,7 +22,7 @@ export default {
       dispatch({
         type: 'SEARCH_ENTRIES_RESULTS',
         payload: {
-          ...results,
+          ...results.data.results,
           query
         }
       });
@@ -47,18 +30,21 @@ export default {
   },
   setQuery(query) {
     return async (dispatch, getState) => {
+      queryIdx += 1;
       dispatch({
         type: 'SET_QUERY',
-        payload: { query }
+        payload: { query, id: queryIdx }
       });
-      const results = await searchWorker.postMessage({
-        type: 'SEARCH',
-        payload: { query }
+      const results = await axios.get(`${config.apiUrl}/search`, {
+        params: { query, id: queryIdx }
       });
+      if (results.data.id < queryIdx) {
+        return;
+      }
       dispatch({
         type: 'SET_QUERY_RESULTS',
         payload: {
-          ...results,
+          ...results.data.results,
           query
         }
       });

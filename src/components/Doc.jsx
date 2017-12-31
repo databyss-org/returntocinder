@@ -59,7 +59,7 @@ class Doc extends PureComponent {
   }
 
   _updateRows(props) {
-    const { doc, entriesBySource } = props.appState;
+    const { entriesBySource } = props.appState;
     const { search, motif, source, term } = this.query;
     const { path } = this.props;
 

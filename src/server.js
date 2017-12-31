@@ -4,8 +4,11 @@ import express from 'express';
 import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import Dbx from './lib/dropbox';
 import contentFiles from './content';
+
+import api from './server/api';
 
 const app = express();
 let dbx = null;
@@ -32,6 +35,8 @@ app.post('/dropbox-webhook', (req, res) => {
   dbx.requestSync();
   res.status(200).end();
 });
+
+app.use('/api', cors(), api);
 
 app.get('/*', (req, res) => {
   if (process.env.DBX) {

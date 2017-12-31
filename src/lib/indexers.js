@@ -81,6 +81,7 @@ export function sourceListFromBiblio(biblio) {
 
 export function motifListFromNames(motifNames) {
   return motifNames.map(name => ({
+    type: 'motif',
     id: urlify(name),
     name,
   }));
