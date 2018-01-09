@@ -205,9 +205,10 @@ class Search extends PureComponent {
   renderSuggestion(suggestion) {
     return {
       motif: (
-        <div className={cx(theme.motifSuggestion, theme[`row${suggestion.idx}`])}>
-          {suggestion.name}
-        </div>
+        <div
+          className={cx(theme.motifSuggestion, theme[`row${suggestion.idx}`])}
+          dangerouslySetInnerHTML={{ __html: suggestion.name }}
+        />
       ),
       source: (
         <div className={cx(theme.sourceSuggestion, theme[`row${suggestion.idx}`])}>

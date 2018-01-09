@@ -82,14 +82,14 @@ export function sourceListFromBiblio(biblio) {
 export function motifListFromNames(motifNames) {
   return motifNames.map(name => ({
     type: 'motif',
-    id: urlify(name),
+    id: urlify(textify(name)),
     name,
   }));
 }
 
 export function motifNamesFromMotifs(motifs) {
   return Object.keys(motifs).map(mid =>
-    textify(motifs[mid].title).replace(/[“”]/g, '"').replace('’', "'")
+    motifs[mid].title.replace(/[“”]/g, '"').replace('’', "'")
   );
 }
 
