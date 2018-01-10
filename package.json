@@ -9,6 +9,7 @@
 	"scripts": {
 		"heroku-postbuild": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --progress",
 		"start": "node build/server.js",
+		"start-dbx": "pm2 start build/server.js -i 1",
 		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
 		"dev-server": "nodemon src/server.js --exec babel-node",
 		"doc": "babel-node src/scripts/docToJson.js",

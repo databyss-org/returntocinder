@@ -10,7 +10,7 @@ class Subnav extends PureComponent {
     this.activeElem = null;
   }
   makePath(path) {
-    return `${this.props.basePath}/${path}`;
+    return `/${this.props.basePath}/${path}`;
   }
   setActive(elem, item) {
     if (!elem) {
@@ -34,7 +34,7 @@ class Subnav extends PureComponent {
           {menu.map((item, idx) => (
             <li key={idx} ref={e => this.setActive(e, item)}>
               <Link to={
-                location.pathname.replace(/\/!about\/.+/, this.makePath(item.path))
+                location.pathname.replace(/\/about\/.+/, this.makePath(item.path))
               }>
                 <span dangerouslySetInnerHTML={{ __html: item.title }} />
               </Link>
