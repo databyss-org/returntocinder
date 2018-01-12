@@ -24,7 +24,7 @@ const Front = ({ location, toggleSearchIsFocused }) =>
         </div>
         <p>
           {config.inscription}
-          <Link to='/!about/frontis'>read more</Link>
+          <Link to='/about/frontis'>read more</Link>
         </p>
       </div>
       <div className={cx(styles.body, styles.show)}>

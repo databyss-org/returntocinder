@@ -117,6 +117,7 @@ export default class Dbx {
     await exec('ssh-keyscan heroku.com >> ~/.ssh/known_hosts');
     await exec(`git config --global user.email "${process.env.NOTIFY_SENDER}"`);
     await exec('git config --global user.name "Dropbox Sync"');
+    await exec('rm -rf repo');
     await exec(`git clone ${this.gitUrl} repo`);
   }
 

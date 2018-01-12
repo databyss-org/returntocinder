@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import React, { PureComponent } from 'react';
-import { withRouter, matchPath } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import styles from '../app.scss';
@@ -20,14 +20,14 @@ class Navbar extends PureComponent {
     this.props.history.goBack();
   }
   aboutIsVisible() {
-    return this.props.location.pathname.match('!about/');
+    return this.props.location.pathname.match('about/');
   }
   onAboutClick() {
     const { location, history } = this.props;
     if (this.aboutIsVisible()) {
-      history.push(location.pathname.replace(/\/!about\/.+/, ''));
+      history.push(location.pathname.replace(/\/about\/.+/, ''));
     } else {
-      history.push(`${location.pathname === '/' ? '' : location.pathname}/!about/frontis`);
+      history.push(`${location.pathname === '/' ? '' : location.pathname}/about/frontis`);
     }
   }
   onMenuClick() {

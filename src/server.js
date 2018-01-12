@@ -9,6 +9,7 @@ import Dbx from './lib/dropbox';
 import contentFiles from './content';
 
 import api from './server/api';
+import sitemap from './server/sitemap';
 
 const app = express();
 let dbx = null;
@@ -37,6 +38,15 @@ app.post('/dropbox-webhook', (req, res) => {
 });
 
 app.use('/api', cors(), api);
+
+app.get('/sitemap.txt', (req, res) => {
+  res.send(sitemap().join("\n")); // eslint-disable-line quotes
+});
+
+// legacy !about redirects
+app.get('/!about/:page', (req, res) => {
+  res.redirect(301, `/about/${req.params.page}`);
+});
 
 app.get('/*', (req, res) => {
   if (process.env.DBX) {
