@@ -125,7 +125,7 @@ export default class Dbx {
     const url = this.gitUrl;
     const text = await exec('cd repo && git status');
     console.log('COMMIT AND PUSH', url);
-    await exec('cd repo && git commit -a -m "content update" && git pull && git push');
+    await exec('cd repo && git add . && git commit -a -m "content update" && git pull && git push');
     const res = await notify({ subject: 'Dropbox changes pushed', text });
     console.log(res);
   }
