@@ -26,6 +26,10 @@
       height: 9vh;
       display: flex;
       align-items: center;
+
+      .container {
+        position: relative;
+      }
     }
     .suggestionsContainer {
       display: flex;
@@ -80,7 +84,7 @@
       align-items: center;
       width: 100%;
       padding-right: 1em;
-      position: absolute;
+      /* position: absolute; */
       height: 5vh;
 
       &.show .hamburger {

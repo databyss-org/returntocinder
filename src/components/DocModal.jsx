@@ -8,12 +8,16 @@ import withAction from '../hoc/withAction';
 import styles from '../app.scss';
 import CloseIcon from '../icons/close.svg';
 
+const close = ({ location, history }) => {
+  history.replace(location.pathname.replace(/\/source:(.*)?/g, ''));
+};
+
 const DocModal = ({ title, children, isActive, location, history }) =>
   <div className={cx(styles.docModal, { [styles.show]: isActive })}>
-    <div className={styles.mask} onClick={() => history.goBack()} />
+    <div className={styles.mask} onClick={() => close({ location, history })} />
     <div className={styles.contentHeader}>
       <span>{title}</span>
-      <CloseIcon onClick={() => history.goBack()} />
+      <CloseIcon onClick={() => close({ location, history })} />
     </div>
     <div className={styles.content}>
       {children}

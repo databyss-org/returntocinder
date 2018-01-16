@@ -1,14 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import pluralize from 'pluralize';
 import cx from 'classnames';
 
-import styles from '../app.scss';
-
-const ColumnHead = ({ app, search, query }) => {
-  const { doc, biblio, entriesBySource } = app;
-  const { resultsMeta, isWorking } = search;
-
+const ColumnHead = ({
+  doc,
+  biblio,
+  resultsMeta,
+  isWorking,
+  entriesBySource,
+  query,
+  styles
+}) => {
   const stats = {
     motif: term => ({
       title: doc[term].title,
@@ -62,4 +64,4 @@ const ColumnHead = ({ app, search, query }) => {
   );
 };
 
-export default connect(state => state)(ColumnHead);
+export default ColumnHead;
