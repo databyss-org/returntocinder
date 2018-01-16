@@ -1,8 +1,24 @@
 import React from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Entries from './Entries';
 
-const EntriesByMotif = ({ doc, mid, location, style, path, setScroll }) =>
+const sourceLink = ({ location, history, sid }) => {
+  const href = `${location.pathname}/source:${sid}`;
+  return (
+    <a
+      href={href}
+      rel="nofollow"
+      onClick={(e) => {
+        e.preventDefault();
+        history.replace(href);
+      }}
+    >
+      {sid}
+    </a>
+  );
+};
+
+const EntriesByMotif = ({ doc, mid, location, history, style, path, setScroll }) =>
   <article key={mid} style={style}>
     {Object.keys(doc[mid].sources).map((sid, sidx) => (
       <section key={mid + sid}>
@@ -12,13 +28,7 @@ const EntriesByMotif = ({ doc, mid, location, style, path, setScroll }) =>
           showRepeats
           path={path.concat(sid)}
           setScroll={setScroll}
-          inlineHead={(
-            <h3>
-              <Link to={`${location.pathname}/source:${sid}`} replace>
-                {sid}
-              </Link>
-            </h3>
-          )}
+          inlineHead={ <h3>{sourceLink({ location, history, sid })}</h3> }
         />
       </section>
     ))}
