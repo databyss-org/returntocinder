@@ -18,12 +18,22 @@ const sourceLink = ({ location, history, sid }) => {
   );
 };
 
-const EntriesByMotif = ({ doc, mid, location, history, style, path, setScroll }) =>
+const EntriesByMotif = ({
+  doc,
+  mid,
+  location,
+  history,
+  style,
+  path,
+  setScroll,
+  isLinked
+}) =>
   <article key={mid} style={style}>
     {Object.keys(doc[mid].sources).map((sid, sidx) => (
       <section key={mid + sid}>
         <Entries
           makeId={idx => mid + sid + idx}
+          isLinked={isLinked}
           entries={doc[mid].sources[sid]}
           showRepeats
           path={path.concat(sid)}

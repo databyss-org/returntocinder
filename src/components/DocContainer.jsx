@@ -13,7 +13,7 @@ import styles from '../app.scss';
 
 const asidePath = '/(motif|source|search)/(.*)/motif::term';
 
-const getQuery = ({ location, match }) => {
+const getQuery = ({ location, match, app }) => {
   const aside = matchPath(location.pathname, asidePath);
   return {
     term: match.params.term,
@@ -21,16 +21,31 @@ const getQuery = ({ location, match }) => {
     search: match.params[0] === 'search',
     motif: match.params[0] === 'motif',
     source: match.params[0] === 'source',
-    aside: aside && aside.params.term
+    aside: aside && aside.params.term,
+    isLinked: app.motifLinksAreActive
   };
 };
 
-const DocContainer = ({ search, match, query }) =>
+const onClick = ({ history, e }) => {
+  if (
+    e.target.tagName.toLowerCase() === 'a' &&
+    e.target.pathname.match(/motif\//)
+  ) {
+    // redirect motif link clicks
+    e.preventDefault();
+    history.push(e.target.pathname);
+  }
+};
+
+const DocContainer = ({ search, match, query, history }) =>
   <Transition in={Boolean(query.aside)} timeout={300}>
     {state =>
-      <div className={cx(styles.docContainer, {
-        [styles.withAside]: query.aside
-      })}>
+      <div
+        onClick={e => onClick({ e, history })}
+        className={cx(styles.docContainer, {
+          [styles.withAside]: query.aside
+        })}
+      >
         <DocHead transitionState={state} query={query} />
         <div className={cx(styles.doc, styles[state], {
           [styles.show]: true
@@ -64,7 +79,9 @@ export default compose(
       return {
         query,
         ...(query.motif ? {
-          motif: props.app.doc[query.term]
+          motif: props.app.motifLinksAreActive
+            ? props.app.linkedDoc[query.term]
+            : props.app.doc[query.term]
         } : {}),
         ...(query.aside ? {
           aside: props.app.doc[query.aside]
@@ -76,12 +93,13 @@ export default compose(
     },
     loaderActions: (props) => {
       const query = getQuery(props);
+      const getLinked = props.app.motifLinksAreActive;
       return {
         ...(query.motif ? {
-          motif: () => props.fetchMotif(query.term),
+          motif: () => props.fetchMotif({ mid: query.term, getLinked }),
         } : {}),
         ...(query.aside ? {
-          aside: () => props.fetchMotif(query.aside),
+          aside: () => props.fetchMotif({ mid: query.aside, getLinked }),
         } : {}),
         ...(query.source ? {
           source: () => props.fetchSource(query.term),

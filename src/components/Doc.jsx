@@ -59,15 +59,16 @@ class Doc extends PureComponent {
   }
 
   _updateRows(props) {
-    const { entriesBySource, doc } = props.appState;
-    const { search, motif, source, term } = this.query;
+    const { entriesBySource, doc, linkedDoc } = props.appState;
+    const { search, motif, source, term, isLinked } = this.query;
     const { path } = this.props;
 
     if (motif) {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesByMotif
-          doc={doc}
+          doc={isLinked ? linkedDoc : doc}
+          isLinked={isLinked}
           mid={term}
           key={key}
           style={style}

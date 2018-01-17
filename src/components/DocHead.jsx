@@ -1,14 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import ColumnHead from './ColumnHead.jsx';
+import ColumnHead from './ColumnHead';
+import Toggle from './Toggle';
+import actions from '../redux/app/actions';
 import styles from '../app.scss';
 
-const DocHead = ({ transitionState, query, app, search }) =>
+const DocHead = ({ transitionState, query, app, search, toggleMotifLinks }) =>
   <div className={cx(styles.docHead, styles[transitionState])}>
+    <Toggle
+      isActive={app.motifLinksAreActive}
+      onClick={() => toggleMotifLinks(!app.motifLinksAreActive)}
+    >
+      Motif Links
+    </Toggle>
     <ColumnHead
       query={query}
-      doc={app.doc}
+      doc={query.isLinked ? app.linkedDoc : app.doc}
       biblio={app.biblio}
       entriesBySource={app.entriesBySource}
       isWorking={search.isWorking}
@@ -24,4 +32,4 @@ const DocHead = ({ transitionState, query, app, search }) =>
     }
   </div>;
 
-export default connect(state => state)(DocHead);
+export default connect(state => state, actions)(DocHead);

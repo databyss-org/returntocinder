@@ -19,12 +19,54 @@ export default function docToJson({ input, output }) {
       const full = rtfToJson(doc);
       fs.writeFileSync(`${output.public}/full.json`, JSON.stringify(full));
       fs.writeFileSync(`${output.content}/motifs.json`, JSON.stringify(motifNamesFromMotifs(full)));
-      Object.keys(full).forEach(mid =>
-        fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]))
-      );
+      Object.keys(full).forEach((mid) => {
+        fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]));
+        fs.writeFileSync(
+          `${output.public}/motifs/${mid}-linked.json`,
+          JSON.stringify(linkMotifsInAllEntries(full[mid], full))
+        );
+      });
       resolve();
     });
   });
+}
+
+function linkMotifsInAllEntries(motif, doc) {
+  return Object.keys(motif.sources).reduce((lm, sid) => {
+    lm.sources[sid] = motif.sources[sid].map(source => ({
+      ...source,
+      content: linkMotifsInEntry(source.content, doc)
+    }));
+    return lm;
+  }, { ...motif });
+}
+
+function linkMotifsInEntry(entry, doc) {
+  // tokenize entry and replace motif names with links
+  const words = entry.split(' ');
+  return words.map((word) => {
+    // textify, urlify and stem-ify
+    const mid = urlify(textify(word))
+      .replace(/ing$/, '')
+      .replace(/ness$/, '')
+      .replace(/es$/, '')
+      .replace(/s$/, '')
+      .replace(/ed$/, '')
+      .replace(/ly$/, '');
+    if (!doc[mid]) {
+      return word;
+    }
+    // move punctuation out of link
+    const pre = word.match(/^[.,![\]*()>“”]/);
+    const post = word.match(/[.,![\]*()>“”]$/);
+    if (post) {
+      word = word.substr(0, word.length - 1);
+    }
+    if (pre) {
+      word = word.substr(1);
+    }
+    return `${pre ? pre[0] : ''}<a href='/motif/${mid}'>${word}</a>${post ? post[0] : ''}`;
+  }).join(' ');
 }
 
 function rtfToJson(doc) {

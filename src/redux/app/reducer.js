@@ -2,6 +2,7 @@ import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
   doc: {},
+  linkedDoc: {},
   entriesBySource: {},
   biblio: null,
   entryList: null,
@@ -13,6 +14,7 @@ const initialState = {
   searchIsFocused: false,
   menuIsVisible: false,
   isLoading: false,
+  motifLinksAreActive: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -39,13 +41,13 @@ export default function appReducer(state = initialState, action) {
       };
 
     case 'RECEIVE_MOTIF':
-      return {
+      return (docKey => ({
         ...state,
-        doc: {
-          ...state.doc,
+        [docKey]: {
+          ...state[docKey],
           [action.payload.mid]: action.payload.motif
         },
-      };
+      }))(action.payload.isLinked ? 'linkedDoc' : 'doc');
 
     case 'RECEIVE_SOURCE_ENTRIES':
       return {
@@ -89,6 +91,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'MENU_VISIBLE': {
       return { ...state, menuIsVisible: action.payload };
+    }
+
+    case 'MOTIF_LINKS_ACTIVE': {
+      return { ...state, motifLinksAreActive: action.payload };
     }
 
     default: {
