@@ -6,7 +6,8 @@ import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
-import actions from '../redux/app/actions';
+import appActions from '../redux/app/actions';
+import searchActions from '../redux/search/actions';
 import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 import styles from '../app.scss';
@@ -60,7 +61,7 @@ const DocContainer = ({ search, match, query, history }) =>
           {query.aside &&
             <aside>
               <Doc
-                query={{ motif: true, term: query.aside }}
+                query={{ motif: true, term: query.aside, isLinked: query.isLinked }}
                 path={['aside']}
                 ready={state === 'entered'}
               />
@@ -71,26 +72,34 @@ const DocContainer = ({ search, match, query, history }) =>
   </Transition>;
 
 export default compose(
-  connect(state => state, actions),
+  connect(state => state, { ...appActions, ...searchActions }),
   withRouter,
   withLoader({
     propsToLoad: (props) => {
+      const { motifLinksAreActive } = props.app;
       const query = getQuery(props);
       return {
         query,
         ...(query.motif ? {
-          motif: props.app.motifLinksAreActive
+          motif: motifLinksAreActive
             ? props.app.linkedDoc[query.term]
             : props.app.doc[query.term]
         } : {}),
         ...(query.aside ? {
-          aside: props.app.doc[query.aside]
+          aside: motifLinksAreActive
+            ? props.app.linkedDoc[query.aside]
+            : props.app.doc[query.aside]
         } : {}),
         ...(query.source ? {
-          source: props.app.motifLinksAreActive
+          source: motifLinksAreActive
             ? props.app.linkedEntriesBySource[query.term]
             : props.app.entriesBySource[query.term]
         } : {}),
+        ...(query.search ? {
+          results: motifLinksAreActive
+            ? props.search.linkedResults[query.term]
+            : props.search.results[query.term]
+        } : {})
       };
     },
     loaderActions: (props) => {
@@ -106,6 +115,9 @@ export default compose(
         ...(query.source ? {
           source: () => props.fetchSource({ sid: query.term, getLinked }),
         } : {}),
+        ...(query.search ? {
+          results: () => props.searchEntries({ query: query.term, getLinked })
+        } : {})
       };
     },
   }),

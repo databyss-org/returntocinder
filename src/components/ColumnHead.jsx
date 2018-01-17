@@ -1,12 +1,11 @@
 import React from 'react';
 import pluralize from 'pluralize';
-import cx from 'classnames';
 
 const ColumnHead = ({
   doc,
   biblio,
+  results,
   resultsMeta,
-  isWorking,
   entriesBySource,
   query,
   styles
@@ -53,9 +52,7 @@ const ColumnHead = ({
       <div className={styles.title}>
         <span dangerouslySetInnerHTML={{ __html: stats.title }} />
       </div>
-      <div className={cx(styles.stats, {
-        [styles.show]: !isWorking
-      })}>
+      <div className={styles.stats}>
         {display.entries}
         {!query.motif && display.motifs}
         {!query.source && display.sources}

@@ -34,12 +34,7 @@
       font-family: 'DINNextLTPro-Light';
       font-size: 0.9em;
       flex-grow: 0;
-      opacity: 0;
       transition: opacity 100ms ease;
-
-      &.show {
-        opacity: 1;
-      }
     }
 
     &:first-of-type {

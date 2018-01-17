@@ -4,26 +4,29 @@ import config from '../../config';
 let queryIdx = 0;
 
 export default {
-  searchEntries(query) {
+  searchEntries({ query, getLinked }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'SEARCH_ENTRIES',
         payload: {
-          query
+          query,
+          getLinked
         }
       });
       const results = await axios.get(`${config.apiUrl}/search`, {
         params: {
           query: query || getState().search.query,
           processResults: 'GROUP_BY_SOURCE',
-          withMeta: true
+          withMeta: true,
+          ...(getLinked ? { getLinked: true } : {})
         }
       });
       dispatch({
         type: 'SEARCH_ENTRIES_RESULTS',
         payload: {
           ...results.data.results,
-          query
+          query,
+          getLinked
         }
       });
     };

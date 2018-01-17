@@ -17,16 +17,24 @@ const DocHead = ({ transitionState, query, app, search, toggleMotifLinks }) =>
     <ColumnHead
       query={query}
       doc={query.isLinked ? app.linkedDoc : app.doc}
+      results={
+        query.isLinked
+          ? search.linkedResults[query.term]
+          : search.results[query.term]
+      }
+      resultsMeta={search.resultsMeta[query.term]}
       biblio={app.biblio}
-      entriesBySource={app.entriesBySource}
-      isWorking={search.isWorking}
-      resultsMeta={search.resultsMeta}
+      entriesBySource={
+        query.isLinked
+          ? app.linkedEntriesBySource
+          : app.entriesBySource
+        }
       styles={styles}
     />
     {query.aside &&
       <ColumnHead
         query={{ motif: true, term: query.aside, type: 'motif' }}
-        doc={app.doc}
+        doc={query.isLinked ? app.linkedDoc : app.doc}
         styles={styles}
       />
     }
