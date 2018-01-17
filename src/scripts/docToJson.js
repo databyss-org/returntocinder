@@ -57,8 +57,8 @@ function linkMotifsInEntry(entry, doc) {
       return word;
     }
     // move punctuation out of link
-    const pre = word.match(/^[.,![\]*()>“”]/);
-    const post = word.match(/[.,![\]*()>“”]$/);
+    const pre = word.match(/^[.,![\]*():;“”]/);
+    const post = word.match(/[.,![\]*():;“”]$/);
     if (post) {
       word = word.substr(0, word.length - 1);
     }
