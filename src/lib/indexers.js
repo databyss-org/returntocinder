@@ -198,3 +198,41 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
   });
   return bib;
 }
+
+export function linkMotifsInAllEntries({ motif, doc }) {
+  return Object.keys(motif.sources).reduce((lm, sid) => {
+    lm.sources[sid] = motif.sources[sid].map(source => ({
+      ...source,
+      content: linkMotifsInEntry({ content: source.content, doc })
+    }));
+    return lm;
+  }, { ...motif });
+}
+
+export function linkMotifsInEntry({ content, doc }) {
+  // tokenize content and replace motif names with links
+  const words = content.split(' ');
+  return words.map((word) => {
+    // textify, urlify and stem-ify
+    const mid = urlify(textify(word))
+      .replace(/ing$/, '')
+      .replace(/ness$/, '')
+      .replace(/es$/, '')
+      .replace(/s$/, '')
+      .replace(/ed$/, '')
+      .replace(/ly$/, '');
+    if (!doc[mid]) {
+      return word;
+    }
+    // move punctuation out of link
+    const pre = word.match(/^[.,![\]*():;“”?]/);
+    const post = word.match(/[.,![\]*():;“”?]$/);
+    if (post) {
+      word = word.substr(0, word.length - 1);
+    }
+    if (pre) {
+      word = word.substr(1);
+    }
+    return `${pre ? pre[0] : ''}<a href='/motif/${mid}'>${word}</a>${post ? post[0] : ''}`;
+  }).join(' ');
+}

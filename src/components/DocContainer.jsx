@@ -87,7 +87,9 @@ export default compose(
           aside: props.app.doc[query.aside]
         } : {}),
         ...(query.source ? {
-          source: props.app.entriesBySource[query.term]
+          source: props.app.motifLinksAreActive
+            ? props.app.linkedEntriesBySource[query.term]
+            : props.app.entriesBySource[query.term]
         } : {}),
       };
     },
@@ -102,7 +104,7 @@ export default compose(
           aside: () => props.fetchMotif({ mid: query.aside, getLinked }),
         } : {}),
         ...(query.source ? {
-          source: () => props.fetchSource(query.term),
+          source: () => props.fetchSource({ sid: query.term, getLinked }),
         } : {}),
       };
     },

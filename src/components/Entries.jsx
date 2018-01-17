@@ -9,7 +9,6 @@ const Entries = ({
   makeId,
   inlineHead,
   setScroll,
-  isLinked
 }) => {
   let lastLocation = null;
   let locationCount = 0;
@@ -32,7 +31,6 @@ const Entries = ({
           showRepeats={showRepeats}
           inlineHead={idx ? null : inlineHead}
           setScroll={setScroll}
-          isLinked={isLinked}
         />
       );
     })

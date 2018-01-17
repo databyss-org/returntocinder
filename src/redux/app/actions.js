@@ -6,20 +6,24 @@ import {
 } from '../../lib/indexers';
 
 export default {
-  fetchSource(sid) {
+  fetchSource({ sid, getLinked }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_SOURCE_ENTRIES',
         payload: {
           sid,
+          isLinked: getLinked
         }
       });
-      const entries = (await axios.get(`/sources/${sid}.json`)).data;
+      const entries = (await axios.get(
+        `/sources/${sid}${getLinked ? '-linked' : ''}.json`
+      )).data;
       return dispatch({
         type: 'RECEIVE_SOURCE_ENTRIES',
         payload: {
           sid,
           entries,
+          isLinked: getLinked
         }
       });
     };
@@ -33,7 +37,9 @@ export default {
           isLinked: getLinked
         }
       });
-      const motif = (await axios.get(`/motifs/${mid}${getLinked ? '-linked' : ''}.json`)).data;
+      const motif = (await axios.get(
+        `/motifs/${mid}${getLinked ? '-linked' : ''}.json`
+      )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {

@@ -1,6 +1,4 @@
 import React from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 
 import Entries from './Entries.jsx';
@@ -29,7 +27,4 @@ const EntriesBySource = ({
     />
   </section>;
 
-export default compose(
-  withRouter,
-  connect(state => state),
-)(EntriesBySource);
+export default withRouter(EntriesBySource);

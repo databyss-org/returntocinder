@@ -4,6 +4,7 @@ const initialState = {
   doc: {},
   linkedDoc: {},
   entriesBySource: {},
+  linkedEntriesBySource: {},
   biblio: null,
   entryList: null,
   sourceList: null,
@@ -50,20 +51,20 @@ export default function appReducer(state = initialState, action) {
       }))(action.payload.isLinked ? 'linkedDoc' : 'doc');
 
     case 'RECEIVE_SOURCE_ENTRIES':
-      return {
+      return (entriesKey => ({
         ...state,
-        entriesBySource: {
-          ...state.entriesBySource,
+        [entriesKey]: {
+          ...state[entriesKey],
           [action.payload.sid]: action.payload.entries
         },
-        biblio: {
+        ...(action.payload.isLinked ? {} : { biblio: {
           ...state.biblio,
           [action.payload.sid]: {
             ...state.biblio[action.payload.sid],
             motifs: motifListFromEntries(action.payload.entries)
           }
-        },
-      };
+        } }),
+      }))(action.payload.isLinked ? 'linkedEntriesBySource' : 'entriesBySource');
 
     case 'SET_LOADING': {
       return { ...state, isLoading: action.payload };
