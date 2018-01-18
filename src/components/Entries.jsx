@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import Entry from './Entry.jsx';
+import Entry from './Entry';
 
 export default class Entries extends PureComponent {
   render() {

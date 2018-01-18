@@ -14,6 +14,14 @@
     "class-methods-use-this": 0,
     "react/jsx-indent": ["error", 2],
     "object-curly-newline": 0, // That's going too far
-    "function-paren-newline": 0 // I like blocks to line up sometimes
+    "function-paren-newline": 0, // I like blocks to line up sometimes
+    "import/extensions": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js",".jsx"]
+      }
+    }
   }
 }
