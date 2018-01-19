@@ -49,6 +49,7 @@ export default function withLoader({
           <Transition in={inProp} timeout={delayLoader}>
             {state =>
               <div
+                style={{ display: 'none' }}
                 className={cx(styles.defer, {
                   [styles.entering]: state === 'entering',
                   [styles.entered]: state === 'entered',

@@ -10,7 +10,7 @@
   background-color: rgba(255,255,255,0.9);
 
   &.entering, &.entered {
-    display: flex;
+    display: flex !important;
     transition: opacity 200ms ease-in;
   }
 
