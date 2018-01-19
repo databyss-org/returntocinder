@@ -20,9 +20,11 @@
     width: 86px;
 
     .label {
-      height: 2.1em;
+      height: 2em;
       font-size: 12px;
+      line-height: 13px;
       text-align: right;
+      overflow: visible;
     }
   }
 

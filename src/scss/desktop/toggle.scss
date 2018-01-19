@@ -1,6 +1,7 @@
 .toggle {
   display: flex;
   align-items: center;
+  overflow: visible;
 
   .label {
     color: #4A4A4A;
@@ -39,8 +40,8 @@
 
   &.isActive {
     .switch {
-      background-color: #D745B6;
-      border-color: #D745B6;
+      background-color: #8b8884;
+      border-color: #8b8884;
 
       &:before {
         left: 17px;

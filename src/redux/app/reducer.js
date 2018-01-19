@@ -57,13 +57,13 @@ export default function appReducer(state = initialState, action) {
           ...state[entriesKey],
           [action.payload.sid]: action.payload.entries
         },
-        ...(action.payload.isLinked ? {} : { biblio: {
+        biblio: {
           ...state.biblio,
           [action.payload.sid]: {
             ...state.biblio[action.payload.sid],
             motifs: motifListFromEntries(action.payload.entries)
           }
-        } }),
+        },
       }))(action.payload.isLinked ? 'linkedEntriesBySource' : 'entriesBySource');
 
     case 'SET_LOADING': {

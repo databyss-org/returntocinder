@@ -31,6 +31,7 @@ const Entries = ({
           showRepeats={showRepeats}
           inlineHead={idx ? null : inlineHead}
           setScroll={setScroll}
+          scrollPos={idx}
         />
       );
     })
