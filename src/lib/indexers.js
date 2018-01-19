@@ -3,6 +3,7 @@
 import React from 'react';
 import latinize from 'latinize';
 import * as JsDiff from 'diff';
+import pluralize from 'pluralize';
 import { textify, urlify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -199,29 +200,35 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
   return bib;
 }
 
+const suffixPattern = /ing$|ness$|ed$|ion$/;
+
+export function makeStemDict(dict) {
+  return Object.keys(dict).reduce((stemmed, k) => {
+    stemmed[k.replace(suffixPattern, '')] = k;
+    stemmed[pluralize.singular(k)] = k;
+    return stemmed;
+  }, {});
+}
+
 export function linkMotifsInAllEntries({ motif, doc }) {
+  const stemDoc = makeStemDict(doc);
   return Object.keys(motif.sources).reduce((lm, sid) => {
     lm.sources[sid] = motif.sources[sid].map(source => ({
       ...source,
-      content: linkMotifsInEntry({ content: source.content, doc })
+      content: linkMotifsInEntry({ content: source.content, doc, stemDoc })
     }));
     return lm;
   }, { ...motif });
 }
 
-export function linkMotifsInEntry({ content, doc }) {
+export function linkMotifsInEntry({ content, doc, stemDoc }) {
   // tokenize content and replace motif names with links
   const words = content.split(' ');
   return words.map((word) => {
     // textify, urlify and stem-ify
-    const mid = urlify(textify(word))
-      .replace(/ing$/, '')
-      .replace(/ness$/, '')
-      .replace(/es$/, '')
-      .replace(/s$/, '')
-      .replace(/ed$/, '')
-      .replace(/ly$/, '');
-    if (!doc[mid]) {
+    const stemMid = pluralize.singular(urlify(textify(word)).replace(suffixPattern, ''));
+    const mid = stemDoc[stemMid];
+    if (!mid) {
       return word;
     }
     // move punctuation out of link

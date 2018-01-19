@@ -3,7 +3,7 @@
 import express from 'express';
 import fs from 'fs';
 import { indexEntries, searchEntries } from '../lib/search';
-import { groupEntriesBySource, linkMotifsInEntry } from '../lib/indexers';
+import { groupEntriesBySource, linkMotifsInEntry, makeStemDict } from '../lib/indexers';
 
 const router = express.Router();
 
@@ -14,9 +14,10 @@ const processMap = {
 console.log('INDEXING ENTRIES');
 const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));
 const doc = JSON.parse(fs.readFileSync('./public/full.json'));
+const stemDoc = makeStemDict(doc);
 const linkedEntryList = entryList.map(entry => ({
   ...entry,
-  content: linkMotifsInEntry({ content: entry.content, doc })
+  content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
 }));
 const index = indexEntries(entryList);
 const linkedIndex = indexEntries(linkedEntryList);

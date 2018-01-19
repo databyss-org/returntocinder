@@ -7,7 +7,8 @@ import {
   sourcesFromEntries,
   mergeEntries,
   groupEntriesBySource,
-  linkMotifsInEntry
+  linkMotifsInEntry,
+  makeStemDict
 } from '../lib/indexers';
 
 export default function indexEntries({ path, logPath }) {
@@ -67,10 +68,11 @@ export default function indexEntries({ path, logPath }) {
 }
 
 function writeSourceJsons({ entries, path, doc }) {
+  const stemDoc = makeStemDict(doc);
   const entriesBySource = groupEntriesBySource(entries);
   const linkedEntries = entries.map(entry => ({
     ...entry,
-    content: linkMotifsInEntry({ content: entry.content, doc })
+    content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
   }));
   const linkedEntriesBySource = groupEntriesBySource(linkedEntries);
   Object.keys(entriesBySource).forEach((sid) => {
