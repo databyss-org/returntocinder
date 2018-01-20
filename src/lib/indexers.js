@@ -200,12 +200,18 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
   return bib;
 }
 
-const suffixPattern = /ing$|ness$|ed$|ion$/;
+const suffixPattern = /ing$|ness$|ed$|ion$|y$/;
 
 export function makeStemDict(dict) {
   return Object.keys(dict).reduce((stemmed, k) => {
-    stemmed[k.replace(suffixPattern, '')] = k;
-    stemmed[pluralize.singular(k)] = k;
+    const noSuffix = k.replace(suffixPattern, '');
+    const singular = pluralize.singular(k);
+    if (noSuffix.length > 2) {
+      stemmed[noSuffix] = k;
+    }
+    if (singular.length > 2) {
+      stemmed[singular] = k;
+    }
     return stemmed;
   }, {});
 }

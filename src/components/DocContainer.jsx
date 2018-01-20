@@ -28,13 +28,17 @@ const getQuery = ({ location, match, app }) => {
 };
 
 const onClick = ({ history, e }) => {
+  let { target } = e;
+  if (target.tagName.toLowerCase() === 'em') {
+    target = target.parentNode;
+  }
   if (
-    e.target.tagName.toLowerCase() === 'a' &&
-    e.target.pathname.match(/motif\//)
+    target.tagName.toLowerCase() === 'a' &&
+    target.pathname.match(/motif\//)
   ) {
     // redirect motif link clicks
     e.preventDefault();
-    history.push(e.target.pathname);
+    history.push(target.pathname);
   }
 };
 
