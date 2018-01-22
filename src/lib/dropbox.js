@@ -2,7 +2,7 @@
 
 import Dropbox from 'dropbox';
 import fs from 'fs';
-import { promisify } from 'util';
+import { promisify, inspect } from 'util';
 import childProcess from 'child_process';
 import queue from 'queue';
 import docToJson from '../scripts/docToJson';
@@ -55,6 +55,13 @@ export default class Dbx {
         this.lastModified = await this.checkAndProcessDocs(this.lastModified);
       } catch (err) {
         console.log('JOB ERROR', JSON.stringify(err, null, 2));
+      }
+      if( typeof global.gc != "undefined" ){
+        console.log("Mem Usage Pre-GC " + inspect(process.memoryUsage()));
+        global.gc();
+        console.log("Mem Usage Post-GC " + inspect(process.memoryUsage()));
+      } else {
+        console.log('WARNING: Garbage collection not exposed');
       }
     });
   }
