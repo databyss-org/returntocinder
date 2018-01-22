@@ -3,7 +3,7 @@ import fs from 'fs';
 import parse from 'rtf-parser';
 import roman from 'roman-numerals';
 import childProcess from 'child_process';
-import { motifNamesFromMotifs } from '../lib/indexers';
+import { motifNamesFromMotifs, linkMotifsInAllEntries } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
@@ -19,9 +19,13 @@ export default function docToJson({ input, output }) {
       const full = rtfToJson(doc);
       fs.writeFileSync(`${output.public}/full.json`, JSON.stringify(full));
       fs.writeFileSync(`${output.content}/motifs.json`, JSON.stringify(motifNamesFromMotifs(full)));
-      Object.keys(full).forEach(mid =>
-        fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]))
-      );
+      Object.keys(full).forEach((mid) => {
+        fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]));
+        fs.writeFileSync(
+          `${output.public}/motifs/${mid}-linked.json`,
+          JSON.stringify(linkMotifsInAllEntries({ motif: full[mid], doc: full }))
+        );
+      });
       resolve();
     });
   });

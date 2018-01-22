@@ -1,0 +1,24 @@
+.docHead {
+  .toggle {
+    width: 86px;
+
+    .label {
+      height: 2.1em;
+      font-size: 12px;
+      text-align: right;
+    }
+  }
+
+  .title {
+    width: 70%;
+    line-height: 1.1em;
+    position: relative;
+    top: 0.15em;
+  }
+
+  &.entered, &.entering {
+    .toggle {
+      right: 1.6em;
+    }
+  }
+}

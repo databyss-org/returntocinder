@@ -2,7 +2,9 @@ import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
   doc: {},
+  linkedDoc: {},
   entriesBySource: {},
+  linkedEntriesBySource: {},
   biblio: null,
   entryList: null,
   sourceList: null,
@@ -13,6 +15,7 @@ const initialState = {
   searchIsFocused: false,
   menuIsVisible: false,
   isLoading: false,
+  motifLinksAreActive: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -39,19 +42,19 @@ export default function appReducer(state = initialState, action) {
       };
 
     case 'RECEIVE_MOTIF':
-      return {
+      return (docKey => ({
         ...state,
-        doc: {
-          ...state.doc,
+        [docKey]: {
+          ...state[docKey],
           [action.payload.mid]: action.payload.motif
         },
-      };
+      }))(action.payload.isLinked ? 'linkedDoc' : 'doc');
 
     case 'RECEIVE_SOURCE_ENTRIES':
-      return {
+      return (entriesKey => ({
         ...state,
-        entriesBySource: {
-          ...state.entriesBySource,
+        [entriesKey]: {
+          ...state[entriesKey],
           [action.payload.sid]: action.payload.entries
         },
         biblio: {
@@ -61,7 +64,7 @@ export default function appReducer(state = initialState, action) {
             motifs: motifListFromEntries(action.payload.entries)
           }
         },
-      };
+      }))(action.payload.isLinked ? 'linkedEntriesBySource' : 'entriesBySource');
 
     case 'SET_LOADING': {
       return { ...state, isLoading: action.payload };
@@ -89,6 +92,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'MENU_VISIBLE': {
       return { ...state, menuIsVisible: action.payload };
+    }
+
+    case 'MOTIF_LINKS_ACTIVE': {
+      return { ...state, motifLinksAreActive: action.payload };
     }
 
     default: {

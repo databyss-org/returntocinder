@@ -18,6 +18,7 @@ $hamburger-hover-transition-timing-function: linear;
   @import 'scss/desktop/defer';
   @import 'scss/desktop/subnav';
   @import 'scss/desktop/modalMenu';
+  @import 'scss/desktop/toggle';
 }
 
 /* mobile and tablet */
@@ -56,6 +57,7 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/navbar';
     @import 'scss/desktop/search';
     @import 'scss/desktop/hamburger';
+    @import 'scss/tablet/docHead';
   }
 }
 
@@ -74,5 +76,6 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/navbar';
     @import 'scss/desktop/hamburger';
     @import 'scss/desktop/search';
+    @import 'scss/desktop/toggle';
   }
 }

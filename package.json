@@ -8,6 +8,7 @@
 	"main": "index.js",
 	"scripts": {
 		"heroku-postbuild": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --progress",
+		"build-server": "babel src -d build --plugins transform-runtime",
 		"start": "node build/server.js",
 		"start-dbx": "pm2 start build/server.js -i 1 --node-args=\"--expose-gc\"",
 		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
@@ -47,6 +48,7 @@
 		"es6-promise": "^4.2.2",
 		"express": "^4.16.2",
 		"express-basic-auth": "^1.1.3",
+		"express-useragent": "^1.0.8",
 		"file-loader": "^1.1.6",
 		"hamburgers": "^0.9.1",
 		"highlight-words-core": "^1.1.2",

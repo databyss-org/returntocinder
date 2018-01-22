@@ -6,38 +6,46 @@ import {
 } from '../../lib/indexers';
 
 export default {
-  fetchSource(sid) {
+  fetchSource({ sid, getLinked }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_SOURCE_ENTRIES',
         payload: {
           sid,
+          isLinked: getLinked
         }
       });
-      const entries = (await axios.get(`/sources/${sid}.json`)).data;
+      const entries = (await axios.get(
+        `/sources/${sid}${getLinked ? '-linked' : ''}.json`
+      )).data;
       return dispatch({
         type: 'RECEIVE_SOURCE_ENTRIES',
         payload: {
           sid,
           entries,
+          isLinked: getLinked
         }
       });
     };
   },
-  fetchMotif(mid) {
+  fetchMotif({ mid, getLinked }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_MOTIF',
         payload: {
           mid,
+          isLinked: getLinked
         }
       });
-      const motif = (await axios.get(`/motifs/${mid}.json`)).data;
+      const motif = (await axios.get(
+        `/motifs/${mid}${getLinked ? '-linked' : ''}.json`
+      )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {
           mid,
           motif,
+          isLinked: getLinked
         }
       });
     };
@@ -133,6 +141,12 @@ export default {
     return {
       type: 'MENU_VISIBLE',
       payload: visible
+    };
+  },
+  toggleMotifLinks(areActive) {
+    return {
+      type: 'MOTIF_LINKS_ACTIVE',
+      payload: areActive
     };
   }
 };

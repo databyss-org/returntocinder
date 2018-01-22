@@ -7,6 +7,8 @@ import {
   sourcesFromEntries,
   mergeEntries,
   groupEntriesBySource,
+  linkMotifsInEntry,
+  makeStemDict
 } from '../lib/indexers';
 
 export default function indexEntries({ path, logPath }) {
@@ -62,13 +64,23 @@ export default function indexEntries({ path, logPath }) {
 
   fs.writeFileSync(`${path}/entries.json`, JSON.stringify(mergedEntries));
 
-  writeSourceJsons({ entries: mergedEntries, path });
+  writeSourceJsons({ entries: mergedEntries, path, doc });
 }
 
-function writeSourceJsons({ entries, path }) {
+function writeSourceJsons({ entries, path, doc }) {
+  const stemDoc = makeStemDict(doc);
   const entriesBySource = groupEntriesBySource(entries);
+  const linkedEntries = entries.map(entry => ({
+    ...entry,
+    content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
+  }));
+  const linkedEntriesBySource = groupEntriesBySource(linkedEntries);
   Object.keys(entriesBySource).forEach((sid) => {
     fs.writeFileSync(`${path}/sources/${sid}.json`, JSON.stringify(entriesBySource[sid]));
+    fs.writeFileSync(
+      `${path}/sources/${sid}-linked.json`,
+      JSON.stringify(linkedEntriesBySource[sid])
+    );
   });
 }
 
@@ -77,7 +89,8 @@ if (require.main === module) {
   if (process.argv[3] === '--sources') {
     // only write sources from existing entries.json
     const entries = JSON.parse(fs.readFileSync(`${path}/entries.json`));
-    writeSourceJsons({ entries, path });
+    const doc = JSON.parse(fs.readFileSync(`${path}/full.json`));
+    writeSourceJsons({ entries, path, doc });
   } else {
     indexEntries({ path, logPath: process.argv[3] });
   }

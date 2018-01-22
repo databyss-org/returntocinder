@@ -26,7 +26,7 @@ const About = ({ match, appState, toggleSearchIsFocused }) => {
         <header>
           {content.title}
         </header>
-        <div className={styles.body}>
+        <div className={styles.body} id="about">
           {content.body.map((para, idx) => (
             <p key={idx} dangerouslySetInnerHTML={{ __html: para }} />
           ))}

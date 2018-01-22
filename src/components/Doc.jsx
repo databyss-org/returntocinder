@@ -21,12 +21,6 @@ class Doc extends PureComponent {
     this.setScroll = this.setScroll.bind(this);
   }
 
-  componentWillMount() {
-    if (this.query.search) {
-      this.props.searchEntries(this.query.term);
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     const queryChanged = !shallowequal(this.query, nextProps.query);
     const resultsChanged = (
@@ -36,9 +30,6 @@ class Doc extends PureComponent {
     if (queryChanged) {
       this.query = nextProps.query;
       this.setState({ lastScroll: { query: null, path: null } });
-      if (this.query.search) {
-        this.props.searchEntries(this.query.term);
-      }
     }
 
     if (queryChanged || resultsChanged) {
@@ -59,14 +50,16 @@ class Doc extends PureComponent {
   }
 
   _updateRows(props) {
-    const { entriesBySource } = props.appState;
-    const { search, motif, source, term } = this.query;
+    const { entriesBySource, linkedEntriesBySource, doc, linkedDoc } = props.appState;
+    const { results, linkedResults } = props.searchState;
+    const { search, motif, source, term, isLinked } = this.query;
     const { path } = this.props;
 
     if (motif) {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesByMotif
+          doc={isLinked ? linkedDoc : doc}
           mid={term}
           key={key}
           style={style}
@@ -78,18 +71,24 @@ class Doc extends PureComponent {
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
           sid={term}
-          entries={entriesBySource[term]}
+          entries={isLinked ? linkedEntriesBySource[term] : entriesBySource[term]}
           key={key}
           style={style}
           path={path}
           setScroll={this.setScroll}
         />;
     } else if (search) {
-      this._rows = Object.keys(props.searchState.results);
+      this._rows = Object.keys(
+        isLinked ? linkedResults[term] : results[term]
+      );
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
           sid={this._rows[index]}
-          entries={props.searchState.results[this._rows[index]]}
+          entries={
+            isLinked
+              ? linkedResults[term][this._rows[index]]
+              : results[term][this._rows[index]]
+          }
           key={key}
           style={style}
           showHeader

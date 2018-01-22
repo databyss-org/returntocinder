@@ -3,6 +3,7 @@
 import React from 'react';
 import latinize from 'latinize';
 import * as JsDiff from 'diff';
+import pluralize from 'pluralize';
 import { textify, urlify } from './_helpers';
 
 export function sourcesFromEntries(entries) {
@@ -197,4 +198,54 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
     bib[sid].motifs = motifListFromEntries(entriesBySource[sid]);
   });
   return bib;
+}
+
+const suffixPattern = /ing$|ness$|ed$|ion$|y$/;
+
+export function makeStemDict(dict) {
+  return Object.keys(dict).reduce((stemmed, k) => {
+    const noSuffix = k.replace(suffixPattern, '');
+    const singular = pluralize.singular(k);
+    if (noSuffix.length > 2) {
+      stemmed[noSuffix] = k;
+    }
+    if (singular.length > 2) {
+      stemmed[singular] = k;
+    }
+    return stemmed;
+  }, {});
+}
+
+export function linkMotifsInAllEntries({ motif, doc }) {
+  const stemDoc = makeStemDict(doc);
+  return Object.keys(motif.sources).reduce((lm, sid) => {
+    lm.sources[sid] = motif.sources[sid].map(source => ({
+      ...source,
+      content: linkMotifsInEntry({ content: source.content, doc, stemDoc })
+    }));
+    return lm;
+  }, { ...motif });
+}
+
+export function linkMotifsInEntry({ content, doc, stemDoc }) {
+  // tokenize content and replace motif names with links
+  const words = content.split(' ');
+  return words.map((word) => {
+    // textify, urlify and stem-ify
+    const stemMid = pluralize.singular(urlify(textify(word)).replace(suffixPattern, ''));
+    const mid = stemDoc[stemMid];
+    if (!mid) {
+      return word;
+    }
+    // move punctuation out of link
+    const pre = word.match(/^[.,![\]*():;“”?]/);
+    const post = word.match(/[.,![\]*():;“”?]$/);
+    if (post) {
+      word = word.substr(0, word.length - 1);
+    }
+    if (pre) {
+      word = word.substr(1);
+    }
+    return `${pre ? pre[0] : ''}<a href='/motif/${mid}'>${word}</a>${post ? post[0] : ''}`;
+  }).join(' ');
 }

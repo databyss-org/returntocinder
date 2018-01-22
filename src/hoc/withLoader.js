@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react';
-import Loader from '../components/Loader.jsx';
+import Transition from 'react-transition-group/Transition';
+import cx from 'classnames';
 import styles from '../app.scss';
+
+import LoadingIcon from '../icons/loading.svg';
 
 export default function withLoader({
   propsToLoad,
   loaderActions,
   showLoader = true,
-  className = styles.defer,
+  delayLoader = 1500
 }) {
   return Wrapped =>
     class WithLoader extends PureComponent {
@@ -41,18 +44,33 @@ export default function withLoader({
       componentWillReceiveProps(nextProps) {
         this.onMountAndUpdate(nextProps);
       }
+      renderLoader(inProp) {
+        return (
+          <Transition in={inProp} timeout={delayLoader}>
+            {state =>
+              <div
+                style={{ display: 'none' }}
+                className={cx(styles.defer, {
+                  [styles.entering]: state === 'entering',
+                  [styles.entered]: state === 'entered',
+                })}
+              >
+                <div className={styles.loader}>
+                  <LoadingIcon />
+                  <p>loading</p>
+                </div>
+              </div>
+            }
+          </Transition>
+        );
+      }
       render() {
-        if (this.wasAllLoaded) {
-          return <Wrapped {...this.props} {...this.loadedProps} isLoading={!this.isAllLoaded} />;
-        }
-        if (this.props.showLoader) {
-          return (
-            <div className={className}>
-              <Loader />
-            </div>
-          );
-        }
-        return null;
+        return [
+          ...(this.wasAllLoaded ? [(
+            <Wrapped {...this.props} {...this.loadedProps} isLoading={!this.isAllLoaded} />
+          )] : []),
+          this.renderLoader(!this.isAllLoaded && showLoader)
+        ];
       }
     };
 }

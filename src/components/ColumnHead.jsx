@@ -1,14 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import pluralize from 'pluralize';
-import cx from 'classnames';
 
-import styles from '../app.scss';
-
-const ColumnHead = ({ app, search, query }) => {
-  const { doc, biblio, entriesBySource } = app;
-  const { resultsMeta, isWorking } = search;
-
+const ColumnHead = ({
+  doc,
+  biblio,
+  results,
+  resultsMeta,
+  entriesBySource,
+  query,
+  styles
+}) => {
   const stats = {
     motif: term => ({
       title: doc[term].title,
@@ -51,9 +52,7 @@ const ColumnHead = ({ app, search, query }) => {
       <div className={styles.title}>
         <span dangerouslySetInnerHTML={{ __html: stats.title }} />
       </div>
-      <div className={cx(styles.stats, {
-        [styles.show]: !isWorking
-      })}>
+      <div className={styles.stats}>
         {display.entries}
         {!query.motif && display.motifs}
         {!query.source && display.sources}
@@ -62,4 +61,4 @@ const ColumnHead = ({ app, search, query }) => {
   );
 };
 
-export default connect(state => state)(ColumnHead);
+export default ColumnHead;

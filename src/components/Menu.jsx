@@ -16,11 +16,6 @@ class Menu extends PureComponent {
       this.props.showMask(isIn);
     }
   }
-  componentDidUpdate(prevProps) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.props.toggleMenuIsVisible(false);
-    }
-  }
   render() {
     const inProp = this.props.appState.menuIsVisible;
 
@@ -42,7 +37,7 @@ class Menu extends PureComponent {
                 {menuData.map((items, idx) => (
                   <ul key={idx}>
                     {items.map((item, idx) => (
-                      <li key={idx}>
+                      <li key={idx} onClick={() => this.props.toggleMenuIsVisible(false)}>
                         <Link to={item.path} replace>{item.title}</Link>
                       </li>
                     ))}

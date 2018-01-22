@@ -7,26 +7,20 @@
   @include maxAndCenter();
   width: 100%;
   z-index: 10;
+  overflow: hidden;
 
   &.show {
     opacity: 1;
   }
 
   &.exited, &.exiting {
-    overflow: scroll;
-
     main {
       width: 100%;
-      overflow: visible;
     }
   }
   &.entered, &.entering {
-    overflow: hidden;
-
     main {
       width: 50%;
-      overflow: scroll;
-      padding-right: 2em;
     }
   }
   &.entered {
@@ -35,9 +29,19 @@
     }
   }
 
+  section p a, section p a:visited, section p a:active {
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+    border-bottom: 1px dotted #D745B6;
+    line-height: 12px;
+  }
+
   main {
     max-width: 750px;
     padding-top: 2em;
+    overflow: scroll;
+    padding-right: 2em;
   }
 
   aside {

@@ -3,7 +3,7 @@
 import express from 'express';
 import fs from 'fs';
 import { indexEntries, searchEntries } from '../lib/search';
-import { groupEntriesBySource } from '../lib/indexers';
+import { groupEntriesBySource, linkMotifsInEntry, makeStemDict } from '../lib/indexers';
 
 const router = express.Router();
 
@@ -13,16 +13,23 @@ const processMap = {
 
 console.log('INDEXING ENTRIES');
 const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));
+const doc = JSON.parse(fs.readFileSync('./public/full.json'));
+const stemDoc = makeStemDict(doc);
+const linkedEntryList = entryList.map(entry => ({
+  ...entry,
+  content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
+}));
 const index = indexEntries(entryList);
+const linkedIndex = indexEntries(linkedEntryList);
 console.log('INDEX COMPLETE');
 
 router.get('/search', (req, res) => {
-  const { query, processResults, withMeta, id } = req.query;
+  const { query, processResults, withMeta, id, getLinked } = req.query;
 
   res.status(200).json({
     id,
     results: searchEntries({
-      index,
+      index: getLinked ? linkedIndex : index,
       query,
       processResults: processMap[processResults],
       withMeta,

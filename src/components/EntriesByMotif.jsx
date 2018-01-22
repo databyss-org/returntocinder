@@ -1,33 +1,46 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter, Link } from 'react-router-dom';
-import actions from '../redux/app/actions';
-import Entries from './Entries.jsx';
+import { withRouter } from 'react-router-dom';
+import Entries from './Entries';
 
-const EntriesByMotif = ({ app, mid, location, style, path, setScroll }) =>
+const sourceLink = ({ location, history, sid }) => {
+  const href = `${location.pathname}/source:${sid}`;
+  return (
+    <a
+      href={href}
+      rel="nofollow"
+      onClick={(e) => {
+        e.preventDefault();
+        history.replace(href);
+      }}
+    >
+      {sid}
+    </a>
+  );
+};
+
+const EntriesByMotif = ({
+  doc,
+  mid,
+  location,
+  history,
+  style,
+  path,
+  setScroll,
+  isLinked
+}) =>
   <article key={mid} style={style}>
-    {Object.keys(app.doc[mid].sources).map((sid, sidx) => (
+    {Object.keys(doc[mid].sources).map((sid, sidx) => (
       <section key={mid + sid}>
         <Entries
           makeId={idx => mid + sid + idx}
-          entries={app.doc[mid].sources[sid]}
+          entries={doc[mid].sources[sid]}
           showRepeats
           path={path.concat(sid)}
           setScroll={setScroll}
-          inlineHead={(
-            <h3>
-              <Link to={`${location.pathname}/source:${sid}`}>
-                {sid}
-              </Link>
-            </h3>
-          )}
+          inlineHead={ <h3>{sourceLink({ location, history, sid })}</h3> }
         />
       </section>
     ))}
   </article>;
 
-export default compose(
-  withRouter,
-  connect(state => state, actions)
-)(EntriesByMotif);
+export default withRouter(EntriesByMotif);

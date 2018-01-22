@@ -12,9 +12,29 @@
   z-index: 10;
   padding: 1.5em 1em 1.2em 0;
 
+  .toggle {
+    position: absolute;
+    right: 0;
+  }
+
+  &.entered {
+    header {
+      &:first-of-type {
+        width: 50%;
+      }
+
+      &:nth-of-type(2) {
+        width: 50%;
+        padding-left: 1.5em;
+      }
+    }
+  }
+
   header {
     display: flex;
     flex-direction: column;
+    padding-left: 1em;
+    flex-grow: 1;
 
     .title {
       font-family: 'DINNextLTPro-MediumCond';
@@ -24,27 +44,13 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
+      width: 72%;
     }
     .stats {
       font-family: 'DINNextLTPro-Light';
       font-size: 0.9em;
       flex-grow: 0;
-      opacity: 0;
       transition: opacity 100ms ease;
-
-      &.show {
-        opacity: 1;
-      }
-    }
-
-    &:first-of-type {
-      width: 50%;
-      padding-left: 1em;
-    }
-
-    &:nth-of-type(2) {
-      width: 50%;
-      padding-left: 1.5em;
     }
 
     .stats {

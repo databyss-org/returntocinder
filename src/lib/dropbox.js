@@ -36,9 +36,12 @@ export default class Dbx {
       autostart: true
     });
     this.q.on('end', () => this.onQueueEnd());
+    this.init();
+  }
 
-    // CLONE REPO
-    this.cloneRepo();
+  async init() {
+    // INIT REPO
+    await this.initRepo();
 
     // SET INITIAL LAST MODIFIEDS
     this.checkAndProcessDocs(this.lastModified).then((lastMod) => {
@@ -120,10 +123,13 @@ export default class Dbx {
     }
   }
 
-  async cloneRepo() {
+  async initRepo() {
     await exec('ssh-keyscan heroku.com >> ~/.ssh/known_hosts');
     await exec(`git config --global user.email "${process.env.NOTIFY_SENDER}"`);
     await exec('git config --global user.name "Dropbox Sync"');
+  }
+
+  async cloneRepo() {
     await exec('rm -rf repo');
     await exec(`git clone ${this.gitUrl} repo`);
   }
@@ -153,6 +159,7 @@ export default class Dbx {
     console.log('CURRENT MODIFIED', lastModified);
     console.log('NEW MODIFIED', newLastMod);
     if (lastModified.getTime() !== newLastMod.getTime()) {
+      await this.cloneRepo();
       await this.downloadAndProcessDoc({ path, out });
       return { ...spec, lastModified: newLastMod };
     }

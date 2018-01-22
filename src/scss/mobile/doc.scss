@@ -46,4 +46,11 @@
     }
   }
 
+  section p a, section p a:visited, section p a:active {
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+    border-bottom: 1px dotted #D745B6;
+    line-height: 12px;
+  }
 }

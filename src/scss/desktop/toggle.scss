@@ -1,0 +1,52 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+
+  .label {
+    color: #4A4A4A;
+    font-size: 14px;
+    height: 15px;
+    font-family: 'DINNextLTPro-Light';
+    text-transform: uppercase;
+    display: block;
+    margin-right: 6px;
+  }
+
+  .switch {
+    width: 38px;
+    height: 21px;
+    background-color: rgba(105,102,99,0.10);
+    border: 1px solid rgba(104,101,98,0.47);
+    border-radius: 4px;
+    position: relative;
+    transition: all 150ms linear;
+    flex-shrink: 0;
+
+    &:before {
+      content: '';
+      background: #FFFFFF;
+      border: 1px solid rgba(105,103,100,0.30);
+      box-shadow: 0 2px 3px 0 rgba(0,0,0,0.32);
+      border-radius: 4px;
+      position: absolute;
+      transition: all 150ms ease-in-out;
+      left: 0;
+      top: 0;
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  &.isActive {
+    .switch {
+      background-color: #8b8884;
+      border-color: #8b8884;
+
+      &:before {
+        left: 17px;
+        border-color: #fff;
+      }
+    }
+  }
+}
