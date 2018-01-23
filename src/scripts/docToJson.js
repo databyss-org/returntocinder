@@ -308,5 +308,5 @@ function isBold(chunk) {
 }
 
 if (require.main === module) {
-  docToJson({ input: '../doc/full.rtf', output: { public: './public', content: './src/content' } });
+  docToJson({ input: '../BBDD.rtf', output: { public: './public', content: './src/content' } });
 }
