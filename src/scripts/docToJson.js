@@ -32,41 +32,46 @@ export default function docToJson({ input, output }) {
 }
 
 function rtfToJson(doc) {
-  const chapters = {};
-  let sections;
+  const motifs = {};
+  let sources;
   let entries;
   let entryCount;
 
-  // console.error(doc.content);
+  // author should be first line
+  const author = renderPara(doc.content[0]).split(',').map(n => n.trim());
+  console.log('AUTHOR', author);
 
-  for (let i = 0; i < doc.content.length; i += 1) {
-    // scan for chapter
-    const chapterTitle = getHeading(doc.content[i]);
-    if (!chapterTitle) {
+  // readline loop
+  for (let i = 1; i < doc.content.length; i += 1) {
+    // scan for motif
+    const motifTitle = getHeading(doc.content[i]);
+    if (!motifTitle) {
       continue;
     }
-    sections = {};
+    console.log(motifTitle);
+    sources = {};
     entryCount = 0;
 
     do {
       if (getHeading(doc.content[i + 1])) {
-        // end chapter
+        // end motif
         break;
       }
 
       i += 1;
-      // scan for section
-      const sectionTitle = getSource(doc.content[i]);
-      if (!sectionTitle) {
+      // scan for source
+      const sourceTitle = getSource(doc.content[i]);
+      if (!sourceTitle) {
         continue;
       }
+      console.log('--', sourceTitle);
 
       // capture entries
       entries = [];
       do {
         const entry = {
-          source: { id: sectionTitle.trim() },
-          mid: urlify(chapterTitle),
+          source: { id: sourceTitle.trim() },
+          mid: urlify(motifTitle),
           starred: false
         };
         entry.content = renderPara(doc.content[i]);
@@ -108,43 +113,43 @@ function rtfToJson(doc) {
           // throw err;
         }
         if (getSource(doc.content[i + 1])) {
-          // end section
+          // end source
           break;
         }
         if (getHeading(doc.content[i + 1])) {
-          // end chapter
+          // end motif
           break;
         }
         i += 1;
       } while (i < doc.content.length);
 
-      // add or append the entries to the section
-      const sid = sectionTitle.replace(/^\*{1,3}/, '').trim();
-      if (sections[sid]) {
-        console.warn(`${chapterTitle} Duplicate source ${sid} (appending)`);
-        sections[sid] = sections[sid].concat(entries);
+      // add or append the entries to the source
+      const sid = sourceTitle.replace(/^\*{1,3}/, '').trim();
+      if (sources[sid]) {
+        console.warn(`${motifTitle} Duplicate source ${sid} (appending)`);
+        sources[sid] = sources[sid].concat(entries);
       } else {
-        sections[sid] = entries;
+        sources[sid] = entries;
       }
       entryCount += entries.length;
     } while (i < doc.content.length);
 
-    const chapterTitleText = textify(chapterTitle);
-    const chapterTitleUrl = urlify(chapterTitleText);
+    const motifTitleText = textify(motifTitle);
+    const motifTitleUrl = urlify(motifTitleText);
 
-    if (!chapterTitleUrl.length) {
+    if (!motifTitleUrl.length) {
       continue;
     }
 
-    chapters[urlify(chapterTitleText)] = {
-      title: chapterTitle,
-      sources: sections,
+    motifs[urlify(motifTitleText)] = {
+      title: motifTitle,
+      sources,
       entryCount
     };
   }
 
-  // console.log(chapters);
-  return chapters;
+  // console.log(motifs);
+  return motifs;
 }
 
 function parseLocations(entry) {
@@ -285,7 +290,7 @@ function getLocations(entry) {
 }
 
 function getHeading(chunk) {
-  if (!chunk) {
+  if (!chunk || !chunk.content) {
     return false;
   }
   if (!isBold(chunk)) {
@@ -308,5 +313,5 @@ function isBold(chunk) {
 }
 
 if (require.main === module) {
-  docToJson({ input: '../BBDD.rtf', output: { public: './public', content: './src/content' } });
+  docToJson({ input: '../doc/test.rtf', output: { public: './public', content: './src/content' } });
 }

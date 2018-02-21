@@ -16,7 +16,7 @@ const defaults = {
   fontSize: 24
 };
 
-export const sourcePattern = /^(\*{3})*\+*[A-Z]{1,5}i{0,3}( ?\([A-Z]+\))* /;
+export const sourcePattern = /^(\*{3})*\+*[A-Z.()]{1,8}i{0,3}( ?\([A-Z]+\))* /;
 
 export function allMatches(re, str, capture = 0) {
   const matches = [];
