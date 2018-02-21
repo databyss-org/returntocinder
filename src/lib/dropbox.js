@@ -59,10 +59,10 @@ export default class Dbx {
       } catch (err) {
         console.log('JOB ERROR', JSON.stringify(err, null, 2));
       }
-      if( typeof global.gc != "undefined" ){
-        console.log("Mem Usage Pre-GC " + inspect(process.memoryUsage()));
+      if (typeof global.gc !== 'undefined') {
+        console.log(`Mem Usage Pre-GC ${inspect(process.memoryUsage())}`);
         global.gc();
-        console.log("Mem Usage Post-GC " + inspect(process.memoryUsage()));
+        console.log(`Mem Usage Post-GC ${inspect(process.memoryUsage())}`);
       } else {
         console.log('WARNING: Garbage collection not exposed');
       }
@@ -82,7 +82,7 @@ export default class Dbx {
     return new Date(res.entries[0].client_modified);
   }
 
-  async downloadAndProcessDoc({ path, out }) {
+  async downloadAndProcessDoc({ path, out, isSupplement }) {
     try {
       console.log('DOWNLOAD DOC', path);
       const dropbox = new Dropbox({ accessToken: process.env.DBX });
@@ -91,7 +91,7 @@ export default class Dbx {
       if (filename.match('.rtf')) {
         console.log('WRITE RTF', filename);
         fs.writeFileSync(filename, doc.fileBinary);
-        await this.processDoc({ filename, out });
+        await this.processDoc({ filename, out, isSupplement });
         // kick off async index job
         this.indexAndPush();
       } else {
@@ -143,14 +143,14 @@ export default class Dbx {
     console.log(res);
   }
 
-  async processDoc({ filename, out }) {
+  async processDoc({ filename, out, isSupplement }) {
     console.log('PROCESS DOC');
-    await docToJson({ input: `./${filename}`, output: out });
+    await docToJson({ input: `./${filename}`, output: out, isSupplement });
     console.log('PROCESS DOC COMPLETE');
   }
 
   async checkAndProcessDoc(spec) {
-    const { path, out, lastModified } = spec;
+    const { path, out, lastModified, isSupplement } = spec;
     console.log('checkAndProcessDoc', path);
     const newLastMod = await this.docLastModified(path);
     if (!lastModified) {
@@ -160,7 +160,7 @@ export default class Dbx {
     console.log('NEW MODIFIED', newLastMod);
     if (lastModified.getTime() !== newLastMod.getTime()) {
       await this.cloneRepo();
-      await this.downloadAndProcessDoc({ path, out });
+      await this.downloadAndProcessDoc({ path, out, isSupplement });
       return { ...spec, lastModified: newLastMod };
     }
     return { ...spec, lastModified };

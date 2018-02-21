@@ -7,7 +7,7 @@ import { motifNamesFromMotifs, linkMotifsInAllEntries } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
 
-export default function docToJson({ input, output }) {
+export default function docToJson({ input, output, isSupplement }) {
   childProcess.exec('pwd', {}, (err, stdout) => console.log(stdout));
   console.log('DOC2JSON', input);
   return new Promise((resolve, fail) => {

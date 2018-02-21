@@ -6,6 +6,12 @@ export default [
     compile: true
   },
   {
+    path: '/Baby Daddy/kant.rtf',
+    out: { public: './repo/public', content: './repo/src/content' },
+    compile: true,
+    isSupplement: true,
+  },
+  {
     path: '/Baby Daddy/content/about/contact.json',
     out: './repo/src/content/about/contact.json',
     compile: true
