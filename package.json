@@ -85,6 +85,7 @@
 		"svg-react-loader": "^0.4.5",
 		"throttle-debounce": "^1.0.1",
 		"url-loader": "^0.6.2",
+		"viewport-units-buggyfill": "^0.6.2",
 		"webpack": "^3.10.0",
 		"worker-loader": "^1.1.0"
 	},
