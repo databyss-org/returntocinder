@@ -14,6 +14,7 @@
 		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
 		"dev-server": "nodemon src/server.js --exec babel-node",
 		"doc": "babel-node src/scripts/docToJson.js",
+		"supplement": "babel-node src/scripts/supplementToJson.js",
 		"biblio": "babel-node src/scripts/biblioToJson.js",
 		"index": "babel-node src/scripts/indexEntries.js ./public",
 		"sources": "babel-node src/scripts/indexEntries.js ./public --sources",
