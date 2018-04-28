@@ -2,9 +2,7 @@ import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
   doc: {},
-  linkedDoc: {},
   entriesBySource: {},
-  linkedEntriesBySource: {},
   biblio: null,
   entryList: null,
   sourceList: null,

@@ -46,16 +46,23 @@
       flex-direction: column;
       width: 72%;
     }
-    .stats {
+    .statsAndAuthors {
+      display: flex;
+      flex-direction: row;
+    }
+    .stats, .authors {
       font-family: 'DINNextLTPro-Light';
       font-size: 0.9em;
       flex-grow: 0;
       transition: opacity 100ms ease;
-    }
+      margin-right: 0.4em;
 
-    .stats {
       span {
         @include commas();
+      }
+      a, a:hover, a:visited {
+        color: #808080;
+        text-decoration: underline;
       }
     }
   }
