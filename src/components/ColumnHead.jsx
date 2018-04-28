@@ -17,7 +17,8 @@ const ColumnHead = ({
       title: doc[term].title,
       entryCount: doc[term].entryCount,
       sourceCount: Object.keys(doc[term].sources).length,
-      authors: doc[term].cfauthors
+      authors: doc[term].cfauthors &&
+        doc[term].cfauthors.filter(author => author !== query.author)
     }),
     source: term => ({
       title: biblio[term].title,
@@ -48,7 +49,7 @@ const ColumnHead = ({
         {stats.sourceCount} {pluralize('source', stats.sourceCount)}
       </span>
     ),
-    authors: stats.authors ? (
+    authors: stats.authors && stats.authors.length ? (
       <span>
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
@@ -65,8 +66,15 @@ const ColumnHead = ({
 
   return (
     <header>
-      <div className={styles.title}>
-        <span dangerouslySetInnerHTML={{ __html: stats.title }} />
+      <div className={styles.titleAndAuthor}>
+        <div className={styles.title}>
+          <span dangerouslySetInnerHTML={{ __html: stats.title }} />
+        </div>
+        {query.author && (
+          <div className={styles.author}>
+            [{authorDict[query.author].lastName}]
+          </div>
+        )}
       </div>
       <div className={styles.statsAndAuthors}>
         <div className={styles.stats}>

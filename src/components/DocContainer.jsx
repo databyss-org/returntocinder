@@ -16,8 +16,18 @@ const asidePath = '/(motif|source|search)/(.*)/motif::term';
 
 const getQuery = ({ location, match, app }) => {
   const aside = matchPath(location.pathname, asidePath);
+  // handle author selector in the term
+  //  ex: /motif/absolute:KA
+  const { term } = match.params;
+  let author = null;
+  let resource = term;
+  if (term.match(/:/)) {
+    [resource, author] = term.split(':');
+  }
   return {
-    term: match.params.term,
+    term,
+    author,
+    resource,
     type: match.params[0],
     search: match.params[0] === 'search',
     motif: match.params[0] === 'motif',
@@ -101,7 +111,10 @@ export default compose(
       const query = getQuery(props);
       return {
         ...(query.motif ? {
-          motif: () => props.fetchMotif({ mid: query.term }),
+          motif: () => props.fetchMotif({
+            mid: query.resource,
+            author: query.author
+          }),
         } : {}),
         ...(query.aside ? {
           aside: () => props.fetchMotif({ mid: query.aside }),

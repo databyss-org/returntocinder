@@ -28,22 +28,25 @@ export default {
       });
     };
   },
-  fetchMotif({ mid }) {
+  fetchMotif({ mid, author }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_MOTIF',
         payload: {
-          mid
+          mid,
+          author
         }
       });
-      const motif = (await axios.get(
-        `/motifs/${mid}.json`
+      const motif = (await axios.get(author
+        ? `/authors/${author.toLowerCase()}/motifs/${mid}.json`
+        : `/motifs/${mid}.json`
       )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {
           mid,
-          motif
+          motif,
+          author
         }
       });
     };

@@ -39,14 +39,16 @@ export default function appReducer(state = initialState, action) {
         ...action.payload
       };
 
-    case 'RECEIVE_MOTIF':
+    case 'RECEIVE_MOTIF': {
+      const { author, mid, motif } = action.payload;
       return {
         ...state,
         doc: {
           ...state.doc,
-          [action.payload.mid]: action.payload.motif
+          [author ? `${mid}:${author}` : mid]: motif
         },
       };
+    }
 
     case 'RECEIVE_SOURCE_ENTRIES':
       return {
