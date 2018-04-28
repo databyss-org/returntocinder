@@ -6,7 +6,6 @@ import childProcess from 'child_process';
 import { motifNamesFromMotifs, linkMotifsInAllEntries } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
-import config from '../content/config.json';
 import authors from '../content/authors.json';
 
 export default function docToJson({ input, output }) {
