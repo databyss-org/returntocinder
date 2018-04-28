@@ -70,7 +70,10 @@ app.get('/*', (req, res) => {
   } else if (req.path.match(/\/source:(.*)?/)) {
     res.redirect(301, req.originalUrl.replace(/\/source:(.*)?/g, ''));
   } else {
-    res.sendFile(path.join(__dirname.replace('/build', ''), '/public/index.html'));
+    res.sendFile(path.join(
+      __dirname.replace('/build', '').replace('/src', ''),
+      '/public/index.html')
+    );
   }
 });
 

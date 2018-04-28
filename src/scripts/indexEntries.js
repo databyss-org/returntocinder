@@ -70,16 +70,16 @@ export default function indexEntries({ path, logPath }) {
 function writeSourceJsons({ entries, path, doc }) {
   const stemDoc = makeStemDict(Object.keys(doc));
   const entriesBySource = groupEntriesBySource(entries);
-  const linkedEntries = entries.map(entry => ({
-    ...entry,
-    content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
-  }));
-  const linkedEntriesBySource = groupEntriesBySource(linkedEntries);
   Object.keys(entriesBySource).forEach((sid) => {
-    fs.writeFileSync(`${path}/sources/${sid}.json`, JSON.stringify(entriesBySource[sid]));
+    // add linked content
+    const sourceEntries = entriesBySource[sid].map(entry => ({
+      ...entry,
+      linkedContent:
+        linkMotifsInEntry({ content: entry.content, stemDoc }).entry
+    }));
     fs.writeFileSync(
-      `${path}/sources/${sid}-linked.json`,
-      JSON.stringify(linkedEntriesBySource[sid])
+      `${path}/sources/${sid}.json`,
+      JSON.stringify(sourceEntries)
     );
   });
 }
