@@ -6,8 +6,10 @@ import childProcess from 'child_process';
 import { motifNamesFromMotifs, linkMotifsInAllEntries } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
+import config from '../content/config.json';
+import authors from '../content/authors.json';
 
-export default function docToJson({ input, output, isSupplement }) {
+export default function docToJson({ input, output }) {
   childProcess.exec('pwd', {}, (err, stdout) => console.log(stdout));
   console.log('DOC2JSON', input);
   return new Promise((resolve, fail) => {
@@ -17,15 +19,13 @@ export default function docToJson({ input, output, isSupplement }) {
         return;
       }
       const full = rtfToJson(doc);
-      fs.writeFileSync(`${output.public}/full.json`, JSON.stringify(full));
-      fs.writeFileSync(`${output.content}/motifs.json`, JSON.stringify(motifNamesFromMotifs(full)));
+      const motifList = motifNamesFromMotifs(full);
       Object.keys(full).forEach((mid) => {
+        full[mid] = linkMotifsInAllEntries({ entries: full[mid], motifList });
         fs.writeFileSync(`${output.public}/motifs/${mid}.json`, JSON.stringify(full[mid]));
-        fs.writeFileSync(
-          `${output.public}/motifs/${mid}-linked.json`,
-          JSON.stringify(linkMotifsInAllEntries({ motif: full[mid], doc: full }))
-        );
       });
+      fs.writeFileSync(`${output.public}/full.json`, JSON.stringify(full));
+      fs.writeFileSync(`${output.content}/motifs.json`, JSON.stringify(motifList));
       resolve();
     });
   });
@@ -36,10 +36,6 @@ function rtfToJson(doc) {
   let sources;
   let entries;
   let entryCount;
-
-  // author should be first line
-  const author = renderPara(doc.content[0]).split(',').map(n => n.trim());
-  console.log('AUTHOR', author);
 
   // readline loop
   for (let i = 1; i < doc.content.length; i += 1) {
@@ -67,61 +63,11 @@ function rtfToJson(doc) {
       console.log('--', sourceTitle);
 
       // capture entries
-      entries = [];
-      do {
-        const entry = {
-          source: { id: sourceTitle.trim() },
-          mid: urlify(motifTitle),
-          starred: false
-        };
-        entry.content = renderPara(doc.content[i]);
-        try {
-          if (entry.content) {
-            entry.content = simplify(entry.content);
-            const reStar = /^(<em>)*\s*\*{1,3}\s*(<\/em>)*/;
-            if (entry.content.match(reStar)) {
-              entry.starred = true;
-              entry.content = entry.content.replace(reStar, '');
-            }
-            const re = new RegExp(
-              `^(<em>)*\\s*${sourcePattern.source.substr(1)}*(</em>)*`
-            );
-            entry.content = entry.content.replace(re, '').trim();
-            entries = entries.concat({
-              ...entry,
-              ...getLocations(entry)
-            });
-            try {
-              correctLastEntry(entries);
-            } catch (err) {
-              throw new Error({
-                msg: 'Missing or bad location',
-                content: entries[entries.length - 1].content,
-              });
-            }
-            parseLocations(entries[entries.length - 1]);
-          }
-        } catch (err) {
-          console.error(JSON.stringify({
-            msg: '☠️ Error processing entry',
-            content: {
-              entry,
-              lastEntry: entries[entries.length - 1]
-            },
-            inner: err.stack.toString().split('\n')
-          }, null, 2));
-          // throw err;
-        }
-        if (getSource(doc.content[i + 1])) {
-          // end source
-          break;
-        }
-        if (getHeading(doc.content[i + 1])) {
-          // end motif
-          break;
-        }
-        i += 1;
-      } while (i < doc.content.length);
+      entries = getEntries(doc, i);
+      entries.forEach((entry) => {
+        entry.source = { id: sourceTitle.trim() };
+        entry.mid = urlify(motifTitle);
+      });
 
       // add or append the entries to the source
       const sid = sourceTitle.replace(/^\*{1,3}/, '').trim();
@@ -152,7 +98,92 @@ function rtfToJson(doc) {
   return motifs;
 }
 
-function parseLocations(entry) {
+// add authorCode to cfauthors list in all motifs except specified author's
+export function addAuthorToMotifs({ mid, authorCode, output }) {
+  const _addAuthor = (path) => {
+    if (fs.existsSync(path)) {
+      const motif = JSON.parse(fs.readFileSync(path));
+      if (!motif.cfauthors || !motif.cfauthors.includes(authorCode)) {
+        if (!motif.cfauthors) {
+          motif.cfauthors = [];
+        }
+        motif.cfauthors.push(authorCode);
+        fs.writeFileSync(path, JSON.stringify(motif));
+      }
+    }
+  };
+  // add authorCode to default author
+  const path = `${output.public}/motifs/${mid}.json`;
+  _addAuthor(path);
+
+  // add authorCode to supplement motifs
+  Object.keys(authors).forEach((code) => {
+    if (code === authorCode) {
+      return;
+    }
+    const path = `${output.public}/authors/${code.toLowerCase()}/motifs/${mid}.json`;
+    _addAuthor(path);
+  });
+}
+
+export function getEntries(doc, i) {
+  const entries = [];
+  do {
+    const entry = {
+      starred: false
+    };
+    entry.content = renderPara(doc.content[i]);
+    try {
+      if (entry.content) {
+        entry.content = simplify(entry.content);
+        const reStar = /^(<em>)*\s*\*{1,3}\s*(<\/em>)*/;
+        if (entry.content.match(reStar)) {
+          entry.starred = true;
+          entry.content = entry.content.replace(reStar, '');
+        }
+        const re = new RegExp(
+          `^(<em>)*\\s*${sourcePattern.source.substr(1)}*(</em>)*`
+        );
+        entry.content = entry.content.replace(re, '').trim();
+        entries.push({
+          ...entry,
+          ...getLocations(entry)
+        });
+        try {
+          correctLastEntry(entries);
+        } catch (err) {
+          throw new Error({
+            msg: 'Missing or bad location',
+            content: entries[entries.length - 1].content,
+          });
+        }
+        parseLocations(entries[entries.length - 1]);
+      }
+    } catch (err) {
+      console.error(JSON.stringify({
+        msg: '☠️ Error processing entry',
+        content: {
+          entry,
+          lastEntry: entries[entries.length - 1]
+        },
+        inner: err.stack.toString().split('\n')
+      }, null, 2));
+      // throw err;
+    }
+    if (getSource(doc.content[i + 1])) {
+      // end source
+      break;
+    }
+    if (getHeading(doc.content[i + 1])) {
+      // end motif
+      break;
+    }
+    i += 1;
+  } while (i < doc.content.length);
+  return entries;
+}
+
+export function parseLocations(entry) {
   // remove all non-numeric or delim chars
   let pages = entry.locations.raw
     .replace(/(anne|leiris)/i, '')
@@ -220,7 +251,7 @@ function parseLocations(entry) {
 }
 
 // check for 'false' entries and repeat page locations
-function correctLastEntry(entries) {
+export function correctLastEntry(entries) {
   const lastIdx = entries.length - 1;
   const lastEntry = entries[lastIdx];
   if (!lastEntry.locations.raw) {
@@ -237,7 +268,7 @@ function correctLastEntry(entries) {
   }
 }
 
-function getLocations(entry) {
+export function getLocations(entry) {
   const content = textify(entry.content);
   const locations = {};
   const pp = /^p ?p?\.? ?/;
@@ -289,7 +320,7 @@ function getLocations(entry) {
   return { content: entry.content, locations };
 }
 
-function getHeading(chunk) {
+export function getHeading(chunk) {
   if (!chunk || !chunk.content) {
     return false;
   }
@@ -299,7 +330,7 @@ function getHeading(chunk) {
   return renderPara(chunk);
 }
 
-function isBold(chunk) {
+export function isBold(chunk) {
   return (
     chunk.style.bold || (
       chunk.style.font &&
@@ -313,5 +344,5 @@ function isBold(chunk) {
 }
 
 if (require.main === module) {
-  docToJson({ input: '../doc/test.rtf', output: { public: './public', content: './src/content' } });
+  docToJson({ input: '../doc/full.rtf', output: { public: './public', content: './src/content' } });
 }

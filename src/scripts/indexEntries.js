@@ -68,7 +68,7 @@ export default function indexEntries({ path, logPath }) {
 }
 
 function writeSourceJsons({ entries, path, doc }) {
-  const stemDoc = makeStemDict(doc);
+  const stemDoc = makeStemDict(Object.keys(doc));
   const entriesBySource = groupEntriesBySource(entries);
   const linkedEntries = entries.map(entry => ({
     ...entry,

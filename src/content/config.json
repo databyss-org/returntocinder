@@ -1,5 +1,6 @@
 {
   "title": "Return to Cinder",
   "inscription": "an enormous (but violently incomplete) database of the work of Jacques Derrida",
-  "url": "http://www.returntocinder.com"
+  "url": "http://www.returntocinder.com",
+  "defaultAuthor": "derrida"
 }

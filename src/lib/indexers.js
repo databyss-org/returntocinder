@@ -200,43 +200,100 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
   return bib;
 }
 
-const suffixPattern = /ing$|ness$|ed$|ion$|y$/;
+const suffixPattern = /ing$|ness$|ed$|ion$|y$|ality$|'s$|ty$/;
+const splitPattern = /[- /]/;
+const junkWords = ['for', 'and', 'of', 'in', 'see', 'a', 'both', 'le', 'de', 'du', 'the', 'fixerup', 'to', 'us', 'ize', 'no', 's'];
+const cleanPattern = /[()0-9,[\]+]/;
 
-export function makeStemDict(dict) {
-  return Object.keys(dict).reduce((stemmed, k) => {
-    const noSuffix = k.replace(suffixPattern, '');
-    const singular = pluralize.singular(k);
-    if (noSuffix.length > 2) {
-      stemmed[noSuffix] = k;
+// returns a stem dict with the following structure:
+// input: [
+//   "carl schmitt's sovereign exception",
+//   "carl schmitt"
+//   "carl schmitt's political (enemy, partisan)",
+//   "exception",
+//   "exceptionality",
+//   "sovereignty",
+//   "sovereignty (bataille's)",
+//   "beast and sovereign"
+// ]
+// output: {
+//   carl: {
+//     carlschmittssovereignexception: "carl schmitt's sovereign exception",
+//     carlschmittspoliticalenemypartisan: "carl schmitt's political (enemy, partisan)",
+//     carlschmitt: "carl schmitt",
+//   },
+//   schmitt: {
+//     carlschmittssovereignexception: "carl schmitt's sovereign exception",
+//     carlschmittspoliticalenemypartisan: "carl schmitt's political (enemy, partisan)",
+//     carlschmitt: "carl schmitt",
+//   },
+//   exception: {
+//     carlschmittssovereignexception: "carl schmitt's sovereign exception",
+//     exception: "exception",
+//     exceptionality: "exceptionality",
+//   },
+//   sovereign: {
+//     carlschmittssovereignexception: "carl schmitt's sovereign exception",
+//     sovereignty: "sovereignty",
+//     sovereigntybatailles: "sovereignty (bataille's)",
+//     beastandsovereign: "beast and sovereign"
+//   },
+// }
+export function makeStemDict(motifList) {
+  const addStemmed = (dict, word, motifName) => {
+    if (!dict[word]) {
+      dict[word] = {};
     }
-    if (singular.length > 2) {
-      stemmed[singular] = k;
-    }
+    const mid = urlify(textify(motifName));
+    dict[word][mid] = motifName;
+  };
+  const stemDict = motifList.reduce((stemmed, motifName) => {
+    const words = motifName
+      .split(splitPattern)
+      .map(w => w.toLowerCase())
+      .map(w => pluralize.singular(w))
+      .map(w => w
+        .replace(cleanPattern, '')
+        .replace(suffixPattern, '')
+      )
+      .filter(w => !junkWords.includes(w))
+      .filter(w => w.length > 2);
+
+    words.forEach(w => addStemmed(stemmed, w, motifName));
     return stemmed;
   }, {});
+  return stemDict;
 }
 
-export function linkMotifsInAllEntries({ motif, doc }) {
-  const stemDoc = makeStemDict(doc);
-  return Object.keys(motif.sources).reduce((lm, sid) => {
-    lm.sources[sid] = motif.sources[sid].map(source => ({
+export function linkMotifsInAllEntries({ entries, motifList }) {
+  const stemDoc = makeStemDict(motifList);
+  return Object.keys(entries.sources).reduce((lm, sid) => {
+    lm.sources[sid] = entries.sources[sid].map(source => ({
       ...source,
-      content: linkMotifsInEntry({ content: source.content, doc, stemDoc })
+      linkedContent: linkMotifsInEntry({ content: source.content, stemDoc }).entry
     }));
     return lm;
-  }, { ...motif });
+  }, { ...entries });
 }
 
-export function linkMotifsInEntry({ content, doc, stemDoc }) {
-  // tokenize content and replace motif names with links
+// tokenize content and replace motif names with links
+// returns object with linked entries and a list of motifs found:
+// {
+//   entry: (string)
+//   motifs: [{ name: (string), id: (string) }, ...]
+// }
+export function linkMotifsInEntry({ content, stemDoc }) {
   const words = content.split(' ');
-  return words.map((word) => {
-    // textify, urlify and stem-ify
-    const stemMid = pluralize.singular(urlify(textify(word)).replace(suffixPattern, ''));
-    const mid = stemDoc[stemMid];
-    if (!mid) {
+  let motifDict = {};
+  const entry = words.map((word) => {
+    // stem-ify
+    const stemWord = pluralize.singular(word).replace(suffixPattern, '');
+    const entryMotifDict = stemDoc[stemWord];
+    if (!entryMotifDict) {
       return word;
     }
+    // merge motifs with cumulitive motif list for entry
+    motifDict = { ...motifDict, ...entryMotifDict };
     // move punctuation out of link
     const pre = word.match(/^[.,![\]*():;“”?]/);
     const post = word.match(/[.,![\]*():;“”?]$/);
@@ -246,6 +303,22 @@ export function linkMotifsInEntry({ content, doc, stemDoc }) {
     if (pre) {
       word = word.substr(1);
     }
-    return `${pre ? pre[0] : ''}<a href='/motif/${mid}'>${word}</a>${post ? post[0] : ''}`;
+    // generate motif link urls
+    const midList = Object.keys(entryMotifDict);
+    let url = `/motif/${midList[0]}`;
+    if (midList.length > 1) {
+      url = `/disambiguate/motif?mids=${
+        midList.join(',')
+      }`;
+    }
+    const link = `<a href='${url}'>${word}</a>`;
+    return (pre ? pre[0] : '') + link + (post ? post[0] : '');
   }).join(' ');
+
+  return {
+    entry,
+    motifs: Object.keys(motifDict).reduce((motifList, id) => motifList.concat({
+      name: motifDict[id], id
+    }), [])
+  };
 }

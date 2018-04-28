@@ -14,7 +14,7 @@ const processMap = {
 console.log('INDEXING ENTRIES');
 const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));
 const doc = JSON.parse(fs.readFileSync('./public/full.json'));
-const stemDoc = makeStemDict(doc);
+const stemDoc = makeStemDict(Object.keys(doc));
 const linkedEntryList = entryList.map(entry => ({
   ...entry,
   content: linkMotifsInEntry({ content: entry.content, doc, stemDoc })
