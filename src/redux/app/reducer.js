@@ -42,19 +42,19 @@ export default function appReducer(state = initialState, action) {
       };
 
     case 'RECEIVE_MOTIF':
-      return (docKey => ({
+      return {
         ...state,
-        [docKey]: {
-          ...state[docKey],
+        doc: {
+          ...state.doc,
           [action.payload.mid]: action.payload.motif
         },
-      }))(action.payload.isLinked ? 'linkedDoc' : 'doc');
+      };
 
     case 'RECEIVE_SOURCE_ENTRIES':
-      return (entriesKey => ({
+      return {
         ...state,
-        [entriesKey]: {
-          ...state[entriesKey],
+        entriesBySource: {
+          ...state.entriesBySource,
           [action.payload.sid]: action.payload.entries
         },
         biblio: {
@@ -64,7 +64,7 @@ export default function appReducer(state = initialState, action) {
             motifs: motifListFromEntries(action.payload.entries)
           }
         },
-      }))(action.payload.isLinked ? 'linkedEntriesBySource' : 'entriesBySource');
+      };
 
     case 'SET_LOADING': {
       return { ...state, isLoading: action.payload };

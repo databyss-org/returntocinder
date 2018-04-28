@@ -36,6 +36,7 @@ const activeStyle = {
 
 const Entry = ({
   entry,
+  content,
   showRepeats,
   highlight,
   style,
@@ -43,7 +44,8 @@ const Entry = ({
   cardinal,
   inlineHead,
   setScroll,
-  location
+  location,
+  isLinkedContent
 }) => {
   const eid = entry.locations.low === entry.locations.high
     ? `${entry.locations.low}`
@@ -77,7 +79,7 @@ const Entry = ({
           entry.locations.repeat && showRepeats ? '—— ' : entry.locations.raw,
           highlighter({
             searchWords: highlight,
-            textToHighlight: entry.content
+            textToHighlight: content
           })
         ].join('') }}
       />

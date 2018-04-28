@@ -4,13 +4,12 @@ import config from '../../config';
 let queryIdx = 0;
 
 export default {
-  searchEntries({ query, getLinked }) {
+  searchEntries({ query }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'SEARCH_ENTRIES',
         payload: {
-          query,
-          getLinked
+          query
         }
       });
       const results = await axios.get(`${config.apiUrl}/search`, {
@@ -18,7 +17,6 @@ export default {
           query: query || getState().search.query,
           processResults: 'GROUP_BY_SOURCE',
           withMeta: true,
-          ...(getLinked ? { getLinked: true } : {})
         }
       });
       dispatch({
@@ -26,7 +24,6 @@ export default {
         payload: {
           ...results.data.results,
           query,
-          getLinked
         }
       });
     };

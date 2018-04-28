@@ -50,8 +50,8 @@ class Doc extends PureComponent {
   }
 
   _updateRows(props) {
-    const { entriesBySource, linkedEntriesBySource, doc, linkedDoc } = props.appState;
-    const { results, linkedResults } = props.searchState;
+    const { entriesBySource, doc } = props.appState;
+    const { results } = props.searchState;
     const { search, motif, source, term, isLinked } = this.query;
     const { path } = this.props;
 
@@ -59,7 +59,8 @@ class Doc extends PureComponent {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesByMotif
-          doc={isLinked ? linkedDoc : doc}
+          doc={doc}
+          isLinked={isLinked}
           mid={term}
           key={key}
           style={style}
@@ -70,25 +71,21 @@ class Doc extends PureComponent {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
+          isLinked={isLinked}
           sid={term}
-          entries={isLinked ? linkedEntriesBySource[term] : entriesBySource[term]}
+          entries={entriesBySource[term]}
           key={key}
           style={style}
           path={path}
           setScroll={this.setScroll}
         />;
     } else if (search) {
-      this._rows = Object.keys(
-        isLinked ? linkedResults[term] : results[term]
-      );
+      this._rows = Object.keys(results[term]);
       this._rowComponent = ({ index, key, style }) =>
         <EntriesBySource
           sid={this._rows[index]}
-          entries={
-            isLinked
-              ? linkedResults[term][this._rows[index]]
-              : results[term][this._rows[index]]
-          }
+          isLinked={isLinked}
+          entries={results[term][this._rows[index]]}
           key={key}
           style={style}
           showHeader

@@ -12,9 +12,11 @@ const EntriesBySource = ({
   path,
   setScroll,
   location,
+  isLinked
 }) =>
   <section style={style}>
     <Entries
+      isLinked={isLinked}
       entries={entries}
       highlight={highlight}
       path={path.concat(sid)}

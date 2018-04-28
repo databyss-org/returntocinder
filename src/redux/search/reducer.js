@@ -2,7 +2,6 @@ const initialState = {
   isIndexing: false,
   isIndexed: false,
   results: {},
-  linkedResults: {},
   resultsMeta: {},
   queryMeta: {
     count: 0
@@ -50,10 +49,10 @@ export default function appReducer(state = initialState, action) {
       };
     }
     case 'SEARCH_ENTRIES_RESULTS': {
-      return (resultsKey => ({
+      return {
         ...state,
-        [resultsKey]: {
-          ...state[resultsKey],
+        results: {
+          ...state.results,
           [action.payload.query]: action.payload.results,
         },
         isWorking: false,
@@ -61,7 +60,7 @@ export default function appReducer(state = initialState, action) {
           ...state.resultMeta,
           [action.payload.query]: action.payload.resultsMeta
         }
-      }))(action.payload.getLinked ? 'linkedResults' : 'results');
+      };
     }
 
     default: {

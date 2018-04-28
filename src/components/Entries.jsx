@@ -9,6 +9,7 @@ const Entries = ({
   makeId,
   inlineHead,
   setScroll,
+  isLinked
 }) => {
   let lastLocation = null;
   let locationCount = 0;
@@ -25,6 +26,7 @@ const Entries = ({
         <Entry
           key={entry.id || (makeId && makeId(idx)) || path.join('.') + idx}
           entry={entry}
+          content={isLinked ? entry.linkedContent : entry.content}
           highlight={highlight}
           path={path}
           cardinal={locationCount}

@@ -28,24 +28,22 @@ export default {
       });
     };
   },
-  fetchMotif({ mid, getLinked }) {
+  fetchMotif({ mid }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_MOTIF',
         payload: {
-          mid,
-          isLinked: getLinked
+          mid
         }
       });
       const motif = (await axios.get(
-        `/motifs/${mid}${getLinked ? '-linked' : ''}.json`
+        `/motifs/${mid}.json`
       )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {
           mid,
-          motif,
-          isLinked: getLinked
+          motif
         }
       });
     };

@@ -80,47 +80,37 @@ export default compose(
   withRouter,
   withLoader({
     propsToLoad: (props) => {
-      const { motifLinksAreActive } = props.app;
       const query = getQuery(props);
       return {
         query,
         ...(query.motif ? {
-          motif: motifLinksAreActive
-            ? props.app.linkedDoc[query.term]
-            : props.app.doc[query.term]
+          motif: props.app.doc[query.term]
         } : {}),
         ...(query.aside ? {
-          aside: motifLinksAreActive
-            ? props.app.linkedDoc[query.aside]
-            : props.app.doc[query.aside]
+          aside: props.app.doc[query.aside]
         } : {}),
         ...(query.source ? {
-          source: motifLinksAreActive
-            ? props.app.linkedEntriesBySource[query.term]
-            : props.app.entriesBySource[query.term]
+          source: props.app.entriesBySource[query.term]
         } : {}),
         ...(query.search ? {
-          results: motifLinksAreActive
-            ? props.search.linkedResults[query.term]
-            : props.search.results[query.term]
+          results: props.search.results[query.term]
         } : {})
       };
     },
     loaderActions: (props) => {
       const query = getQuery(props);
-      const getLinked = props.app.motifLinksAreActive;
       return {
         ...(query.motif ? {
-          motif: () => props.fetchMotif({ mid: query.term, getLinked }),
+          motif: () => props.fetchMotif({ mid: query.term }),
         } : {}),
         ...(query.aside ? {
-          aside: () => props.fetchMotif({ mid: query.aside, getLinked }),
+          aside: () => props.fetchMotif({ mid: query.aside }),
         } : {}),
         ...(query.source ? {
-          source: () => props.fetchSource({ sid: query.term, getLinked }),
+          source: () => props.fetchSource({ sid: query.term }),
         } : {}),
         ...(query.search ? {
-          results: () => props.searchEntries({ query: query.term, getLinked })
+          results: () => props.searchEntries({ query: query.term })
         } : {})
       };
     },
