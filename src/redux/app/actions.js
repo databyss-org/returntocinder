@@ -149,5 +149,17 @@ export default {
       type: 'MOTIF_LINKS_ACTIVE',
       payload: areActive
     };
+  },
+  toggleDisambiguate(isVisible) {
+    return {
+      type: 'DISAMBIGUATE_VISIBLE',
+      payload: isVisible
+    };
+  },
+  showDisambiguate({ midList, position, target, className }) {
+    return {
+      type: 'SHOW_DISAMBIGUATE',
+      payload: { midList, position, target, className }
+    };
   }
 };

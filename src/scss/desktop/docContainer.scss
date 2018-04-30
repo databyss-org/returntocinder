@@ -1,4 +1,7 @@
 .docContainer {
+  .doc main {
+    position: relative;
+  }
   .doc main, .docHead {
     @include maxAndCenter(600px)
   }

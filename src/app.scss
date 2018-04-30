@@ -58,6 +58,7 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/search';
     @import 'scss/desktop/hamburger';
     @import 'scss/tablet/docHead';
+    @import 'scss/desktop/disambiguate';
   }
 }
 
@@ -77,5 +78,6 @@ $hamburger-hover-transition-timing-function: linear;
     @import 'scss/desktop/hamburger';
     @import 'scss/desktop/search';
     @import 'scss/desktop/toggle';
+    @import 'scss/desktop/disambiguate';
   }
 }

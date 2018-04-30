@@ -61,3 +61,10 @@ export function scrollTo({ containerElem, targetElem, duration }) {
 
   tick();
 }
+
+export function getViewportHeight() {
+  return Math.max(
+    document.documentElement.clientHeight,
+    window.innerHeight || 0
+  );
+}

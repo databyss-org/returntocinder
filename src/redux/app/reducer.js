@@ -13,7 +13,14 @@ const initialState = {
   searchIsFocused: false,
   menuIsVisible: false,
   isLoading: false,
-  motifLinksAreActive: false
+  motifLinksAreActive: false,
+  disambiguate: {
+    isVisible: false,
+    midList: [],
+    position: {
+      left: 0, top: 0
+    }
+  }
 };
 
 export default function appReducer(state = initialState, action) {
@@ -96,6 +103,31 @@ export default function appReducer(state = initialState, action) {
 
     case 'MOTIF_LINKS_ACTIVE': {
       return { ...state, motifLinksAreActive: action.payload };
+    }
+
+    case 'DISAMBIGUATE_VISIBLE': {
+      state.disambiguate.target &&
+        state.disambiguate.target.classList.remove(state.disambiguate.className);
+      return {
+        ...state,
+        disambiguate: {
+          ...state.disambiguate,
+          isVisible: false
+        }
+      };
+    }
+
+    case 'SHOW_DISAMBIGUATE': {
+      state.disambiguate.target &&
+        state.disambiguate.target.classList.remove(state.disambiguate.className);
+      action.payload.target.classList.add(action.payload.className);
+      return {
+        ...state,
+        disambiguate: {
+          isVisible: true,
+          ...action.payload
+        }
+      };
     }
 
     default: {
