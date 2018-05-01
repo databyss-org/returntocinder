@@ -23,3 +23,7 @@ export function elipses({ text, maxLength }) {
   }
   return `${text.substring(0, maxLength)}…`;
 }
+
+export function stemify(str) {
+  return latinize(str.toLowerCase()).replace(/[^a-z]/, '');
+}

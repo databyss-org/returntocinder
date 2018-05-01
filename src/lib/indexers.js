@@ -4,7 +4,8 @@ import React from 'react';
 import latinize from 'latinize';
 import * as JsDiff from 'diff';
 import pluralize from 'pluralize';
-import { textify, urlify } from './_helpers';
+import { textify, urlify, stemify } from './_helpers';
+import { junkWords } from '../content/junk.json';
 
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
@@ -212,7 +213,6 @@ export function addMotifsToBiblio(biblio, entriesBySource) {
 
 const suffixPattern = /ing$|ness$|ed$|ion$|y$|ality$|'s$|ty$/;
 const splitPattern = /[- /]/;
-const junkWords = ['for', 'and', 'of', 'in', 'see', 'a', 'both', 'le', 'de', 'du', 'the', 'fixerup', 'to', 'us', 'ize', 'no', 's'];
 const cleanPattern = /[()0-9,[\]+]/;
 
 // returns a stem dict with the following structure:
@@ -297,7 +297,9 @@ export function linkMotifsInEntry({ content, stemDoc }) {
   let motifDict = {};
   const entry = words.map((word) => {
     // stem-ify
-    const stemWord = pluralize.singular(word).replace(suffixPattern, '');
+    const stemifiedWord = stemify(word);
+    const stemWord
+      = pluralize.singular(stemifiedWord).replace(suffixPattern, '');
     const entryMotifDict = stemDoc[stemWord];
     if (!entryMotifDict) {
       return word;
