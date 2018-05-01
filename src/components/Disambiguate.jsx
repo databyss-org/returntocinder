@@ -9,13 +9,14 @@ import styles from '../app.scss';
 import motifs from '../content/motifs.json';
 import CloseIcon from '../icons/close.svg';
 import actions from '../redux/app/actions';
+import { elipses } from '../lib/_helpers';
 
 const reposition = (el) => {
   const vh = getViewportHeight();
   const { top } = el.getBoundingClientRect();
   const height = el.clientHeight;
   const thresh = 50;
-  const offset = 20;
+  const offset = 19;
 
   if ((top + height) > (vh - thresh)) {
     const elTop = parseFloat(el.style.top.replace('px', 0));
@@ -38,8 +39,18 @@ const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
       {midList.map(mid => (
         <span className={styles.motifListItem} key={mid}>
           <a
+            className={styles.desktop}
             href={`/motif/${mid}`}
-            dangerouslySetInnerHTML={{ __html: motifs[mid] }}
+            dangerouslySetInnerHTML={{
+              __html: elipses({ text: motifs[mid], maxLength: 55 })
+            }}
+          />
+          <a
+            className={styles.mobile}
+            href={`/motif/${mid}`}
+            dangerouslySetInnerHTML={{
+              __html: elipses({ text: motifs[mid], maxLength: 33 })
+            }}
           />
         </span>))}
     </div>

@@ -16,3 +16,10 @@ export function sanitize(str) {
 export function simplify(str) {
   return str.replace(/<\/em>( )*<em>/ig, (match, p1) => p1 ? ' ' : '');
 }
+
+export function elipses({ text, maxLength }) {
+  if (text.length < maxLength) {
+    return text;
+  }
+  return `${text.substring(0, maxLength)}…`;
+}
