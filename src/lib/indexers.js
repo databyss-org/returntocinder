@@ -260,7 +260,8 @@ export function makeStemDict(motifDict) {
   const stemDict = Object.values(motifDict).reduce((stemmed, motifName) => {
     const words = motifName
       .split(splitPattern)
-      .map(w => w.toLowerCase())
+      .map(w => latinize(w.toLowerCase()))
+      .filter(w => !junkWords.includes(w))
       .map(w => pluralize.singular(w))
       .map(w => w
         .replace(cleanPattern, '')
