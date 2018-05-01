@@ -36,11 +36,14 @@
     padding-left: 1em;
     flex-grow: 1;
 
-    .statsAndAuthors, .titleAndAuthor {
+    .statsAndAuthors {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       align-items: flex-end;
+      width: 70%;
+    }
+    .titleAndAuthor {
       margin-bottom: 1.2em;
       width: 70%;
     }
@@ -49,12 +52,15 @@
       font-size: 1.2em;
       line-height: 1.2em;
       flex-grow: 0;
+
+      span {
+        margin-right: 0.35em;
+      }
     }
     .author {
       font-family: 'DINNextLTPro-Light';
-      font-size: 0.9em;
-      color: #808080;
-      margin-left: 0.4em;
+      font-size: 0.7em;
+      color: #000;
       line-height: 1.15em;
     }
     .stats, .authors {

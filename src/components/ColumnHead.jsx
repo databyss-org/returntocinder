@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import pluralize from 'pluralize';
 import authorDict from '../content/authors.json';
+import { defaultAuthor } from '../content/config.json';
 
 const ColumnHead = ({
   doc,
@@ -33,6 +34,11 @@ const ColumnHead = ({
     }),
   }[query.type](query.term);
 
+  // add default author if viewing supplement
+  if (query.author && query.author !== defaultAuthor) {
+    stats.authors = (stats.authors || []).concat(defaultAuthor);
+  }
+
   const display = {
     entries: (
       <span>
@@ -54,8 +60,9 @@ const ColumnHead = ({
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
           <span key={author}>
-            {idx ? ', ' : null}
-            <Link to={`/motif/${query.term}:${author}`}>
+            <Link to={`/motif/${query.resource}${
+                author === defaultAuthor
+                  ? '' : `:${author}`}`}>
               {authorDict[author].lastName}
             </Link>
           </span>
@@ -67,14 +74,14 @@ const ColumnHead = ({
   return (
     <header>
       <div className={styles.titleAndAuthor}>
-        <div className={styles.title}>
+        <span className={styles.title}>
           <span dangerouslySetInnerHTML={{ __html: stats.title }} />
-        </div>
-        {query.author && (
-          <div className={styles.author}>
-            [{authorDict[query.author].lastName}]
-          </div>
-        )}
+          {query.author && (
+            <span className={styles.author}>
+              [{authorDict[query.author].lastName}]
+            </span>
+          )}
+        </span>
       </div>
       <div className={styles.statsAndAuthors}>
         <div className={styles.stats}>

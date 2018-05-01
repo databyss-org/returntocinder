@@ -1,10 +1,14 @@
 {
+  "DD": {
+    "lastName": "Derrida",
+    "firstName": "Jacques"
+  },
   "KA": {
     "lastName": "Kant",
     "firstName": "Immanuel"
   },
-  "HD": {
-    "lastName": "Heiddeger",
+  "HDG": {
+    "lastName": "Heidegger",
     "firstName": "Martin"
   }
 }

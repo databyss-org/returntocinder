@@ -42,14 +42,14 @@ const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
             className={styles.desktop}
             href={`/motif/${mid}`}
             dangerouslySetInnerHTML={{
-              __html: elipses({ text: motifs[mid], maxLength: 55 })
+              __html: elipses({ text: motifs[mid], maxLength: 58 })
             }}
           />
           <a
             className={styles.mobile}
             href={`/motif/${mid}`}
             dangerouslySetInnerHTML={{
-              __html: elipses({ text: motifs[mid], maxLength: 33 })
+              __html: elipses({ text: motifs[mid], maxLength: 36 })
             }}
           />
         </span>))}
