@@ -9,7 +9,6 @@ import actions from '../redux/app/actions';
 
 class Hamburger extends PureComponent {
   onClick({ homeLinkOnly, onClick, history }) {
-    this.props.toggleSearchIsFocused(false);
     if (homeLinkOnly) {
       history.push('/');
     } else {

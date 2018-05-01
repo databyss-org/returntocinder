@@ -38,7 +38,7 @@ class Navbar extends PureComponent {
 
     return (
       <div className={cx(styles.navbar, {
-        [styles.searchIsFocused]: appState.searchIsFocused
+        [styles.searchIsFocused]: appState.search.isFocused
       })}>
         <div className={styles.barContainer}>
           <div className={styles.bar}>
@@ -61,9 +61,9 @@ class Navbar extends PureComponent {
               <button
                 name="searchButton"
                 className={styles.searchButton}
-                onClick={() => {
+                onClick={(evt) => {
                   appState.menuIsVisible && this.hideMenu();
-                  toggleSearchIsVisible();
+                  toggleSearchIsVisible(evt.target);
                 }}
                 >
                 <SearchIcon />

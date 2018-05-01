@@ -138,6 +138,12 @@ export default {
       payload: focused
     };
   },
+  maskClicked(target) {
+    return {
+      type: 'MASK_CLICKED',
+      payload: target
+    };
+  },
   toggleMenuIsVisible(visible) {
     return {
       type: 'MENU_VISIBLE',
@@ -150,13 +156,13 @@ export default {
       payload: areActive
     };
   },
-  toggleDisambiguate(isVisible) {
+  hideDisambiguate() {
     return {
-      type: 'DISAMBIGUATE_VISIBLE',
-      payload: isVisible
+      type: 'HIDE_DISAMBIGUATE',
     };
   },
   showDisambiguate({ midList, position, target, className }) {
+
     return {
       type: 'SHOW_DISAMBIGUATE',
       payload: { midList, position, target, className }

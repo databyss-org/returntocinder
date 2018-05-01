@@ -15,10 +15,7 @@ const About = ({ match, appState, toggleSearchIsFocused }) => {
     : _content;
 
   return (
-    <div
-      className={styles.about}
-      onClick={() => toggleSearchIsFocused(false)}
-    >
+    <div className={styles.about}>
       <div className={styles.container}>
         <div className={styles.head}>
           <Subnav menu={data.menu} basePath={'about'} />

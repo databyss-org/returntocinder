@@ -4,7 +4,7 @@ import parse from 'rtf-parser';
 import childProcess from 'child_process';
 import { linkMotifsInEntry, makeStemDict } from '../lib/indexers';
 import { getSource, renderPara } from '../lib/rtfToJson';
-import motifList from '../content/motifs.json';
+import motifDict from '../content/motifs.json';
 import { getHeading, getEntries, addAuthorToMotifs } from './docToJson';
 
 export default function supplementToJson({ input, output }) {
@@ -45,7 +45,7 @@ function rtfToJson({ rtf, output }) {
   console.log('AUTHOR', `${code} (${firstName} ${lastName})`);
 
   // generate stem dict
-  const stemDict = makeStemDict(motifList);
+  const stemDict = makeStemDict(motifDict);
 
   // readline loop
   for (let i = 1; i < rtf.content.length; i += 1) {

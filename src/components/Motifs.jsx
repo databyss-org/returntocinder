@@ -1,15 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import motifNames from '../content/motifs.json';
-import { motifListFromNames } from '../lib/indexers';
+import motifDict from '../content/motifs.json';
 import styles from '../app.scss';
 
 const Motifs = ({ history }) =>
   <ul className={styles.motifs}>
-    {motifListFromNames(motifNames).map(m => (
-      <li key={m.id}
-        dangerouslySetInnerHTML={{ __html: m.name }}
-        onClick={() => history.push(`/motif/${m.id}`)}
+    {Object.keys(motifDict).map(mid => (
+      <li key={mid}
+        dangerouslySetInnerHTML={{ __html: motifDict[mid] }}
+        onClick={() => history.push(`/motif/${mid}`)}
       />
     ))}
   </ul>;

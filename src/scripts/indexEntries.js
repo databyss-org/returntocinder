@@ -11,6 +11,8 @@ import {
   makeStemDict
 } from '../lib/indexers';
 
+import motifDict from '../content/motifs.json';
+
 export default function indexEntries({ path, logPath }) {
   const doc = JSON.parse(fs.readFileSync(`${path}/full.json`));
   const biblio = JSON.parse(fs.readFileSync(`${path}/biblio.json`));
@@ -68,7 +70,7 @@ export default function indexEntries({ path, logPath }) {
 }
 
 function writeSourceJsons({ entries, path, doc }) {
-  const stemDoc = makeStemDict(Object.keys(doc));
+  const stemDoc = makeStemDict(motifDict);
   const entriesBySource = groupEntriesBySource(entries);
   Object.keys(entriesBySource).forEach((sid) => {
     // add linked content

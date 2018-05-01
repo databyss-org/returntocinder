@@ -2,10 +2,13 @@ import React from 'react';
 import cx from 'classnames';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import freezeProps from '../hoc/freezeProps';
 import { getViewportHeight } from '../lib/dom';
 import styles from '../app.scss';
+import motifs from '../content/motifs.json';
+import CloseIcon from '../icons/close.svg';
+import actions from '../redux/app/actions';
 
 const reposition = (el) => {
   const vh = getViewportHeight();
@@ -21,7 +24,7 @@ const reposition = (el) => {
   }
 };
 
-const Disambiguate = ({ midList, isVisible, position }) => (
+const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
   <div
     className={cx(styles.disambiguate, { [styles.isVisible]: isVisible })}
     style={{ top: position.top }}
@@ -31,16 +34,30 @@ const Disambiguate = ({ midList, isVisible, position }) => (
       }
     }}
   >
-    {midList.map(mid => <span>
-      <Link to={`/motif/${mid}`}>
-        {mid}
-      </Link>
-    </span>)}
+    <div className={styles.motifList}>
+      {midList.map(mid => (
+        <span className={styles.motifListItem} key={mid}>
+          <a
+            href={`/motif/${mid}`}
+            dangerouslySetInnerHTML={{ __html: motifs[mid] }}
+          />
+        </span>))}
+    </div>
+    <div
+      className={cx(
+        styles.disambiguateCloseBox,
+        { [styles.isVisible]: isVisible }
+      )}
+      onClick={() => hideDisambiguate()}
+    >
+      <CloseIcon />
+    </div>
   </div>
 );
 
 export default compose(
-  connect(state => ({ ...state.app.disambiguate })),
+  connect(state => ({ ...state.app.disambiguate }), actions),
+  withRouter,
   freezeProps({
     propsToFreeze: props => ({
       midList: props.isVisible,

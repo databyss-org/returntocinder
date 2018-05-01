@@ -9,12 +9,16 @@ const initialState = {
   motifList: null,
   query: '',
   maskIsVisible: false,
-  searchIsVisible: false,
-  searchIsFocused: false,
   menuIsVisible: false,
   isLoading: false,
   motifLinksAreActive: false,
+  search: {
+    isVisible: false,
+    isFocused: false,
+    target: null
+  },
   disambiguate: {
+    target: null,
     isVisible: false,
     midList: [],
     position: {
@@ -82,18 +86,58 @@ export default function appReducer(state = initialState, action) {
     }
 
     case 'TOGGLE_SEARCH_IS_VISIBLE': {
-      return { ...state, searchIsVisible: !state.searchIsVisible };
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          isVisible: true,
+          target: action.payload,
+        }
+      };
     }
 
     case 'HIDE_SEARCH': {
-      return { ...state, searchIsVisible: false };
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          isVisible: false,
+        }
+      };
     }
 
     case 'SEARCH_FOCUSED': {
       return {
         ...state,
-        searchIsFocused: action.payload,
-        menuIsVisible: action.payload ? false : state.menuIsVisible
+        search: {
+          ...state.search,
+          isFocused: true,
+          target: action.payload
+        },
+        menuIsVisible: false,
+        disambiguate: {
+          ...state.disambiguate,
+          isVisible: false
+        }
+      };
+    }
+
+    case 'MASK_CLICKED': {
+      state.disambiguate.target &&
+        action.payload !== state.disambiguate.target &&
+        state.disambiguate.target.classList.remove(state.disambiguate.className);
+      return {
+        ...state,
+        menuIsVisible: false,
+        search: {
+          ...state.search,
+          isFocused: action.payload === state.search.target,
+          isVisible: action.payload === state.search.target,
+        },
+        disambiguate: {
+          ...state.disambiguate,
+          isVisible: action.payload === state.disambiguate.target
+        }
       };
     }
 
@@ -105,7 +149,7 @@ export default function appReducer(state = initialState, action) {
       return { ...state, motifLinksAreActive: action.payload };
     }
 
-    case 'DISAMBIGUATE_VISIBLE': {
+    case 'HIDE_DISAMBIGUATE': {
       state.disambiguate.target &&
         state.disambiguate.target.classList.remove(state.disambiguate.className);
       return {

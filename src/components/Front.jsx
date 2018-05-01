@@ -15,7 +15,6 @@ const Front = ({ location, toggleSearchIsFocused }) =>
         location.pathname, { path: '/', exact: true })
       )
     })}
-    onClick={() => toggleSearchIsFocused(false)}
   >
     <div className={cx(styles.container, styles.withMotifs)}>
       <div className={styles.head}>

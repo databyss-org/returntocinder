@@ -18,8 +18,10 @@ import About from './About.jsx';
 import Front from './Front.jsx';
 import ScrollToTop from './ScrollToTop.jsx';
 import actions from '../redux/app/actions';
+import SyncHistory from './SyncHistory.jsx';
 
 import styles from '../app.scss';
+
 
 const SourceModal = freezeProps({
   propsToFreeze: props => ({
@@ -27,43 +29,54 @@ const SourceModal = freezeProps({
   })
 })(Source);
 
-const Main = ({ app, toggleSearchIsFocused, location }) =>
+const Main = ({ app, maskClicked, location }) =>
   <Router>
-    <ScrollToTop>
-      <Transition in={app.maskIsVisible} timeout={50}>
-        {(state) => {
-          return (
-            <div className={cx(styles.app, {
-              [styles.showWithMask]: state === 'entered'
-            })}>
+    <SyncHistory onLocationChanged={() => maskClicked()}>
+      <ScrollToTop>
+        <Transition in={app.maskIsVisible} timeout={50}>
+          {(state) => {
+            return (
               <div
-                className={cx(styles.mask, {
-                  [styles.show]: state === 'entering' || state === 'entered'
+                className={cx(styles.app, {
+                  [styles.showWithMask]: state === 'entered'
                 })}
-                onClick={() => toggleSearchIsFocused(false)}
+                onClick={evt => maskClicked(evt.target)}
               >
-                <Route path="/(motif|source|search)/:term" children={({ match }) =>
-                  <DocContainer match={match} />
+                <div
+                  className={cx(styles.mask, {
+                    [styles.show]: state === 'entering' || state === 'entered'
+                  })}
+                >
+                  <Route
+                    path="/(motif|source|search)/:term"
+                    children={({ match }) =>
+                      <DocContainer match={match} />
+                  }/>
+                </div>
+                <Route path="(.*)about/:page" children={({ match }) =>
+                  <ModalMenu isActive={match}>
+                    <About match={match} />
+                  </ModalMenu>
                 }/>
+                <Navbar withMaskClassName={styles.withMask} />
+                <Route
+                  path="(.*)/source::sid/(.*)?"
+                  children={({ match, ...props }) =>
+                    <DocModal isActive={Boolean(match)} {...props}>
+                      <SourceModal
+                        isActive={match}
+                        sid={match && match.params.sid}
+                      />
+                    </DocModal>
+                }/>
+                <Front />
+                <Menu />
               </div>
-              <Route path="(.*)about/:page" children={({ match }) =>
-                <ModalMenu isActive={match}>
-                  <About match={match} />
-                </ModalMenu>
-              }/>
-              <Navbar withMaskClassName={styles.withMask} />
-              <Route path="(.*)/source::sid/(.*)?" children={({ match, ...props }) =>
-                <DocModal isActive={Boolean(match)} {...props}>
-                  <SourceModal isActive={match} sid={match && match.params.sid} />
-                </DocModal>
-              }/>
-              <Front />
-              <Menu />
-            </div>
-          );
-        }}
-      </Transition>
-    </ScrollToTop>
+            );
+          }}
+        </Transition>
+      </ScrollToTop>
+    </SyncHistory>
   </Router>;
 
 export default compose(

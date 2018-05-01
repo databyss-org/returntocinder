@@ -8,12 +8,12 @@ import cx from 'classnames';
 import latinize from 'latinize';
 import pluralize from 'pluralize';
 import _ from 'lodash';
-import { motifListFromNames } from '../lib/indexers';
+import { motifListFromDict } from '../lib/indexers';
 import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
 import theme from '../app.scss';
-import { textify, urlify } from '../lib/_helpers';
-import motifNames from '../content/motifs.json';
+import { textify } from '../lib/_helpers';
+import motifDict from '../content/motifs.json';
 
 import CloseIcon from '../icons/close.svg';
 
@@ -150,7 +150,7 @@ class Search extends PureComponent {
 
     const motifMatches = compile({
       ...compileDefaults,
-      collection: motifListFromNames(motifNames),
+      collection: motifListFromDict(motifDict),
       filter: c => c.map(m => ({
         ...m,
         name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')
@@ -244,7 +244,7 @@ class Search extends PureComponent {
     this.inputElement.blur();
   }
   onFocus() {
-    this.props.toggleSearchIsFocused(true);
+    this.props.toggleSearchIsFocused(this.inputElement);
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
@@ -274,7 +274,7 @@ class Search extends PureComponent {
       highlightedSuggestion: null,
     });
     if (andClose) {
-      this.props.toggleSearchIsFocused(false);
+      this.props.maskClicked();
     }
   }
   onSearch(path) {
@@ -282,7 +282,7 @@ class Search extends PureComponent {
       pathname: path,
     });
     this.onClearInput();
-    this.props.toggleSearchIsFocused(false);
+    this.props.maskClicked();
     this.inputElement.blur();
   }
   onKeyDown(event) {
@@ -295,7 +295,7 @@ class Search extends PureComponent {
       <input className={theme.input} {...inputProps} key={0} />,
       <button key={1}
         className={cx(theme.clear, {
-          [theme.show]: this.props.appState.searchIsFocused
+          [theme.show]: this.props.appState.search.isFocused
         })}
         onClick={() => this.onClearInput(true)}
       >
@@ -313,11 +313,11 @@ class Search extends PureComponent {
   }
   render() {
     const { suggestions, value } = this.state;
-    const { searchIsVisible } = this.props.appState;
+    const { isVisible } = this.props.appState.search;
 
     return (
       <Transition
-        in={searchIsVisible}
+        in={isVisible}
         timeout={200}
         onEntered={() => this.inputElement.focus()}
       >

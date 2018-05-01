@@ -4,6 +4,7 @@ import express from 'express';
 import fs from 'fs';
 import { indexEntries, searchEntries } from '../lib/search';
 import { groupEntriesBySource, linkMotifsInEntry, makeStemDict } from '../lib/indexers';
+import motifDict from '../content/motifs.json';
 
 const router = express.Router();
 
@@ -13,8 +14,7 @@ const processMap = {
 
 console.log('LINKING ENTRIES');
 const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));
-const doc = JSON.parse(fs.readFileSync('./public/full.json'));
-const stemDoc = makeStemDict(Object.keys(doc));
+const stemDoc = makeStemDict(motifDict);
 entryList.forEach((entry) => {
   entry.linkedContent =
     linkMotifsInEntry({ content: entry.content, stemDoc }).entry;

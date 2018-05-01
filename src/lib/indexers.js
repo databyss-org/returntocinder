@@ -80,18 +80,28 @@ export function sourceListFromBiblio(biblio) {
   }), []);
 }
 
-export function motifListFromNames(motifNames) {
-  return motifNames.map(name => ({
+export function motifListFromDict(motifDict) {
+  return Object.keys(motifDict).map(mid => ({
     type: 'motif',
-    id: urlify(textify(name)),
-    name,
+    id: mid,
+    name: motifDict[mid],
   }));
+}
+
+export function sanitizeMotifName(name) {
+  return name.replace(/[“”]/g, '"').replace('’', "'");
 }
 
 export function motifNamesFromMotifs(motifs) {
   return Object.keys(motifs).map(mid =>
-    motifs[mid].title.replace(/[“”]/g, '"').replace('’', "'")
+    sanitizeMotifName(motifs[mid].title)
   );
+}
+
+export function motifDictFromMotifs(motifs) {
+  return Object.keys(motifs).reduce((dict, mid) => ({
+    ...dict, [mid]: sanitizeMotifName(motifs[mid].title)
+  }), {});
 }
 
 export function rangeOverlapExists(range1, range2) {
@@ -239,7 +249,7 @@ const cleanPattern = /[()0-9,[\]+]/;
 //     beastandsovereign: "beast and sovereign"
 //   },
 // }
-export function makeStemDict(motifList) {
+export function makeStemDict(motifDict) {
   const addStemmed = (dict, word, motifName) => {
     if (!dict[word]) {
       dict[word] = {};
@@ -247,7 +257,7 @@ export function makeStemDict(motifList) {
     const mid = urlify(textify(motifName));
     dict[word][mid] = motifName;
   };
-  const stemDict = motifList.reduce((stemmed, motifName) => {
+  const stemDict = Object.values(motifDict).reduce((stemmed, motifName) => {
     const words = motifName
       .split(splitPattern)
       .map(w => w.toLowerCase())
@@ -265,8 +275,8 @@ export function makeStemDict(motifList) {
   return stemDict;
 }
 
-export function linkMotifsInAllEntries({ entries, motifList }) {
-  const stemDoc = makeStemDict(motifList);
+export function linkMotifsInAllEntries({ entries, motifDict }) {
+  const stemDoc = makeStemDict(motifDict);
   return Object.keys(entries.sources).reduce((lm, sid) => {
     lm.sources[sid] = entries.sources[sid].map(source => ({
       ...source,
