@@ -77,6 +77,7 @@ class Doc extends PureComponent {
           key={key}
           style={style}
           path={path}
+          showHeader
           setScroll={this.setScroll}
         />;
     } else if (search) {
