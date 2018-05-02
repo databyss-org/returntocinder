@@ -98,31 +98,39 @@ function rtfToJson(doc) {
 }
 
 // add authorCode to cfauthors list in all motifs except specified author's
+// return list of authorCodes for authors with this motif
 export function addAuthorToMotifs({ mid, authorCode, output }) {
   const _addAuthor = (path) => {
-    if (fs.existsSync(path)) {
-      const motif = JSON.parse(fs.readFileSync(path));
-      if (!motif.cfauthors || !motif.cfauthors.includes(authorCode)) {
-        if (!motif.cfauthors) {
-          motif.cfauthors = [];
-        }
-        motif.cfauthors.push(authorCode);
-        fs.writeFileSync(path, JSON.stringify(motif));
-      }
+    if (!fs.existsSync(path)) {
+      return false;
     }
+    const motif = JSON.parse(fs.readFileSync(path));
+    if (!motif.cfauthors || !motif.cfauthors.includes(authorCode)) {
+      if (!motif.cfauthors) {
+        motif.cfauthors = [];
+      }
+      motif.cfauthors.push(authorCode);
+      fs.writeFileSync(path, JSON.stringify(motif));
+    }
+    return true;
   };
   // add authorCode to default author
   const path = `${output.public}/motifs/${mid}.json`;
   _addAuthor(path);
 
   // add authorCode to supplement motifs
+  const foundAuthors = [];
   Object.keys(authors).forEach((code) => {
     if (code === authorCode) {
       return;
     }
     const path = `${output.public}/authors/${code.toLowerCase()}/motifs/${mid}.json`;
-    _addAuthor(path);
+    if (_addAuthor(path)) {
+      foundAuthors.push(code);
+    }
   });
+
+  return foundAuthors;
 }
 
 export function getEntries(doc, i) {

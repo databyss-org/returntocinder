@@ -50,6 +50,7 @@
       flex-direction: row;
       justify-content: flex-start;
       align-items: flex-end;
+      flex-wrap: wrap;
       width: 70%;
     }
     .titleAndAuthor {
@@ -81,6 +82,7 @@
       font-size: 0.9em;
       flex-grow: 0;
       transition: opacity 100ms ease;
+      margin-right: 0.4em;
 
       span {
         @include commas();

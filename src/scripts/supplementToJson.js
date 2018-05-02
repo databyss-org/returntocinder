@@ -96,7 +96,9 @@ function rtfToJson({ rtf, output }) {
               entryCount: 0,
             };
             // add author to cfauthors list in other motifs
-            addAuthorToMotifs({ mid: motif.id, authorCode: code, output });
+            //  and add authors to cfauthors
+            doc.entries[motif.id].cfauthors
+              = addAuthorToMotifs({ mid: motif.id, authorCode: code, output });
           }
           // create the source if it doesn't exist
           if (!doc.entries[motif.id].sources[sid]) {
