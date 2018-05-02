@@ -5,13 +5,15 @@ import {
 
 import { sanitize } from '../lib/_helpers';
 
-export function indexEntries(entryList) {
+export function indexEntries(entryLists) {
   const search = new Search('id');
   search.sanitizer = { sanitize };
   search.indexStrategy = new PrefixIndexStrategy();
 
   search.addIndex('content');
-  search.addDocuments(entryList);
+  entryLists.forEach(entryList =>
+    search.addDocuments(entryList)
+  );
 
   return search;
 }

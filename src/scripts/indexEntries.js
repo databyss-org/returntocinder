@@ -69,7 +69,7 @@ export default function indexEntries({ path, logPath }) {
   writeSourceJsons({ entries: mergedEntries, path, doc });
 }
 
-function writeSourceJsons({ entries, path, doc }) {
+export function writeSourceJsons({ entries, path, doc }) {
   const stemDoc = makeStemDict(motifDict);
   const entriesBySource = groupEntriesBySource(entries);
   Object.keys(entriesBySource).forEach((sid) => {

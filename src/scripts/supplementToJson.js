@@ -2,10 +2,16 @@
 import fs from 'fs';
 import parse from 'rtf-parser';
 import childProcess from 'child_process';
-import { linkMotifsInEntry, makeStemDict } from '../lib/indexers';
 import { getSource, renderPara } from '../lib/rtfToJson';
 import motifDict from '../content/motifs.json';
 import { getHeading, getEntries, addAuthorToMotifs } from './docToJson';
+import biblio from '../../public/biblio.json';
+import { writeSourceJsons } from './indexEntries';
+import {
+  linkMotifsInEntry,
+  makeStemDict,
+  sidFromSourceCode,
+} from '../lib/indexers';
 
 export default function supplementToJson({ input, output }) {
   childProcess.exec('pwd', {}, (err, stdout) => console.log(stdout));
@@ -17,16 +23,29 @@ export default function supplementToJson({ input, output }) {
         return;
       }
       const doc = rtfToJson({ rtf, output });
-      Object.keys(doc.entries).forEach((mid) => {
-        const path = `${output.public}/authors/${doc.author.toLowerCase()}`;
+      const entries = Object.values(doc.entries);
 
-        if (!fs.existsSync(path)) {
-          fs.mkdirSync(path);
-          fs.mkdirSync(`${path}/motifs`);
-        }
+      const path = `${output.public}/authors/${doc.author.toLowerCase()}`;
 
-        fs.writeFileSync(`${path}/motifs/${mid}.json`, JSON.stringify(doc.entries[mid]));
-      });
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+        fs.mkdirSync(`${path}/motifs`);
+      }
+
+      console.log('WRITE FULL JSON');
+      fs.writeFileSync(`${path}/full.json`, JSON.stringify(doc.motifs));
+
+      console.log('WRITE MOTIF JSONS');
+      Object.keys(doc).forEach(mid =>
+        fs.writeFileSync(`${path}/motifs/${mid}.json`, JSON.stringify(doc.motifs[mid]))
+      );
+
+      console.log('WRITE SOURCE JSONS');
+      writeSourceJsons({ entries, path: output.public, doc: doc.motifs });
+
+      console.log('WRITE ENTRIES JSON');
+      fs.writeFileSync(`${path}/entries.json`, JSON.stringify(entries));
+
       resolve();
     });
   });
@@ -35,8 +54,8 @@ export default function supplementToJson({ input, output }) {
 function rtfToJson({ rtf, output }) {
   // setup return obj
   const doc = {
-    entries: {},
-    linked: {}
+    entries: [],
+    motifs: {},
   };
   // author should be first line
   const [code, lastName, firstName]
@@ -63,16 +82,22 @@ function rtfToJson({ rtf, output }) {
 
       i += 1;
       // scan for source
-      const sid = getSource(rtf.content[i]);
-      if (!sid) {
+      const dsid = getSource(rtf.content[i]);
+      if (!dsid) {
         continue;
       }
-      console.log('SOURCE', sid);
+      console.log('SOURCE', dsid);
+      const sid = sidFromSourceCode(dsid);
 
       // capture entries
       const entries = getEntries(rtf, i);
-      entries.forEach((entry) => {
-        entry.source = { id: sid };
+      entries.forEach((entry, idx) => {
+        entry.source = {
+          display: dsid,
+          id: sid,
+          title: biblio[sid] && biblio[sid].title,
+          author: code
+        };
 
         // find motifs in entry and get linked Entry
         const { entry: linkedEntry, motifs } = linkMotifsInEntry({
@@ -80,15 +105,23 @@ function rtfToJson({ rtf, output }) {
           stemDoc: stemDict
         });
 
+        // search and source view expect entry.motif to be array of motif objs
+        entry.motif = motifs.map(m => ({ ...m, title: m.name }));
+
+        // entry id must be unique across all authors
+        entry.id = code + idx;
+        // add to flat entry list
+        doc.entries.push(entry);
+
         // store the linked entry in the entry
         entry.linkedContent = linkedEntry;
 
         // add entry to motif
         motifs.forEach((motif) => {
-          console.log('MOTIF', motif.id);
+          // console.log('MOTIF', motif.id);
           // create the motif if it doesn't exist
-          if (!doc.entries[motif.id]) {
-            doc.entries[motif.id] = {
+          if (!doc.motifs[motif.id]) {
+            doc.motifs[motif.id] = {
               title: motif.name,
               sources: {
                 [sid]: [],
@@ -97,16 +130,16 @@ function rtfToJson({ rtf, output }) {
             };
             // add author to cfauthors list in other motifs
             //  and add authors to cfauthors
-            doc.entries[motif.id].cfauthors
+            doc.motifs[motif.id].cfauthors
               = addAuthorToMotifs({ mid: motif.id, authorCode: code, output });
           }
           // create the source if it doesn't exist
-          if (!doc.entries[motif.id].sources[sid]) {
-            doc.entries[motif.id].sources[sid] = [];
+          if (!doc.motifs[motif.id].sources[sid]) {
+            doc.motifs[motif.id].sources[sid] = [];
           }
           // add the entry and increment the count
-          doc.entries[motif.id].sources[sid].push(entry);
-          doc.entries[motif.id].entryCount += 1;
+          doc.motifs[motif.id].sources[sid].push(entry);
+          doc.motifs[motif.id].entryCount += 1;
         });
       });
     } while (i < rtf.content.length);

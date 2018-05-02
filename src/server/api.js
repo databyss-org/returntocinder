@@ -6,6 +6,9 @@ import { indexEntries, searchEntries } from '../lib/search';
 import { groupEntriesBySource, linkMotifsInEntry, makeStemDict } from '../lib/indexers';
 import motifDict from '../content/motifs.json';
 
+import hdg from '../../public/authors/hdg/entries.json';
+import ka from '../../public/authors/ka/entries.json';
+
 const router = express.Router();
 
 const processMap = {
@@ -21,7 +24,7 @@ entryList.forEach((entry) => {
 });
 
 console.log('INDEXING ENTRIES');
-const index = indexEntries(entryList);
+const index = indexEntries([entryList]);
 
 console.log('INDEX COMPLETE');
 

@@ -28,16 +28,20 @@ export function sourcesFromEntries(entries) {
   }, {});
 }
 
+export function sidFromSourceCode(dsid) {
+  return dsid
+    .replace('***', '')
+    .replace(/\([A-Z]+\)/, '')
+    .trim();
+}
+
 export function entriesFromMotifs(motifs, biblio) {
   const entries = {};
   Object.keys(motifs).forEach((mid) => {
     const motif = motifs[mid];
     Object.keys(motif.sources).forEach((dsid) => {
       const source = motif.sources[dsid];
-      const sid = dsid
-        .replace('***', '')
-        .replace(/\([A-Z]+\)/, '')
-        .trim();
+      const sid = sidFromSourceCode(dsid);
       if (!biblio[sid]) {
         console.warn(`Source [${sid}] not found in bibliography`);
       }

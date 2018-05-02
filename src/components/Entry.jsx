@@ -83,7 +83,7 @@ const Entry = ({
           })
         ].join('') }}
       />
-      {entry.motif ? (
+      {entry.motif && !entry.source.author ? (
         <nav>{entry.motif.map(m =>
           <Link
             key={m.id}

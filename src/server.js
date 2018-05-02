@@ -64,7 +64,7 @@ app.get('/!about/:page', (req, res) => {
   res.redirect(301, `/about/${req.params.page}`);
 });
 
-app.get('/*', (req, res) => {
+function getClientApp(req, res) {
   if (process.env.DBX) {
     res.status(301).end();
   } else if (req.path.match(/\/source:(.*)?/)) {
@@ -75,7 +75,10 @@ app.get('/*', (req, res) => {
       '/public/index.html')
     );
   }
-});
+}
+
+app.get('/*', getClientApp);
+// app.get('/source/*.*', getClientApp);
 
 app.listen(app.get('port'), () => {
   console.log('server started on port', app.get('port'));
