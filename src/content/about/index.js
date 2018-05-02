@@ -4,6 +4,8 @@ import grammar from './grammar.json';
 import epigraphs from './epigraphs.json';
 import manifest from './manifest.json';
 import contact from './contact.json';
+import authors from '../authors.json';
+import { defaultAuthor } from '../config.json';
 
 const bibliography = (appState) => {
   const content = {
@@ -19,11 +21,23 @@ const bibliography = (appState) => {
     list.concat(appState.biblio[sid]), []
   );
   biblioList.sort((a, b) => a.id < b.id ? -1 : 1);
+  const byAuthor = biblioList
+    .reduce((dict, b) => (
+      { ...dict, [b.author]: (dict[b.author] || []).concat(b) }
+    ), {});
+
   return {
     title: 'bibliography',
-    body: biblioList.map(b => (
-      `${b.id} ${b.citations.join('<br />')}`
-    ))
+    body: Object.keys(byAuthor).reduce((lines, author) =>
+      [
+        ...lines,
+        ...(author !== defaultAuthor
+          ? [`<h2>${authors[author].lastName}, ${authors[author].firstName}</h2>`]
+          : []
+        ),
+        ...byAuthor[author].map(b => `${b.id} ${b.citations.join('<br />')}`)
+      ],
+    [])
   };
 };
 

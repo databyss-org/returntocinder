@@ -2,6 +2,7 @@
 import fs from 'fs';
 import parse from 'rtf-parser';
 import { getSource, renderPara, allMatches } from '../lib/rtfToJson';
+import { defaultAuthor } from '../content/config.json';
 
 parse.stream(fs.createReadStream('../doc/biblio.rtf'), (err, doc) => {
   if (err) {
@@ -27,11 +28,16 @@ function rtfToJson(doc) {
     const title = html.match(/^[^\s]*?\s+([^[]*)/)[1];
     const re = /\[(.*?)\]/g;
     const citations = allMatches(re, html, 1);
+    let author = defaultAuthor;
+    if (sid.match(/\./)) {
+      [author] = sid.split('.');
+    }
 
     sources[sid] = {
       id: sid,
       title,
-      citations
+      citations,
+      author,
     };
   }
 
