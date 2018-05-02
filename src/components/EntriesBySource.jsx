@@ -21,6 +21,7 @@ const EntriesBySource = ({
       highlight={highlight}
       path={path.concat(sid)}
       setScroll={setScroll}
+      showRepeats
       inlineHead={showHeader ? <h3>
         <Link to={`${location.pathname}/source:${sid}`}>
           {sid}
