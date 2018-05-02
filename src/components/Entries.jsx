@@ -11,17 +11,19 @@ const Entries = ({
   setScroll,
   isLinked
 }) => {
-  let lastLocation = null;
+  let lastLocations = null;
   let locationCount = 0;
 
   return (
     entries.map((entry, idx) => {
-      if (entry.locations.low === lastLocation) {
+      if (lastLocations && entry.locations.low === lastLocations.low) {
         locationCount += 1;
       } else {
         locationCount = 0;
       }
-      lastLocation = entry.locations.low;
+      entry.locations.repeat = lastLocations &&
+        entry.locations.raw === lastLocations.raw;
+      lastLocations = entry.locations;
       return (
         <Entry
           key={entry.id || (makeId && makeId(idx)) || path.join('.') + idx}
