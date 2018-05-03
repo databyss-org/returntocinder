@@ -36,7 +36,7 @@ export default function supplementToJson({ input, output }) {
       fs.writeFileSync(`${path}/full.json`, JSON.stringify(doc.motifs));
 
       console.log('WRITE MOTIF JSONS');
-      Object.keys(doc).forEach(mid =>
+      Object.keys(doc.motifs).forEach(mid =>
         fs.writeFileSync(`${path}/motifs/${mid}.json`, JSON.stringify(doc.motifs[mid]))
       );
 
