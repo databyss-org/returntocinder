@@ -17,7 +17,7 @@ class Menu extends PureComponent {
     }
   }
   render() {
-    const inProp = this.props.appState.menuIsVisible;
+    const inProp = this.props.appState.menu.isVisible;
 
     return (
       <Transition

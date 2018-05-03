@@ -8,11 +8,11 @@ import styles from '../app.scss';
 import actions from '../redux/app/actions';
 
 class Hamburger extends PureComponent {
-  onClick({ homeLinkOnly, onClick, history }) {
+  onClick({ homeLinkOnly, onClick, history, evt }) {
     if (homeLinkOnly) {
       history.push('/');
     } else {
-      onClick();
+      onClick(evt);
     }
   }
   render() {
@@ -24,7 +24,7 @@ class Hamburger extends PureComponent {
           [styles.homeLinkOnly]: homeLinkOnly,
           [styles.navLink]: navLink,
         })}
-        onClick={() => this.onClick({ homeLinkOnly, onClick, history })}
+        onClick={evt => this.onClick({ homeLinkOnly, onClick, history, evt })}
       >
         {navLink ? <div className={styles.linkText}>{navLink}</div> : [
           <div className={styles.glow} />,

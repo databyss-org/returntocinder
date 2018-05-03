@@ -9,9 +9,12 @@ const initialState = {
   motifList: null,
   query: '',
   maskIsVisible: false,
-  menuIsVisible: false,
   isLoading: false,
   motifLinksAreActive: false,
+  menu: {
+    isVisible: false,
+    target: null,
+  },
   search: {
     isVisible: false,
     isFocused: false,
@@ -114,7 +117,10 @@ export default function appReducer(state = initialState, action) {
           isFocused: true,
           target: action.payload
         },
-        menuIsVisible: false,
+        menu: {
+          ...state.menu,
+          isVisible: false,
+        },
         disambiguate: {
           ...state.disambiguate,
           isVisible: false
@@ -128,7 +134,11 @@ export default function appReducer(state = initialState, action) {
         state.disambiguate.target.classList.remove(state.disambiguate.className);
       return {
         ...state,
-        menuIsVisible: false,
+        menu: {
+          ...state.menu,
+          isVisible: (action.payload === state.menu.target) &&
+            state.menu.isVisible,
+        },
         search: {
           ...state.search,
           isFocused: action.payload === state.search.target,
@@ -142,7 +152,13 @@ export default function appReducer(state = initialState, action) {
     }
 
     case 'MENU_VISIBLE': {
-      return { ...state, menuIsVisible: action.payload };
+      return {
+        ...state,
+        menu: {
+          ...state.menu,
+          ...action.payload
+        }
+      };
     }
 
     case 'MOTIF_LINKS_ACTIVE': {

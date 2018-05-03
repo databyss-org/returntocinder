@@ -30,8 +30,8 @@ class Navbar extends PureComponent {
       history.push(`${location.pathname === '/' ? '' : location.pathname}/about/frontis`);
     }
   }
-  onMenuClick() {
-    this.props.toggleMenuIsVisible(!this.props.appState.menuIsVisible);
+  onMenuClick(evt) {
+    this.props.toggleMenuIsVisible(!this.props.appState.menu.isVisible, evt.target);
   }
   render() {
     const { toggleSearchIsVisible, appState } = this.props;
@@ -43,12 +43,12 @@ class Navbar extends PureComponent {
         <div className={styles.barContainer}>
           <div className={styles.bar}>
             <Hamburger
-              isActive={appState.menuIsVisible}
-              onClick={() => this.onMenuClick()}
+              isActive={appState.menu.isVisible}
+              onClick={evt => this.onMenuClick(evt)}
             />
             <Hamburger
               homeLinkOnly={true}
-              isActive={appState.menuIsVisible}
+              isActive={appState.menu.isVisible}
             />
             <div className={styles.navLinks}>
               <Hamburger
@@ -62,7 +62,7 @@ class Navbar extends PureComponent {
                 name="searchButton"
                 className={styles.searchButton}
                 onClick={(evt) => {
-                  appState.menuIsVisible && this.hideMenu();
+                  appState.menu.isVisible && this.hideMenu();
                   toggleSearchIsVisible(evt.target);
                 }}
                 >

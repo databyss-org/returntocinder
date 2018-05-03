@@ -144,10 +144,13 @@ export default {
       payload: target
     };
   },
-  toggleMenuIsVisible(visible) {
+  toggleMenuIsVisible(isVisible, target) {
     return {
       type: 'MENU_VISIBLE',
-      payload: visible
+      payload: {
+        isVisible,
+        target,
+      }
     };
   },
   toggleMotifLinks(areActive) {
