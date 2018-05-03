@@ -5,7 +5,6 @@ import epigraphs from './epigraphs.json';
 import manifest from './manifest.json';
 import contact from './contact.json';
 import authors from '../authors.json';
-import { defaultAuthor } from '../config.json';
 
 const bibliography = (appState) => {
   const content = {
@@ -31,10 +30,7 @@ const bibliography = (appState) => {
     body: Object.keys(byAuthor).reduce((lines, author) =>
       [
         ...lines,
-        ...(author !== defaultAuthor
-          ? [`<h2>${authors[author].lastName}, ${authors[author].firstName}</h2>`]
-          : []
-        ),
+        `<h2>${authors[author].lastName}, ${authors[author].firstName}</h2>`,
         ...byAuthor[author].map(b => `${b.id} ${b.citations.join('<br />')}`)
       ],
     [])

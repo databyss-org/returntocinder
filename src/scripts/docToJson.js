@@ -37,7 +37,7 @@ function rtfToJson(doc) {
   let entryCount;
 
   // readline loop
-  for (let i = 1; i < doc.content.length; i += 1) {
+  for (let i = 0; i < doc.content.length; i += 1) {
     // scan for motif
     const motifTitle = getHeading(doc.content[i]);
     if (!motifTitle) {
