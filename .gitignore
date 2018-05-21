@@ -13,3 +13,6 @@ build/
 
 # YARN
 yarn.lock
+
+# CONFIG
+pm2.config.js

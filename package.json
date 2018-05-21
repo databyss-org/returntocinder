@@ -21,7 +21,8 @@
 		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public ./repo/public/mergelog.txt",
 		"simplify": "babel-node src/scripts/simplifyEntries.js ./public",
 		"simplify-repo": "babel-node src/scripts/simplifyEntries.js ./repo/public",
-		"dump-motifs": "babel-node src/scripts/dumpMotifs.js"
+		"dump-motifs": "babel-node src/scripts/dumpMotifs.js",
+		"mongo-local": "mongod --config /usr/local/etc/mongod.conf"
 	},
 	"dependencies": {
 		"axios": "^0.17.1",
@@ -58,6 +59,7 @@
 		"latinize": "^0.4.0",
 		"lodash": "^4.17.4",
 		"mailgun-js": "^0.14.0",
+		"mongodb": "^3.1.0-beta4",
 		"node-sass": "^4.7.2",
 		"path-to-regexp": "^2.1.0",
 		"pluralize": "^7.0.0",
