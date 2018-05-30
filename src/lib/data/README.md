@@ -3,7 +3,6 @@
 Data abstraction API for reading and writing Databyss entities. Currently implemented on mongodb.
 
 ## authors
-
 ### list
 Parameters: none
 Returns: a list of available authors
@@ -19,15 +18,34 @@ Returns: a list of available authors
 ```
 
 ## entries
+### list
+Parameters: query object
+```
+{
+  author: string, // [optional] author code
+  motifId: string, // [optional] motif id
+  sourceId: string, // [optional] source id
+  groupBy: oneOf('source','motif','author') // [optional]
+}
+```
+Returns:
+* groupBy unset: array of entry documents or []
+* groupBy set: dictionary of entry documents or {}; keys are group entity id
 
+### add
+Parameters: document object
+
+## motifs
 ### get
 Parameters: options object
 ```
 {
-  author: 'dd', // [optional] author code
-  motifId: 'abyss', // [optional] motif id
-  sourceId: 'BSi', // [optional] source id
+  motifId: string // motif id
 }
 ```
-Returns: array of entry documents
-Throws: error if author and/or motif not found
+Returns: a motif document
+Throws: error if motif with specified id is not found
+
+## biblio
+### get
+Returns: bibliography document

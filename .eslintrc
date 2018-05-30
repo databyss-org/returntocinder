@@ -15,7 +15,8 @@
     "react/jsx-indent": ["error", 2],
     "object-curly-newline": 0, // That's going too far
     "function-paren-newline": 0, // I like blocks to line up sometimes
-    "import/extensions": 0
+    "import/extensions": 0,
+    "import/prefer-default-export": 0
   },
   "settings": {
     "import/resolver": {

@@ -25,7 +25,7 @@ export default class Dbx {
     console.log('CREATE DROPBOX SYNC', fileList, gitUrl);
     this.lastModified = fileList.map(f => ({
       ...f,
-      path: process.env.DEBUG === '1' && f.testPath ? f.testPath : f.path,
+      path: process.env.DBX_DEBUG === '1' && f.testPath ? f.testPath : f.path,
       lastModified: null
     }));
     this.isIndexing = false;

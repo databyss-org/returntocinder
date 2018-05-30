@@ -6,7 +6,7 @@ import childProcess from 'child_process';
 import { motifDictFromMotifs, linkMotifsInAllEntries } from '../lib/indexers';
 import { urlify, textify, simplify } from '../lib/_helpers';
 import { getSource, renderPara, sourcePattern } from '../lib/rtfToJson';
-import authors from '../content/authors.json';
+import { get as getMotif, update as updateMotif } from '../lib/data/motifs';
 
 export default function docToJson({ input, output }) {
   childProcess.exec('pwd', {}, (err, stdout) => console.log(stdout));
@@ -87,7 +87,7 @@ function rtfToJson(doc) {
     }
 
     motifs[urlify(motifTitleText)] = {
-      title: motifTitle,
+      name: motifTitle,
       sources,
       entryCount
     };
@@ -99,38 +99,15 @@ function rtfToJson(doc) {
 
 // add authorCode to cfauthors list in all motifs except specified author's
 // return list of authorCodes for authors with this motif
-export function addAuthorToMotifs({ mid, authorCode, output }) {
-  const _addAuthor = (path) => {
-    if (!fs.existsSync(path)) {
-      return false;
-    }
-    const motif = JSON.parse(fs.readFileSync(path));
-    if (!motif.cfauthors || !motif.cfauthors.includes(authorCode)) {
-      if (!motif.cfauthors) {
-        motif.cfauthors = [];
-      }
-      motif.cfauthors.push(authorCode);
-      fs.writeFileSync(path, JSON.stringify(motif));
-    }
-    return true;
-  };
-  // add authorCode to default author
-  const path = `${output.public}/motifs/${mid}.json`;
-  _addAuthor(path);
-
-  // add authorCode to supplement motifs
-  const foundAuthors = [];
-  Object.keys(authors).forEach((code) => {
-    if (code === authorCode) {
-      return;
-    }
-    const path = `${output.public}/authors/${code.toLowerCase()}/motifs/${mid}.json`;
-    if (_addAuthor(path)) {
-      foundAuthors.push(code);
-    }
-  });
-
-  return foundAuthors;
+export async function addAuthorToMotif({ mid, authorCode }) {
+  const motif = await getMotif(mid);
+  if (!motif.cfauthors) {
+    motif.cfauthors = [];
+  }
+  if (!motif.cfauthors.includes(authorCode)) {
+    motif.cfauthors.push(authorCode);
+  }
+  await updateMotif(mid, motif);
 }
 
 export function getEntries(doc, i) {

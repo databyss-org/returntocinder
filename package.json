@@ -13,16 +13,18 @@
 		"start-dbx": "pm2 start build/server.js -i 1 --node-args=\"--expose-gc\"",
 		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
 		"dev-server": "nodemon src/server.js --exec babel-node",
-		"doc": "babel-node src/scripts/docToJson.js",
-		"supplement": "babel-node src/scripts/supplementToJson.js",
+		"doc": "babel-node src/scripts/entriesToDb.js",
+		"supplement": "babel-node src/scripts/supplementToDb.js",
+		"reset": "babel-node src/scripts/resetDb.js",
 		"biblio": "babel-node src/scripts/biblioToJson.js",
-		"index": "babel-node src/scripts/indexEntries.js ./public",
+		"index": "babel-node src/scripts/indexDb.js",
 		"sources": "babel-node src/scripts/indexEntries.js ./public --sources",
 		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public ./repo/public/mergelog.txt",
 		"simplify": "babel-node src/scripts/simplifyEntries.js ./public",
 		"simplify-repo": "babel-node src/scripts/simplifyEntries.js ./repo/public",
 		"dump-motifs": "babel-node src/scripts/dumpMotifs.js",
-		"mongo-local": "mongod --config /usr/local/etc/mongod.conf"
+		"mongo-local": "mongod --config /usr/local/etc/mongod.conf &",
+		"dump-entries": "babel-node src/scripts/dumpEntries.js"
 	},
 	"dependencies": {
 		"axios": "^0.17.1",
@@ -46,6 +48,8 @@
 		"css-loader": "^0.28.7",
 		"debounce": "^1.1.0",
 		"diff": "^3.4.0",
+		"dotenv": "^5.0.1",
+		"dotenv-webpack": "^1.5.5",
 		"dropbox": "^2.5.13",
 		"es6-promise": "^4.2.2",
 		"express": "^4.16.2",
@@ -103,6 +107,7 @@
 		"eslint-plugin-jsx-a11y": "^5.1.1",
 		"eslint-plugin-react": "^7.5.1",
 		"eslint-plugin-react-native": "^3.2.0",
+		"jest": "^23.0.0",
 		"webpack-dev-server": "^2.9.7"
 	},
 	"engines": {

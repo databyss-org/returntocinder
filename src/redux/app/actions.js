@@ -1,29 +1,27 @@
 import axios from 'axios';
 import {
   sourceListFromBiblio,
-  motifListFromMotifs,
   groupEntriesBySource
 } from '../../lib/indexers';
+import config from '../../content/config.json';
+
+const { API_URL } = process.env;
 
 export default {
-  fetchSource({ sid, getLinked }) {
+  fetchSource({ sid }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_SOURCE_ENTRIES',
         payload: {
           sid,
-          isLinked: getLinked
         }
       });
-      const entries = (await axios.get(
-        `/sources/${sid}${getLinked ? '-linked' : ''}.json`
-      )).data;
+      const entries = (await axios.get(`${API_URL}/sources/${sid}`)).data;
       return dispatch({
         type: 'RECEIVE_SOURCE_ENTRIES',
         payload: {
           sid,
           entries,
-          isLinked: getLinked
         }
       });
     };
@@ -37,9 +35,8 @@ export default {
           author
         }
       });
-      const motif = (await axios.get(author
-        ? `/authors/${author.toLowerCase()}/motifs/${mid}.json`
-        : `/motifs/${mid}.json`
+      const motif = (await axios.get(
+        `${API_URL}/motifs/${mid}?author=${author || config.defaultAuthor}`
       )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
@@ -47,23 +44,6 @@ export default {
           mid,
           motif,
           author
-        }
-      });
-    };
-  },
-  fetchDoc() {
-    return async (dispatch) => {
-      dispatch({
-        type: 'FETCH_DOC'
-      });
-      const doc = (await axios.get('/full.json')).data;
-      const motifList = motifListFromMotifs(doc);
-
-      return dispatch({
-        type: 'RECEIVE_DOC',
-        payload: {
-          doc,
-          motifList,
         }
       });
     };
@@ -81,23 +61,6 @@ export default {
         payload: {
           biblio,
           sourceList
-        }
-      });
-    };
-  },
-  fetchEntries() {
-    return async (dispatch) => {
-      dispatch({
-        type: 'FETCH_ENTRIES'
-      });
-      const entryList = (await axios.get('/entries.json')).data;
-      const entriesBySource = groupEntriesBySource(entryList);
-
-      return dispatch({
-        type: 'RECEIVE_ENTRIES',
-        payload: {
-          entryList,
-          entriesBySource
         }
       });
     };

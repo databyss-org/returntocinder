@@ -15,21 +15,19 @@ const ColumnHead = ({
 }) => {
   const stats = {
     motif: term => ({
-      title: doc[term].title,
+      name: doc[term].name,
       entryCount: doc[term].entryCount,
       sourceCount: Object.keys(doc[term].sources).length,
       authors: doc[term].cfauthors &&
         doc[term].cfauthors.filter(author => author !== query.author)
     }),
     source: term => ({
-      title: biblio[term].title,
+      name: biblio[term].title,
       entryCount: entriesBySource[term].length,
-      motifCount: biblio[term].motifs.length
     }),
     search: term => ({
-      title: `Results for: ${term}`,
+      name: `Results for: ${term}`,
       entryCount: resultsMeta.count,
-      motifCount: resultsMeta.motifList.length,
       sourceCount: resultsMeta.sourceList.length
     }),
   }[query.type](query.term);
@@ -43,11 +41,6 @@ const ColumnHead = ({
     entries: (
       <span>
         {stats.entryCount} {pluralize('entry', stats.entryCount)}
-      </span>
-    ),
-    motifs: (
-      <span>
-        {stats.motifCount} {pluralize('motif', stats.motifCount)}
       </span>
     ),
     sources: (
@@ -75,7 +68,7 @@ const ColumnHead = ({
     <header>
       <div className={styles.titleAndAuthor}>
         <span className={styles.title}>
-          <span dangerouslySetInnerHTML={{ __html: stats.title }} />
+          <span dangerouslySetInnerHTML={{ __html: stats.name }} />
           {query.author && (
             <span className={styles.author}>
               [{authorDict[query.author].lastName}]
@@ -86,7 +79,6 @@ const ColumnHead = ({
       <div className={styles.statsAndAuthors}>
         <div className={styles.stats}>
           {display.entries}
-          {!query.motif && display.motifs}
           {!query.source && display.sources}
         </div>
         <div className={styles.authors}>

@@ -10,16 +10,16 @@ import { junkWords } from '../content/junk.json';
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
     const entry = entries[eid];
-    const { id, title } = entry.source;
+    const { id, name } = entry.source;
     const sid = id;
     if (!sources[sid]) {
-      sources[sid] = { id, title, entries: [], entriesByMotif: [] };
+      sources[sid] = { id, name, entries: [], entriesByMotif: [] };
     }
     sources[sid].entries.push(entry);
     if (!sources[sid].entriesByMotif[entry.motif.id]) {
       sources[sid].entriesByMotif[entry.motif.id] = {
         id: entry.motif.id,
-        title: entry.motif.title,
+        name: entry.motif.name,
         sources: { [sid]: [] }
       };
     }
@@ -51,11 +51,11 @@ export function entriesFromMotifs(motifs, biblio) {
           ...entry,
           motif: {
             id: mid,
-            title: motif.title
+            name: motif.name
           },
           source: {
             id: sid,
-            title: biblio[sid] && biblio[sid].title,
+            name: biblio[sid] && biblio[sid].name,
             display: dsid
           },
           id: eid
@@ -99,7 +99,7 @@ export function sanitizeMotifName(name) {
 
 export function motifNamesFromMotifs(motifs) {
   return Object.keys(motifs).map(mid =>
-    sanitizeMotifName(motifs[mid].title)
+    sanitizeMotifName(motifs[mid].name)
   );
 }
 

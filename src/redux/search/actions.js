@@ -1,7 +1,8 @@
 import axios from 'axios';
-import config from '../../config';
 
 let queryIdx = 0;
+
+const { API_URL } = process.env;
 
 export default {
   searchEntries({ query }) {
@@ -12,10 +13,10 @@ export default {
           query
         }
       });
-      const results = await axios.get(`${config.apiUrl}/search`, {
+      const results = await axios.get(`${API_URL}/search`, {
         params: {
           query: query || getState().search.query,
-          processResults: 'GROUP_BY_SOURCE',
+          groupBy: 'source',
           withMeta: true,
         }
       });
@@ -35,7 +36,7 @@ export default {
         type: 'SET_QUERY',
         payload: { query, id: queryIdx }
       });
-      const results = await axios.get(`${config.apiUrl}/search`, {
+      const results = await axios.get(`${API_URL}/search`, {
         params: { query, id: queryIdx }
       });
       if (results.data.id < queryIdx) {

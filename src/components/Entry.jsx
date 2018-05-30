@@ -87,7 +87,7 @@ const Entry = ({
         <nav>{entry.motif.map(m =>
           <Link
             key={m.id}
-            dangerouslySetInnerHTML={{ __html: m.title }}
+            dangerouslySetInnerHTML={{ __html: m.name }}
             to={{
               pathname: formatAsidePath(location.pathname, m.id),
               hash: `${entryHash}.${cardinal}`

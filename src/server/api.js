@@ -1,42 +1,64 @@
 /* eslint-disable no-console */
 
 import express from 'express';
-import fs from 'fs';
-import { indexEntries, searchEntries } from '../lib/search';
-import { groupEntriesBySource, linkMotifsInEntry, makeStemDict } from '../lib/indexers';
-import motifDict from '../content/motifs.json';
+import { searchEntries } from '../lib/search';
+import { list as listEntries } from '../lib/data/entries';
+import { list as listMotifs } from '../lib/data/motifs';
 
 const router = express.Router();
 
-const processMap = {
-  'GROUP_BY_SOURCE': groupEntriesBySource
-};
+let motifDict;
 
-console.log('LINKING ENTRIES');
-const entryList = JSON.parse(fs.readFileSync('./public/entries.json'));
-const stemDoc = makeStemDict(motifDict);
-entryList.forEach((entry) => {
-  entry.linkedContent =
-    linkMotifsInEntry({ content: entry.content, stemDoc }).entry;
-});
+// fetch motifs from db
+listMotifs()
+  .then((motifs) => {
+    motifDict = motifs.reduce((dict, motif) => {
+      dict[motif.id] = motif;
+      return dict;
+    }, {});
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 
-console.log('INDEXING ENTRIES');
-const index = indexEntries([entryList]);
-
-console.log('INDEX COMPLETE');
-
-router.get('/search', (req, res) => {
-  const { query, processResults, withMeta, id } = req.query;
-
+router.get('/search', async (req, res) => {
+  const { query, groupBy, withMeta, id } = req.query;
   res.status(200).json({
     id,
-    results: searchEntries({
-      index,
+    results: await searchEntries({
       query,
-      processResults: processMap[processResults],
+      groupBy,
       withMeta,
     })
   });
+});
+
+router.get('/motifs/:mid', async (req, res) => {
+  const motif = motifDict[req.params.mid];
+  if (!motif) {
+    return res.status(404).end();
+  }
+  const { sources, entryCount } = await listEntries({
+    motifId: req.params.mid,
+    author: req.query.author,
+    groupBy: 'source',
+  });
+  return res.status(200).json({
+    ...motif,
+    entryCount,
+    sources,
+  });
+});
+
+router.get('/sources/:sid', async (req, res) => {
+  const entries = await listEntries({
+    sourceId: req.params.sid
+  });
+  if (!entries.length) {
+    return res.status(404).end();
+  }
+  return res.status(200).json(entries);
 });
 
 export default router;

@@ -50,7 +50,7 @@ class Search extends PureComponent {
 
     if (motif) {
       this.setState({
-        value: textify(doc[motif].title)
+        value: textify(doc[motif].name)
       });
     }
     if (source) {
