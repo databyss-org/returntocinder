@@ -4,6 +4,7 @@ import express from 'express';
 import { searchEntries } from '../lib/search';
 import { list as listEntries } from '../lib/data/entries';
 import { list as listMotifs } from '../lib/data/motifs';
+import { list as listSources } from '../lib/data/sources';
 
 const router = express.Router();
 
@@ -60,5 +61,11 @@ router.get('/sources/:sid', async (req, res) => {
   }
   return res.status(200).json(entries);
 });
+
+router.get('/sources', async (req, res) => {
+  const sources = await listSources();
+  return res.status(200).json(sources);
+});
+
 
 export default router;

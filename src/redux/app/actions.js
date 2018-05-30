@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
-  sourceListFromBiblio,
+  sourceListFromSources,
+  biblioFromSources,
 } from '../../lib/indexers';
 import config from '../../content/config.json';
 
@@ -52,8 +53,9 @@ export default {
       dispatch({
         type: 'FETCH_BIBLIO'
       });
-      const biblio = (await axios.get('/biblio.json')).data;
-      const sourceList = sourceListFromBiblio(biblio);
+      const sources = (await axios.get(`${API_URL}/sources`)).data;
+      const sourceList = sourceListFromSources(sources);
+      const biblio = biblioFromSources(sources);
 
       return dispatch({
         type: 'RECEIVE_BIBLIO',
@@ -127,7 +129,6 @@ export default {
     };
   },
   showDisambiguate({ midList, position, target, className }) {
-
     return {
       type: 'SHOW_DISAMBIGUATE',
       payload: { midList, position, target, className }

@@ -74,15 +74,22 @@ export function entryListFromEntries(entries) {
   }));
 }
 
-export function sourceListFromBiblio(biblio) {
-  return Object.keys(biblio).reduce((list, sid) => list.concat({
-    id: sid,
+export function sourceListFromSources(sources) {
+  return sources.reduce((list, source) => list.concat({
+    id: source.id,
     type: 'source',
-    name: `${biblio[sid].id} ${textify(biblio[sid].title)}`,
+    name: `${source.id} ${textify(source.title)}`,
     display: (
-      <div><h3>{biblio[sid].id}</h3> <span>{textify(biblio[sid].title)}</span></div>
+      <div><h3>{source.id}</h3> <span>{textify(source.title)}</span></div>
     )
   }), []);
+}
+
+export function biblioFromSources(sources) {
+  return sources.reduce((dict, source) => {
+    dict[source.id] = source;
+    return dict;
+  }, {});
 }
 
 export function motifListFromDict(motifDict) {

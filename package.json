@@ -16,7 +16,7 @@
 		"doc": "babel-node src/scripts/entriesToDb.js",
 		"supplement": "babel-node src/scripts/supplementToDb.js",
 		"reset": "babel-node src/scripts/resetDb.js",
-		"biblio": "babel-node src/scripts/biblioToJson.js",
+		"biblio": "babel-node src/scripts/biblioToDb.js",
 		"index": "babel-node src/scripts/indexDb.js",
 		"sources": "babel-node src/scripts/indexEntries.js ./public --sources",
 		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public ./repo/public/mergelog.txt",
