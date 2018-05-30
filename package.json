@@ -18,7 +18,7 @@
 		"reset": "babel-node src/scripts/resetDb.js",
 		"biblio": "babel-node src/scripts/biblioToDb.js",
 		"index": "babel-node src/scripts/indexDb.js",
-		"sources": "babel-node src/scripts/indexEntries.js ./public --sources",
+		"authors": "babel-node src/scripts/authorsToDb.js",
 		"index-repo": "babel-node src/scripts/indexEntries.js ./repo/public ./repo/public/mergelog.txt",
 		"simplify": "babel-node src/scripts/simplifyEntries.js ./public",
 		"simplify-repo": "babel-node src/scripts/simplifyEntries.js ./repo/public",
