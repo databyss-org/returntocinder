@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {
   sourceListFromBiblio,
-  groupEntriesBySource
 } from '../../lib/indexers';
 import config from '../../content/config.json';
 

@@ -8,7 +8,9 @@ module.exports = {
     filename: 'bundle.js'
   },
   plugins: [
-    new Dotenv(),
+    new Dotenv({
+      systemvars: true,
+    }),
   ],
   module: {
     loaders: [
