@@ -4,9 +4,9 @@ import grammar from './grammar.json';
 import epigraphs from './epigraphs.json';
 import manifest from './manifest.json';
 import contact from './contact.json';
-import authors from '../authors.json';
 
 const bibliography = (appState) => {
+  const authors = appState.authorDict;
   const content = {
     title: 'bibliography'
   };

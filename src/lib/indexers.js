@@ -110,9 +110,23 @@ export function motifNamesFromMotifs(motifs) {
   );
 }
 
+export function motifDictFromList(motifList) {
+  return motifList.reduce((dict, motif) => {
+    dict[motif.id] = motif;
+    return dict;
+  }, {});
+}
+
+export function authorDictFromList(authorList) {
+  return authorList.reduce((dict, author) => {
+    dict[author.id] = author;
+    return dict;
+  }, {});
+}
+
 export function motifDictFromMotifs(motifs) {
   return Object.keys(motifs).reduce((dict, mid) => ({
-    ...dict, [mid]: sanitizeMotifName(motifs[mid].title)
+    ...dict, [mid]: sanitizeMotifName(motifs[mid].name || motifs[mid].title)
   }), {});
 }
 

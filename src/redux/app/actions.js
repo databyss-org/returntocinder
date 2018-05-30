@@ -2,6 +2,8 @@ import axios from 'axios';
 import {
   sourceListFromSources,
   biblioFromSources,
+  motifDictFromList,
+  authorDictFromList,
 } from '../../lib/indexers';
 import config from '../../content/config.json';
 
@@ -62,6 +64,40 @@ export default {
         payload: {
           biblio,
           sourceList
+        }
+      });
+    };
+  },
+  fetchMotifs() {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_MOTIFS'
+      });
+      const motifList = (await axios.get(`${API_URL}/motifs`)).data;
+      const motifDict = motifDictFromList(motifList);
+
+      return dispatch({
+        type: 'RECEIVE_MOTIFS',
+        payload: {
+          motifList,
+          motifDict,
+        }
+      });
+    };
+  },
+  fetchAuthors() {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_AUTHORS'
+      });
+      const authorList = (await axios.get(`${API_URL}/authors`)).data;
+      const authorDict = authorDictFromList(authorList);
+
+      return dispatch({
+        type: 'RECEIVE_AUTHORS',
+        payload: {
+          authorList,
+          authorDict,
         }
       });
     };

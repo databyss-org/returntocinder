@@ -4,9 +4,11 @@ const initialState = {
   doc: {},
   entriesBySource: {},
   biblio: null,
+  authorDict: null,
   entryList: null,
   sourceList: null,
   motifList: null,
+  motifDict: {},
   query: '',
   maskIsVisible: false,
   isLoading: false,
@@ -61,6 +63,24 @@ export default function appReducer(state = initialState, action) {
           ...state.doc,
           [author ? `${mid}:${author}` : mid]: motif
         },
+      };
+    }
+
+    case 'RECEIVE_MOTIFS': {
+      const { motifList, motifDict } = action.payload;
+      return {
+        ...state,
+        motifList,
+        motifDict,
+      };
+    }
+
+    case 'RECEIVE_AUTHORS': {
+      const { authorList, authorDict } = action.payload;
+      return {
+        ...state,
+        authorList,
+        authorDict,
       };
     }
 

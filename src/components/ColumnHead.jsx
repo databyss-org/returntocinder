@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import pluralize from 'pluralize';
-import authorDict from '../content/authors.json';
 import { defaultAuthor } from '../content/config.json';
 
 const ColumnHead = ({
@@ -11,7 +10,8 @@ const ColumnHead = ({
   resultsMeta,
   entriesBySource,
   query,
-  styles
+  styles,
+  authorDict,
 }) => {
   const stats = {
     motif: term => ({

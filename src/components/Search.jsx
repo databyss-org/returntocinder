@@ -13,7 +13,6 @@ import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
 import theme from '../app.scss';
 import { textify } from '../lib/_helpers';
-import motifDict from '../content/motifs.json';
 
 import CloseIcon from '../icons/close.svg';
 
@@ -150,7 +149,9 @@ class Search extends PureComponent {
 
     const motifMatches = compile({
       ...compileDefaults,
-      collection: motifListFromDict(motifDict),
+      collection: this.props.appState.motifList.map(
+        m => ({ ...m, type: 'motif' })
+      ),
       filter: c => c.map(m => ({
         ...m,
         name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')

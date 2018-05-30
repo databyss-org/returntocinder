@@ -5,18 +5,19 @@ import { searchEntries } from '../lib/search';
 import { list as listEntries } from '../lib/data/entries';
 import { list as listMotifs } from '../lib/data/motifs';
 import { list as listSources } from '../lib/data/sources';
+import { list as listAuthors } from '../lib/data/authors';
+import { motifDictFromList } from '../lib/indexers';
 
 const router = express.Router();
 
+let motifList;
 let motifDict;
 
 // fetch motifs from db
 listMotifs()
   .then((motifs) => {
-    motifDict = motifs.reduce((dict, motif) => {
-      dict[motif.id] = motif;
-      return dict;
-    }, {});
+    motifList = motifs;
+    motifDict = motifDictFromList(motifs);
   })
   .catch((err) => {
     console.error(err);
@@ -66,6 +67,14 @@ router.get('/sources', async (req, res) => {
   const sources = await listSources();
   return res.status(200).json(sources);
 });
+
+router.get('/authors', async (req, res) => {
+  const authors = await listAuthors();
+  return res.status(200).json(authors);
+});
+
+router.get('/motifs', (req, res) =>
+  res.status(200).json(motifList));
 
 
 export default router;

@@ -22,6 +22,7 @@ const DocHead = ({ transitionState, query, app, search, toggleMotifLinks }) =>
       biblio={app.biblio}
       entriesBySource={app.entriesBySource}
       styles={styles}
+      authorDict={app.authorDict}
     />
     {query.aside &&
       <ColumnHead

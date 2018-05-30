@@ -84,9 +84,13 @@ export default compose(
   withLoader({
     propsToLoad: props => ({
       biblio: props.app.biblio,
+      motifs: props.app.motifList,
+      authors: props.app.authorDict,
     }),
     loaderActions: props => ({
       biblio: () => props.fetchBiblio(),
+      motifs: () => props.fetchMotifs(),
+      authors: () => props.fetchAuthors(),
     }),
     showLoader: false
   }),
