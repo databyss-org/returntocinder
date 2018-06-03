@@ -59,20 +59,19 @@ export const reset = async entity =>
     });
   });
 
-export const list = (entity, query) =>
+export const list = (entity, query, orderBy) =>
   new Promise(async (resolve, reject) => {
     const db = await connect();
     const collection = db.collection(entity);
-    collection.find(query, (err, result) => {
+    const findArgs = [query];
+    if (orderBy) {
+      findArgs.push({ sort: { [orderBy]: 1 } });
+    }
+    collection.find(...findArgs).toArray((err, docs) => {
       if (err) {
         return reject(err);
       }
-      return result.toArray((err2, docs) => {
-        if (err2) {
-          return reject(err2);
-        }
-        return resolve(objectIdsToIds(docs));
-      });
+      return resolve(objectIdsToIds(docs));
     });
   });
 
