@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import pluralize from 'pluralize';
-import { defaultAuthor } from '../content/config.json';
+
+const { DEFAULT_AUTHOR } = process.env;
 
 const ColumnHead = ({
   doc,
@@ -33,8 +34,8 @@ const ColumnHead = ({
   }[query.type](query.term);
 
   // add default author if viewing supplement
-  if (query.author && query.author !== defaultAuthor) {
-    stats.authors = (stats.authors || []).concat(defaultAuthor);
+  if (query.author && query.author !== DEFAULT_AUTHOR) {
+    stats.authors = (stats.authors || []).concat(DEFAULT_AUTHOR);
   }
 
   const display = {
@@ -54,7 +55,7 @@ const ColumnHead = ({
         {stats.authors.map((author, idx) => (
           <span key={author}>
             <Link to={`/motif/${query.resource}${
-                author === defaultAuthor
+                author === DEFAULT_AUTHOR
                   ? '' : `:${author}`}`}>
               {authorDict[author].lastName}
             </Link>

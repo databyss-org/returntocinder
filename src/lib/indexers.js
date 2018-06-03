@@ -92,14 +92,6 @@ export function biblioFromSources(sources) {
   }, {});
 }
 
-export function motifListFromDict(motifDict) {
-  return Object.keys(motifDict).map(mid => ({
-    type: 'motif',
-    id: mid,
-    name: motifDict[mid],
-  }));
-}
-
 export function sanitizeMotifName(name) {
   return name.replace(/[“”]/g, '"').replace('’', "'");
 }

@@ -11,10 +11,12 @@
 		"build-server": "babel src -d build --plugins transform-runtime",
 		"start": "node build/server.js",
 		"start-dbx": "pm2 start build/server.js -i 1 --node-args=\"--expose-gc\"",
-		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0",
+		"dev": "webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0 --mode=development",
 		"dev-server": "nodemon src/server.js --exec babel-node",
 		"doc": "babel-node src/scripts/entriesToDb.js",
 		"supplement": "babel-node src/scripts/supplementToDb.js",
+		"pages": "babel-node src/scripts/pagesToDb.js",
+		"menus": "babel-node src/scripts/menusToDb.js",
 		"reset": "babel-node src/scripts/resetDb.js",
 		"biblio": "babel-node src/scripts/biblioToDb.js",
 		"index": "babel-node src/scripts/indexDb.js",
@@ -59,7 +61,6 @@
 		"hamburgers": "^0.9.1",
 		"highlight-words-core": "^1.1.2",
 		"js-search": "^1.4.2",
-		"json-loader": "^0.5.7",
 		"latinize": "^0.4.0",
 		"lodash": "^4.17.4",
 		"mailgun-js": "^0.14.0",
@@ -89,11 +90,11 @@
 		"sass-loader": "^6.0.6",
 		"shallowequal": "^1.0.2",
 		"style-loader": "^0.19.1",
-		"svg-react-loader": "^0.4.5",
 		"throttle-debounce": "^1.0.1",
 		"url-loader": "^0.6.2",
 		"viewport-units-buggyfill": "^0.6.2",
-		"webpack": "^3.10.0",
+		"webpack": "^4.10.2",
+		"webpack-dev-server": "^3.1.4",
 		"worker-loader": "^1.1.0"
 	},
 	"devDependencies": {
@@ -108,7 +109,9 @@
 		"eslint-plugin-react": "^7.5.1",
 		"eslint-plugin-react-native": "^3.2.0",
 		"jest": "^23.0.0",
-		"webpack-dev-server": "^2.9.7"
+		"json-loader": "^0.5.7",
+		"react-svg-loader": "^2.1.0",
+		"webpack-cli": "^3.0.1"
 	},
 	"engines": {
 		"node": "8.9.0"

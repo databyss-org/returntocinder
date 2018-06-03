@@ -29,7 +29,9 @@ const initialState = {
     position: {
       left: 0, top: 0
     }
-  }
+  },
+  pages: {},
+  menus: {},
 };
 
 export default function appReducer(state = initialState, action) {
@@ -81,6 +83,28 @@ export default function appReducer(state = initialState, action) {
         ...state,
         authorList,
         authorDict,
+      };
+    }
+
+    case 'RECEIVE_PAGE': {
+      const { path, content } = action.payload;
+      return {
+        ...state,
+        pages: {
+          ...state.pages,
+          [path]: content,
+        }
+      };
+    }
+
+    case 'RECEIVE_MENU': {
+      const { path, menu } = action.payload;
+      return {
+        ...state,
+        menus: {
+          ...state.menus,
+          [path]: menu,
+        }
       };
     }
 

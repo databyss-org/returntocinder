@@ -5,9 +5,9 @@ import {
   motifDictFromList,
   authorDictFromList,
 } from '../../lib/indexers';
-import config from '../../content/config.json';
 
 const { API_URL } = process.env;
+const { DEFAULT_AUTHOR } = process.env;
 
 export default {
   fetchSource({ sid }) {
@@ -38,7 +38,7 @@ export default {
         }
       });
       const motif = (await axios.get(
-        `${API_URL}/motifs/${mid}?author=${author || config.defaultAuthor}`
+        `${API_URL}/motifs/${mid}?author=${author || DEFAULT_AUTHOR}`
       )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
@@ -98,6 +98,48 @@ export default {
         payload: {
           authorList,
           authorDict,
+        }
+      });
+    };
+  },
+  fetchPage(path) {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_PAGE',
+        payload: {
+          path
+        }
+      });
+      const content = (
+        await axios.get(`${API_URL}/pages/${path.replace(/\//g, '%2f')}`)
+      ).data;
+
+      return dispatch({
+        type: 'RECEIVE_PAGE',
+        payload: {
+          content,
+          path
+        }
+      });
+    };
+  },
+  fetchMenu(path) {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_MENU',
+        payload: {
+          path
+        }
+      });
+      const menu = (
+        await axios.get(`${API_URL}/menus/${path.replace(/\//g, '%2f')}`)
+      ).data;
+
+      return dispatch({
+        type: 'RECEIVE_MENU',
+        payload: {
+          menu,
+          path
         }
       });
     };

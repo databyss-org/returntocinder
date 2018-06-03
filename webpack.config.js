@@ -13,26 +13,30 @@ module.exports = {
     }),
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: [/worker\.js?$/],
-        loader: 'worker-loader?inline=true',
+        use: 'worker-loader?inline=true',
       },
       {
         test: [/\.jsx?$/, /\.js?$/],
         exclude: /(node_modules)/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['env', 'react', 'stage-3']
-        }
+        use: [{
+          loader: 'babel-loader',
+          query: {
+            presets: ['env', 'react', 'stage-3']
+          }
+        }],
       },
       {
-        test: /\.json$/, loader: 'json-loader'
+        test: /\.json$/,
+        use: 'json-loader',
+        type: 'javascript/auto',
       },
       {
         test: [/\.scss$/, /\.css$/],
-        loaders: [
-          'style-loader',
+        use: [
+          { loader: 'style-loader' },
           {
             loader: 'css-loader',
             options: {
@@ -40,23 +44,35 @@ module.exports = {
               localIdentName: '[path][name]__[local]--[hash:base64:5]'
             }
           },
-          'sass-loader'
+          { loader: 'sass-loader' }
         ],
       },
       {
         test: /\.otf$/,
-        loader: 'url-loader'
+        use: 'url-loader',
       },
       {
         test: /\.(jpe?g|png|gif)$/i,
-        loader: 'file-loader',
-        options: {
-          name: './images/[hash].[ext]'
-        }
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: './images/[hash].[ext]'
+          }
+        }],
       },
       {
         test: /\.svg$/,
-        loader: 'babel-loader?presets[]=env,presets[]=react!svg-react-loader'
+        use: [
+          {
+            loader: 'babel-loader'
+          },
+          {
+            loader: 'react-svg-loader',
+            options: {
+              jsx: true // true outputs JSX tags
+            }
+          }
+        ]
       }
     ]
   },

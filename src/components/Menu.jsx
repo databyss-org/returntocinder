@@ -7,9 +7,6 @@ import cx from 'classnames';
 import styles from '../app.scss';
 import actions from '../redux/app/actions';
 
-import menuData from '../content/menu.json';
-import config from '../content/config.json';
-
 class Menu extends PureComponent {
   onTransition(isIn) {
     if (!matchPath(this.props.location.pathname, '(.*)/source::sid/(.*)?')) {
@@ -18,6 +15,14 @@ class Menu extends PureComponent {
   }
   render() {
     const inProp = this.props.appState.menu.isVisible;
+
+    const menuData = this.props.items.reduce((arr, item) => {
+      arr[arr.length - 1].push(item);
+      if (item.dividerAfter) {
+        arr.push([]);
+      }
+      return arr;
+    }, [[]]);
 
     return (
       <Transition
@@ -32,7 +37,7 @@ class Menu extends PureComponent {
             <div className={cx(styles.menu, { [styles.show]: state === 'entered' }) }>
               <div className={styles.container}>
                 <Link className={styles.title} to='/'>
-                  {config.title}
+                  {this.props.appState.pages['/'].title}
                 </Link>
                 {menuData.map((items, idx) => (
                   <ul key={idx}>

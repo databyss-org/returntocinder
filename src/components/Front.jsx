@@ -3,12 +3,11 @@ import React from 'react';
 import { Link, withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import config from '../content/config.json';
 import styles from '../app.scss';
 import Motifs from './Motifs.jsx';
 import actions from '../redux/app/actions';
 
-const Front = ({ location, toggleSearchIsFocused }) =>
+const Front = ({ location, toggleSearchIsFocused, app }) =>
   <div
     className={cx(styles.front, {
       [styles.showFull]: Boolean(matchPath(
@@ -19,10 +18,10 @@ const Front = ({ location, toggleSearchIsFocused }) =>
     <div className={cx(styles.container, styles.withMotifs)}>
       <div className={styles.head}>
         <div className={styles.title}>
-          {config.title}
+          {app.pages['/'].title}
         </div>
         <p>
-          {config.inscription}
+          {app.pages['/'].body}
           <Link to='/about/frontis'>read more</Link>
         </p>
       </div>

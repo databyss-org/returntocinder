@@ -6,6 +6,8 @@ import { list as listEntries } from '../lib/data/entries';
 import { list as listMotifs } from '../lib/data/motifs';
 import { list as listSources } from '../lib/data/sources';
 import { list as listAuthors } from '../lib/data/authors';
+import { get as getPage } from '../lib/data/pages';
+import { get as getMenu } from '../lib/data/menus';
 import { motifDictFromList } from '../lib/indexers';
 
 const router = express.Router();
@@ -61,6 +63,26 @@ router.get('/sources/:sid', async (req, res) => {
     return res.status(404).end();
   }
   return res.status(200).json(entries);
+});
+
+router.get('/pages/:path', async (req, res) => {
+  try {
+    const content = await getPage(req.params.path);
+    return res.status(200).json(content);
+  } catch (err) {
+    console.error(err);
+    return res.status(404).end();
+  }
+});
+
+router.get('/menus/:path', async (req, res) => {
+  try {
+    const menu = await getMenu(req.params.path);
+    return res.status(200).json(menu);
+  } catch (err) {
+    console.error(err);
+    return res.status(404).end();
+  }
 });
 
 router.get('/sources', async (req, res) => {
