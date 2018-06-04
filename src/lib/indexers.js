@@ -5,7 +5,7 @@ import latinize from 'latinize';
 import * as JsDiff from 'diff';
 import pluralize from 'pluralize';
 import { textify, urlify, stemify } from './_helpers';
-import { junkWords } from './junk.json';
+import junkWords from './junk.js';
 
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
