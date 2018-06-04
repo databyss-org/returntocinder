@@ -27,6 +27,7 @@ const EntriesBySource = ({
           {sid}
         </Link></h3> : null
       }
+      showMotifNav
     />
   </section>;
 

@@ -33,7 +33,6 @@ const EntriesByMotif = ({
       <section key={mid + sid}>
         <Entries
           isLinked={isLinked}
-          makeId={idx => mid + sid + idx}
           entries={doc[mid].sources[sid]}
           showRepeats
           path={path.concat(sid)}

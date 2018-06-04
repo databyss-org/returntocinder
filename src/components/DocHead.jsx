@@ -26,9 +26,15 @@ const DocHead = ({ transitionState, query, app, search, toggleMotifLinks }) =>
     />
     {query.aside &&
       <ColumnHead
-        query={{ motif: true, term: query.aside, type: 'motif' }}
+        query={{
+          motif: true,
+          term: query.aside,
+          type: 'motif',
+          resource: query.aside,
+        }}
         doc={app.doc}
         styles={styles}
+        authorDict={app.authorDict}
       />
     }
   </div>;

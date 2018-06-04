@@ -1,15 +1,15 @@
 import React from 'react';
-import Entry from './Entry';
+import Entry from './EntryContainer';
 
 const Entries = ({
   entries,
   path,
   highlight,
   showRepeats,
-  makeId,
   inlineHead,
   setScroll,
-  isLinked
+  isLinked,
+  showMotifNav,
 }) => {
   let lastLocations = null;
   let locationCount = 0;
@@ -26,7 +26,7 @@ const Entries = ({
       lastLocations = entry.locations;
       return (
         <Entry
-          key={entry.id || (makeId && makeId(idx)) || path.join('.') + idx}
+          key={entry.id}
           entry={entry}
           content={isLinked ? entry.linkedContent : entry.content}
           highlight={highlight}
@@ -36,6 +36,7 @@ const Entries = ({
           inlineHead={idx ? null : inlineHead}
           setScroll={setScroll}
           scrollPos={idx}
+          showMotifNav={showMotifNav}
         />
       );
     })

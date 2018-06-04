@@ -97,7 +97,12 @@ const DocContainer = ({ search, match, query, history, showDisambiguate }) =>
           {query.aside &&
             <aside>
               <Doc
-                query={{ motif: true, term: query.aside, isLinked: query.isLinked }}
+                query={{
+                  ...query,
+                  motif: true,
+                  term: query.aside,
+                  resource: query.aside,
+                }}
                 path={['aside']}
                 ready={state === 'entered'}
               />

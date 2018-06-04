@@ -21,6 +21,14 @@ class Doc extends PureComponent {
     this.setScroll = this.setScroll.bind(this);
   }
 
+  componentWillMount() {
+    document.addEventListener('keypress', this.onKeyPress.bind(this));
+  }
+
+  componentWillUnount() {
+    document.removeEventListener('keypress', this.onKeyPress.bind(this));
+  }
+
   componentWillReceiveProps(nextProps) {
     const queryChanged = !shallowequal(this.query, nextProps.query);
     const resultsChanged = (
@@ -34,6 +42,12 @@ class Doc extends PureComponent {
 
     if (queryChanged || resultsChanged) {
       this._updateRows(nextProps);
+    }
+  }
+
+  onKeyPress(e) {
+    if (e.key === '/' && e.getModifierState('Control')) {
+      this.props.toggleIdLinks(!this.props.appState.idLinksAreActive);
     }
   }
 

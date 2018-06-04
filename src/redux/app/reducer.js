@@ -32,6 +32,7 @@ const initialState = {
   },
   pages: {},
   menus: {},
+  idLinksAreActive: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -207,6 +208,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'MOTIF_LINKS_ACTIVE': {
       return { ...state, motifLinksAreActive: action.payload };
+    }
+
+    case 'ID_LINKS_ACTIVE': {
+      return { ...state, idLinksAreActive: action.payload };
     }
 
     case 'HIDE_DISAMBIGUATE': {

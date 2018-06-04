@@ -201,6 +201,12 @@ export default {
       payload: areActive
     };
   },
+  toggleIdLinks(areActive) {
+    return {
+      type: 'ID_LINKS_ACTIVE',
+      payload: areActive
+    };
+  },
   hideDisambiguate() {
     return {
       type: 'HIDE_DISAMBIGUATE',

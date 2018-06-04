@@ -68,3 +68,22 @@ export function getViewportHeight() {
     window.innerHeight || 0
   );
 }
+
+export function copyTextToClipboard(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  let success = false;
+
+  try {
+    success = document.execCommand('copy');
+  } catch (err) {
+    console.error('Fallback: Oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
+
+  return success;
+}
