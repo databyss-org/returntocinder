@@ -65,7 +65,7 @@ export const list = (entity, query, orderBy) =>
     const collection = db.collection(entity);
     const findArgs = [query];
     if (orderBy) {
-      findArgs.push({ sort: { [orderBy]: 1 } });
+      findArgs.push({ sort: orderBy });
     }
     collection.find(...findArgs).toArray((err, docs) => {
       if (err) {

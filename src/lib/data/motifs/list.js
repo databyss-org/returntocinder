@@ -1,3 +1,3 @@
 import { list } from '../mongo';
 
-export default () => list('motifs', {}, 'id');
+export default () => list('motifs', {}, { id: 1 });

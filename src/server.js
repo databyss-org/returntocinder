@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import userAgent from 'express-useragent';
 import cors from 'cors';
 import Dbx from './lib/dropbox';
-import contentFiles from './content';
 
 import api from './server/api';
 import sitemap from './server/sitemap';
@@ -16,7 +15,7 @@ import sitemap from './server/sitemap';
 const app = express();
 let dbx = null;
 if (process.env.DBX) {
-  dbx = new Dbx({ fileList: contentFiles, gitUrl: process.env.GIT_URL });
+  dbx = new Dbx({ fileList: [], gitUrl: process.env.GIT_URL });
 }
 
 app.set('port', (process.env.PORT || 5000));

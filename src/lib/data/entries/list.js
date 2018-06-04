@@ -37,7 +37,11 @@ export default async (query) => {
     ...q.sourceId ? { 'source.id': q.sourceId } : {},
     ...q.content ? { '$text': { '$search': q.content } } : {},
   };
-  const entries = await list('entries', findQuery);
+  const orderBy = {
+    'locations.low': 1,
+    'locations.high': 1,
+  };
+  const entries = await list('entries', findQuery, orderBy);
   switch (q.groupBy) {
     case 'source': {
       return groupBySource(entries);
