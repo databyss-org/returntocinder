@@ -13,6 +13,8 @@ import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 import styles from '../app.scss';
 
+const { DEFAULT_AUTHOR } = process.env;
+
 const asidePath = '/(motif|source|search)/(.*)/motif::term';
 let mainElement = null;
 
@@ -20,11 +22,13 @@ const getQuery = ({ location, match, app }) => {
   const aside = matchPath(location.pathname, asidePath);
   // handle author selector in the term
   //  ex: /motif/absolute:KA
-  const { term } = match.params;
-  let author = null;
+  let { term } = match.params;
+  let author = DEFAULT_AUTHOR;
   let resource = term;
   if (term.match(/:/)) {
     [resource, author] = term.split(':');
+  } else if (match.params[0] === 'motif') {
+    term = `${term}:${DEFAULT_AUTHOR}`;
   }
   return {
     term,

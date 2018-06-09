@@ -9,6 +9,8 @@ import searchActions from '../redux/search/actions';
 import EntriesByMotif from './EntriesByMotif.jsx';
 import EntriesBySource from './EntriesBySource.jsx';
 
+const { DEFAULT_AUTHOR } = process.env;
+
 class Doc extends PureComponent {
   constructor(props) {
     super(props);
@@ -93,6 +95,7 @@ class Doc extends PureComponent {
           path={path}
           showHeader
           setScroll={this.setScroll}
+          showMotifNav={this.query.author === DEFAULT_AUTHOR}
         />;
     } else if (search) {
       this._rows = Object.keys(results[term]);

@@ -64,7 +64,7 @@ export default function appReducer(state = initialState, action) {
         ...state,
         doc: {
           ...state.doc,
-          [author ? `${mid}:${author}` : mid]: motif
+          [`${mid}:${author}`]: motif
         },
       };
     }

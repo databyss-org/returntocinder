@@ -70,7 +70,7 @@ const ColumnHead = ({
       <div className={styles.titleAndAuthor}>
         <span className={styles.title}>
           <span dangerouslySetInnerHTML={{ __html: stats.name }} />
-          {query.author && (
+          {query.author !== DEFAULT_AUTHOR && (
             <span className={styles.author}>
               [{authorDict[query.author].lastName}]
             </span>
