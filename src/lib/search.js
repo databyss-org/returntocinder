@@ -1,22 +1,24 @@
 import { list } from './data/entries';
+import { groupBySource } from './data/entries/list';
+import { filterEntriesByAuthor } from '../lib/indexers';
 
-export async function searchEntries({ query, groupBy, withMeta }) {
-  const entries = await list({ content: query, groupBy });
-
-  let results = entries;
+export async function searchEntries({ query, groupBy, withMeta, author }) {
+  const entryList = await list({ content: query });
+  const { filteredEntryList, cfauthors } = filterEntriesByAuthor({
+    entryList,
+    author
+  });
+  const count = filteredEntryList.length;
+  const groupedBySource = groupBySource(filteredEntryList).sources;
   let sourceList = [];
-  let count = results.length;
-  if (groupBy === 'source') {
-    results = entries.sources;
-    count = entries.entryCount;
-    if (withMeta) {
-      sourceList = Object.keys(results);
-    }
+  if (withMeta) {
+    sourceList = Object.keys(groupedBySource);
   }
 
   return {
-    results,
+    results: groupedBySource,
     resultsMeta: {
+      cfauthors,
       count,
       sourceList,
     }

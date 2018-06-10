@@ -1,6 +1,6 @@
 import { list } from '../mongo';
 
-const groupBySource = entries => ({
+export const groupBySource = entries => ({
   sources: entries.reduce((dict, entry) => {
     if (!dict[entry.source.id]) {
       dict[entry.source.id] = [];
@@ -11,7 +11,7 @@ const groupBySource = entries => ({
   entryCount: entries.length,
 });
 
-const groupByAuthor = entries => entries.reduce((dict, entry) => {
+export const groupByAuthor = entries => entries.reduce((dict, entry) => {
   if (!dict[entry.author.id]) {
     dict[entry.author.id] = [];
   }
@@ -19,7 +19,7 @@ const groupByAuthor = entries => entries.reduce((dict, entry) => {
   return dict;
 }, {});
 
-const groupByMotif = entries => entries.reduce((dict, entry) => {
+export const groupByMotif = entries => entries.reduce((dict, entry) => {
   entry.motif.forEach((motif) => {
     if (!dict[motif.id]) {
       dict[motif.id] = [];

@@ -352,3 +352,28 @@ export function linkMotifsInEntry({ content, stemDoc }) {
     }), [])
   };
 }
+
+// removes entries not by specified author and adds their authors to a
+//   cfauthors field
+// parameters
+//  entries: list of entry objects
+//  author: string (eg 'DD')
+// returns: {
+//  entries,
+//  cfauthors
+// }
+export function filterEntriesByAuthor({ entryList, author }) {
+  const cfauthorsDict = {};
+  const filteredEntryList = entryList.filter((entry) => {
+    if (entry.source.author !== author) {
+      // record author
+      cfauthorsDict[entry.source.author] = true;
+      return false;
+    }
+    return true;
+  });
+  return {
+    filteredEntryList,
+    cfauthors: Object.keys(cfauthorsDict),
+  };
+}

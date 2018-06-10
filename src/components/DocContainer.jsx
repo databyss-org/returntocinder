@@ -4,6 +4,7 @@ import { matchPath, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
+import qs from 'qs';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
 import Disambiguate from './Disambiguate.jsx';
@@ -25,11 +26,33 @@ const getQuery = ({ location, match, app }) => {
   let { term } = match.params;
   let author = DEFAULT_AUTHOR;
   let resource = term;
-  if (term.match(/:/)) {
-    [resource, author] = term.split(':');
-  } else if (match.params[0] === 'motif') {
-    term = `${term}:${DEFAULT_AUTHOR}`;
+  if (location.search) {
+    location.query = qs.parse(location.search.replace('?', ''));
   }
+
+  // parse author or set default
+  switch (match.params[0]) {
+    case 'motif': {
+      if (term.match(/:/)) {
+        [resource, author] = term.split(':');
+      } else {
+        term = `${term}:${DEFAULT_AUTHOR}`;
+      }
+      break;
+    }
+    case 'source': {
+      [author, resource] = term.split('.');
+      break;
+    }
+    case 'search': {
+      if (location.query && location.query.author) {
+        ({ author } = location.query);
+      }
+      term = `${term}__${author}`;
+      break;
+    }
+  }
+
   return {
     term,
     author,
@@ -154,7 +177,10 @@ export default compose(
           source: () => props.fetchSource({ sid: query.term }),
         } : {}),
         ...(query.search ? {
-          results: () => props.searchEntries({ query: query.term })
+          results: () => props.searchEntries({
+            query: query.resource,
+            author: query.author,
+          })
         } : {})
       };
     },

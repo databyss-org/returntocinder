@@ -3,14 +3,16 @@ import axios from 'axios';
 let queryIdx = 0;
 
 const { API_URL } = process.env;
+const { DEFAULT_AUTHOR } = process.env;
 
 export default {
-  searchEntries({ query }) {
+  searchEntries({ query, author }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'SEARCH_ENTRIES',
         payload: {
-          query
+          query,
+          author
         }
       });
       const results = await axios.get(`${API_URL}/search`, {
@@ -18,6 +20,7 @@ export default {
           query: query || getState().search.query,
           groupBy: 'source',
           withMeta: true,
+          author
         }
       });
       dispatch({
@@ -25,19 +28,20 @@ export default {
         payload: {
           ...results.data.results,
           query,
+          author
         }
       });
     };
   },
-  setQuery(query) {
+  setQuery({ query, author }) {
     return async (dispatch, getState) => {
       queryIdx += 1;
       dispatch({
         type: 'SET_QUERY',
-        payload: { query, id: queryIdx }
+        payload: { query, id: queryIdx, author: DEFAULT_AUTHOR }
       });
       const results = await axios.get(`${API_URL}/search`, {
-        params: { query, id: queryIdx }
+        params: { query, id: queryIdx, author: DEFAULT_AUTHOR }
       });
       if (results.data.id < queryIdx) {
         return;

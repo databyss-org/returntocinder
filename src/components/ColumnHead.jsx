@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import pluralize from 'pluralize';
+import urlencode from 'urlencode';
 
 const { DEFAULT_AUTHOR } = process.env;
 
@@ -26,15 +27,16 @@ const ColumnHead = ({
       name: biblio[term].title,
       entryCount: entriesBySource[term].length,
     }),
-    search: term => ({
-      name: `Results for: ${term}`,
+    search: (term, resource) => ({
+      name: `Results for: ${urlencode.decode(resource)}`,
       entryCount: resultsMeta.count,
-      sourceCount: resultsMeta.sourceList.length
+      sourceCount: resultsMeta.sourceList.length,
+      authors: resultsMeta.cfauthors
     }),
-  }[query.type](query.term);
+  }[query.type](query.term, query.resource);
 
-  // add default author if viewing supplement
-  if (query.author && query.author !== DEFAULT_AUTHOR) {
+  // add default author if viewing supplement motif
+  if (query.motif && query.author && query.author !== DEFAULT_AUTHOR) {
     stats.authors = (stats.authors || []).concat(DEFAULT_AUTHOR);
   }
 
@@ -54,9 +56,14 @@ const ColumnHead = ({
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
           <span key={author}>
-            <Link to={`/motif/${query.resource}${
-                author === DEFAULT_AUTHOR
-                  ? '' : `:${author}`}`}>
+            <Link to={{
+              motif: `/motif/${query.resource}${
+                author === DEFAULT_AUTHOR ? '' : `:${author}`
+              }`,
+              search: `/search/${query.resource}${
+                author === DEFAULT_AUTHOR ? '' : `?author=${author}`
+              }`,
+            }[query.type]}>
               {authorDict[author].lastName}
             </Link>
           </span>

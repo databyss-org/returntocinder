@@ -68,7 +68,7 @@ class Doc extends PureComponent {
   _updateRows(props) {
     const { entriesBySource, doc } = props.appState;
     const { results } = props.searchState;
-    const { search, motif, source, term, isLinked } = this.query;
+    const { search, motif, source, term, isLinked, resource } = this.query;
     const { path } = this.props;
 
     if (motif) {
@@ -107,9 +107,10 @@ class Doc extends PureComponent {
           key={key}
           style={style}
           showHeader
-          highlight={term.split(/\s/)}
+          highlight={resource.split(/\s/)}
           path={path}
           setScroll={this.setScroll}
+          showMotifNav={this.query.author === DEFAULT_AUTHOR}
         />;
     }
   }

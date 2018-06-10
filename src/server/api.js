@@ -27,14 +27,16 @@ listMotifs()
   });
 
 router.get('/search', async (req, res) => {
-  const { query, groupBy, withMeta, id } = req.query;
+  const { query, groupBy, withMeta, id, author } = req.query;
+  const results = await searchEntries({
+    query,
+    groupBy,
+    withMeta,
+    author
+  });
   res.status(200).json({
     id,
-    results: await searchEntries({
-      query,
-      groupBy,
-      withMeta,
-    })
+    results
   });
 });
 
