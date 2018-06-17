@@ -6,11 +6,16 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import userAgent from 'express-useragent';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import Dbx from './lib/dropbox';
 
 import api from './server/api';
+import sockets from './server/sockets';
+import upload from './server/upload';
 import sitemap from './server/sitemap';
 // import motif from './server/motif';
+
+dotenv.config();
 
 const app = express();
 let dbx = null;
@@ -27,7 +32,6 @@ const middleware = [
 ];
 
 app.use(...middleware);
-app.use(bodyParser.json());
 
 app.get('/dropbox-webhook', (req, res) => {
   res.send(req.query.challenge);
@@ -39,8 +43,11 @@ app.post('/dropbox-webhook', (req, res) => {
   res.status(200).end();
 });
 
-// SEARCH API
-app.use('/api', cors(), api);
+// API
+app.use('/api', cors(), bodyParser.json(), api);
+
+// UPLOADS
+app.use('/upload', cors(), upload);
 
 // Server router
 /*
@@ -52,6 +59,14 @@ app.get('/motif/:mid', (req, res, next) => {
   }
 });
 */
+
+// admin app
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(
+    __dirname.replace('/build', '').replace('/src', ''),
+    '/public/admin.html')
+  );
+});
 
 // sitemap
 app.get('/sitemap.txt', (req, res) => {
@@ -68,6 +83,11 @@ function getClientApp(req, res) {
     res.status(301).end();
   } else if (req.path.match(/\/source:(.*)?/)) {
     res.redirect(301, req.originalUrl.replace(/\/source:(.*)?/g, ''));
+  } else if (req.path.match(/\/admin/)) {
+    res.sendFile(path.join(
+      __dirname.replace('/build', '').replace('/src', ''),
+      '/public/admin.html')
+    );
   } else {
     res.sendFile(path.join(
       __dirname.replace('/build', '').replace('/src', ''),
@@ -79,6 +99,6 @@ function getClientApp(req, res) {
 app.get('/*', getClientApp);
 // app.get('/source/*.*', getClientApp);
 
-app.listen(app.get('port'), () => {
+sockets(app).listen(app.get('port'), () => {
   console.log('server started on port', app.get('port'));
 });

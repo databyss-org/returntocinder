@@ -12,20 +12,6 @@ import { motifDictFromList } from '../lib/indexers';
 
 const router = express.Router();
 
-let motifList;
-let motifDict;
-
-// fetch motifs from db
-listMotifs()
-  .then((motifs) => {
-    motifList = motifs;
-    motifDict = motifDictFromList(motifs);
-  })
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-
 router.get('/search', async (req, res) => {
   const { query, groupBy, withMeta, id, author } = req.query;
   const results = await searchEntries({
@@ -41,6 +27,7 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/motifs/:mid', async (req, res) => {
+  const motifDict = motifDictFromList(await listMotifs());
   const motif = motifDict[req.params.mid];
   if (!motif) {
     return res.status(404).end();
@@ -97,8 +84,35 @@ router.get('/authors', async (req, res) => {
   return res.status(200).json(authors);
 });
 
-router.get('/motifs', (req, res) =>
-  res.status(200).json(motifList));
+router.get('/motifs', async (req, res) => {
+  const motifs = await listMotifs();
+  return res.status(200).json(motifs);
+});
 
+router.post('/admin/dumptobeta', (req, res) => {
+  const { API_ADMIN_TOKEN } = process.env;
+  if (req.get('Authorization') !== API_ADMIN_TOKEN) {
+    req.status(403).end();
+    return;
+  }
+  res.writeHead(200, {
+    'Content-Type': 'text/plain',
+    'Content-Disposition': 'attachment; filename="stream.txt"'
+  });
+  const dump = new DumpDbToBeta();
+  dump.on('end', () => {
+    console.log('END');
+    res.end();
+  });
+  dump.on('stdout', (msg) => {
+    console.log(msg);
+    res.write(msg);
+  });
+  dump.on('stderr', (msg) => {
+    console.error(msg);
+    res.write(msg);
+  });
+  dump.run();
+});
 
 export default router;

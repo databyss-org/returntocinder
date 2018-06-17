@@ -1,12 +1,6 @@
-const path = require('path');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  entry: ['babel-polyfill', './src/index.jsx'],
-  output: {
-    path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js'
-  },
   plugins: [
     new Dotenv({
       systemvars: true,
@@ -80,9 +74,4 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx']
   },
-  devServer: {
-    historyApiFallback: {
-      index: 'index.html'
-    }
-  }
 };
