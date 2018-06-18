@@ -5,21 +5,21 @@ import latinize from 'latinize';
 import * as JsDiff from 'diff';
 import pluralize from 'pluralize';
 import { textify, urlify, stemify } from './_helpers';
-import { junkWords } from '../content/junk.json';
+import junkWords from './junk.js';
 
 export function sourcesFromEntries(entries) {
   return Object.keys(entries).reduce((sources, eid) => {
     const entry = entries[eid];
-    const { id, title } = entry.source;
+    const { id, name } = entry.source;
     const sid = id;
     if (!sources[sid]) {
-      sources[sid] = { id, title, entries: [], entriesByMotif: [] };
+      sources[sid] = { id, name, entries: [], entriesByMotif: [] };
     }
     sources[sid].entries.push(entry);
     if (!sources[sid].entriesByMotif[entry.motif.id]) {
       sources[sid].entriesByMotif[entry.motif.id] = {
         id: entry.motif.id,
-        title: entry.motif.title,
+        name: entry.motif.name,
         sources: { [sid]: [] }
       };
     }
@@ -51,11 +51,11 @@ export function entriesFromMotifs(motifs, biblio) {
           ...entry,
           motif: {
             id: mid,
-            title: motif.title
+            name: motif.name
           },
           source: {
             id: sid,
-            title: biblio[sid] && biblio[sid].title,
+            name: biblio[sid] && biblio[sid].name,
             display: dsid
           },
           id: eid
@@ -74,23 +74,22 @@ export function entryListFromEntries(entries) {
   }));
 }
 
-export function sourceListFromBiblio(biblio) {
-  return Object.keys(biblio).reduce((list, sid) => list.concat({
-    id: sid,
+export function sourceListFromSources(sources) {
+  return sources.reduce((list, source) => list.concat({
+    id: source.id,
     type: 'source',
-    name: `${biblio[sid].id} ${textify(biblio[sid].title)}`,
+    name: `${source.id} ${textify(source.title)}`,
     display: (
-      <div><h3>{biblio[sid].id}</h3> <span>{textify(biblio[sid].title)}</span></div>
+      <div><h3>{source.id}</h3> <span>{textify(source.title)}</span></div>
     )
   }), []);
 }
 
-export function motifListFromDict(motifDict) {
-  return Object.keys(motifDict).map(mid => ({
-    type: 'motif',
-    id: mid,
-    name: motifDict[mid],
-  }));
+export function biblioFromSources(sources) {
+  return sources.reduce((dict, source) => {
+    dict[source.id] = source;
+    return dict;
+  }, {});
 }
 
 export function sanitizeMotifName(name) {
@@ -99,13 +98,27 @@ export function sanitizeMotifName(name) {
 
 export function motifNamesFromMotifs(motifs) {
   return Object.keys(motifs).map(mid =>
-    sanitizeMotifName(motifs[mid].title)
+    sanitizeMotifName(motifs[mid].name)
   );
+}
+
+export function motifDictFromList(motifList) {
+  return motifList.reduce((dict, motif) => {
+    dict[motif.id] = motif;
+    return dict;
+  }, {});
+}
+
+export function authorDictFromList(authorList) {
+  return authorList.reduce((dict, author) => {
+    dict[author.id] = author;
+    return dict;
+  }, {});
 }
 
 export function motifDictFromMotifs(motifs) {
   return Object.keys(motifs).reduce((dict, mid) => ({
-    ...dict, [mid]: sanitizeMotifName(motifs[mid].title)
+    ...dict, [mid]: sanitizeMotifName(motifs[mid].name || motifs[mid].title)
   }), {});
 }
 
@@ -337,5 +350,30 @@ export function linkMotifsInEntry({ content, stemDoc }) {
     motifs: Object.keys(motifDict).reduce((motifList, id) => motifList.concat({
       name: motifDict[id], id
     }), [])
+  };
+}
+
+// removes entries not by specified author and adds their authors to a
+//   cfauthors field
+// parameters
+//  entries: list of entry objects
+//  author: string (eg 'DD')
+// returns: {
+//  entries,
+//  cfauthors
+// }
+export function filterEntriesByAuthor({ entryList, author }) {
+  const cfauthorsDict = {};
+  const filteredEntryList = entryList.filter((entry) => {
+    if (entry.source.author !== author) {
+      // record author
+      cfauthorsDict[entry.source.author] = true;
+      return false;
+    }
+    return true;
+  });
+  return {
+    filteredEntryList,
+    cfauthors: Object.keys(cfauthorsDict),
   };
 }

@@ -1,29 +1,29 @@
 import axios from 'axios';
 import {
-  sourceListFromBiblio,
-  motifListFromMotifs,
-  groupEntriesBySource
+  sourceListFromSources,
+  biblioFromSources,
+  motifDictFromList,
+  authorDictFromList,
 } from '../../lib/indexers';
 
+const { API_URL } = process.env;
+const { DEFAULT_AUTHOR } = process.env;
+
 export default {
-  fetchSource({ sid, getLinked }) {
+  fetchSource({ sid }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_SOURCE_ENTRIES',
         payload: {
           sid,
-          isLinked: getLinked
         }
       });
-      const entries = (await axios.get(
-        `/sources/${sid}${getLinked ? '-linked' : ''}.json`
-      )).data;
+      const entries = (await axios.get(`${API_URL}/sources/${sid}`)).data;
       return dispatch({
         type: 'RECEIVE_SOURCE_ENTRIES',
         payload: {
           sid,
           entries,
-          isLinked: getLinked
         }
       });
     };
@@ -37,9 +37,8 @@ export default {
           author
         }
       });
-      const motif = (await axios.get(author
-        ? `/authors/${author.toLowerCase()}/motifs/${mid}.json`
-        : `/motifs/${mid}.json`
+      const motif = (await axios.get(
+        `${API_URL}/motifs/${mid}?author=${author || DEFAULT_AUTHOR}`
       )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
@@ -51,30 +50,14 @@ export default {
       });
     };
   },
-  fetchDoc() {
-    return async (dispatch) => {
-      dispatch({
-        type: 'FETCH_DOC'
-      });
-      const doc = (await axios.get('/full.json')).data;
-      const motifList = motifListFromMotifs(doc);
-
-      return dispatch({
-        type: 'RECEIVE_DOC',
-        payload: {
-          doc,
-          motifList,
-        }
-      });
-    };
-  },
   fetchBiblio() {
     return async (dispatch) => {
       dispatch({
         type: 'FETCH_BIBLIO'
       });
-      const biblio = (await axios.get('/biblio.json')).data;
-      const sourceList = sourceListFromBiblio(biblio);
+      const sources = (await axios.get(`${API_URL}/sources`)).data;
+      const sourceList = sourceListFromSources(sources);
+      const biblio = biblioFromSources(sources);
 
       return dispatch({
         type: 'RECEIVE_BIBLIO',
@@ -85,19 +68,78 @@ export default {
       });
     };
   },
-  fetchEntries() {
+  fetchMotifs() {
     return async (dispatch) => {
       dispatch({
-        type: 'FETCH_ENTRIES'
+        type: 'FETCH_MOTIFS'
       });
-      const entryList = (await axios.get('/entries.json')).data;
-      const entriesBySource = groupEntriesBySource(entryList);
+      const motifList = (await axios.get(`${API_URL}/motifs`)).data;
+      const motifDict = motifDictFromList(motifList);
 
       return dispatch({
-        type: 'RECEIVE_ENTRIES',
+        type: 'RECEIVE_MOTIFS',
         payload: {
-          entryList,
-          entriesBySource
+          motifList,
+          motifDict,
+        }
+      });
+    };
+  },
+  fetchAuthors() {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_AUTHORS'
+      });
+      const authorList = (await axios.get(`${API_URL}/authors`)).data;
+      const authorDict = authorDictFromList(authorList);
+
+      return dispatch({
+        type: 'RECEIVE_AUTHORS',
+        payload: {
+          authorList,
+          authorDict,
+        }
+      });
+    };
+  },
+  fetchPage(path) {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_PAGE',
+        payload: {
+          path
+        }
+      });
+      const content = (
+        await axios.get(`${API_URL}/pages/${path.replace(/\//g, '%2f')}`)
+      ).data;
+
+      return dispatch({
+        type: 'RECEIVE_PAGE',
+        payload: {
+          content,
+          path
+        }
+      });
+    };
+  },
+  fetchMenu(path) {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_MENU',
+        payload: {
+          path
+        }
+      });
+      const menu = (
+        await axios.get(`${API_URL}/menus/${path.replace(/\//g, '%2f')}`)
+      ).data;
+
+      return dispatch({
+        type: 'RECEIVE_MENU',
+        payload: {
+          menu,
+          path
         }
       });
     };
@@ -159,13 +201,18 @@ export default {
       payload: areActive
     };
   },
+  toggleIdLinks(areActive) {
+    return {
+      type: 'ID_LINKS_ACTIVE',
+      payload: areActive
+    };
+  },
   hideDisambiguate() {
     return {
       type: 'HIDE_DISAMBIGUATE',
     };
   },
   showDisambiguate({ midList, position, target, className }) {
-
     return {
       type: 'SHOW_DISAMBIGUATE',
       payload: { midList, position, target, className }

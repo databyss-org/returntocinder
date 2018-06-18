@@ -14,7 +14,8 @@ import DocContainer from './DocContainer.jsx';
 import Source from './Source.jsx';
 import DocModal from './DocModal.jsx';
 import ModalMenu from './ModalMenu.jsx';
-import About from './About.jsx';
+import Page from './Page.jsx';
+import { biblioToPage } from '../lib/pages';
 import Front from './Front.jsx';
 import ScrollToTop from './ScrollToTop.jsx';
 import actions from '../redux/app/actions';
@@ -29,7 +30,7 @@ const SourceModal = freezeProps({
   })
 })(Source);
 
-const Main = ({ app, maskClicked, location }) =>
+const Main = ({ app, maskClicked, location, menu, biblio, authors }) =>
   <Router>
     <SyncHistory onLocationChanged={() => maskClicked()}>
       <ScrollToTop>
@@ -55,7 +56,15 @@ const Main = ({ app, maskClicked, location }) =>
                 </div>
                 <Route path="(.*)about/:page" children={({ match }) =>
                   <ModalMenu isActive={match}>
-                    <About match={match} />
+                    <Route path="(.*)about/:page" render={({ match }) =>
+                      <Page
+                        path={`/about/${match.params.page}`}
+                        subnavPath="/about"
+                        contentFunc={
+                          match.params.page === 'bibliography' &&
+                          biblioToPage({ biblio, authors })
+                        }
+                      />} />
                   </ModalMenu>
                 }/>
                 <Navbar withMaskClassName={styles.withMask} />
@@ -70,7 +79,7 @@ const Main = ({ app, maskClicked, location }) =>
                     </DocModal>
                 }/>
                 <Front />
-                <Menu />
+                <Menu items={menu}/>
               </div>
             );
           }}
@@ -84,9 +93,17 @@ export default compose(
   withLoader({
     propsToLoad: props => ({
       biblio: props.app.biblio,
+      motifs: props.app.motifList,
+      authors: props.app.authorDict,
+      content: props.app.pages['/'],
+      menu: props.app.menus['/']
     }),
     loaderActions: props => ({
       biblio: () => props.fetchBiblio(),
+      motifs: () => props.fetchMotifs(),
+      authors: () => props.fetchAuthors(),
+      content: () => props.fetchPage('/'),
+      menu: () => props.fetchMenu('/'),
     }),
     showLoader: false
   }),

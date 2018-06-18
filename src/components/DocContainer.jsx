@@ -4,6 +4,7 @@ import { matchPath, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
+import qs from 'qs';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
 import Disambiguate from './Disambiguate.jsx';
@@ -13,19 +14,62 @@ import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 import styles from '../app.scss';
 
-const asidePath = '/(motif|source|search)/(.*)/motif::term';
-let mainElement = null;
+const { DEFAULT_AUTHOR } = process.env;
 
-const getQuery = ({ location, match, app }) => {
-  const aside = matchPath(location.pathname, asidePath);
-  // handle author selector in the term
-  //  ex: /motif/absolute:KA
-  const { term } = match.params;
-  let author = null;
+const getAsideTerm = (location) => {
+  const asidePath = '/(motif|source|search)/(.*)/motif::term';
+  const match = matchPath(location.pathname, asidePath);
+  if (match) {
+    return match.params.term;
+  }
+  return null;
+};
+
+const parseTerm = (term) => {
+  let author = DEFAULT_AUTHOR;
   let resource = term;
   if (term.match(/:/)) {
     [resource, author] = term.split(':');
+  } else {
+    term = `${term}:${DEFAULT_AUTHOR}`;
   }
+  return { author, resource, term };
+};
+
+let mainElement = null;
+
+const getQuery = ({ location, match, app }) => {
+  let { term } = match.params;
+  let author = DEFAULT_AUTHOR;
+  let resource = term;
+
+  // handle author selector in the term
+  //  ex: /motif/absolute:KA
+  if (location.search) {
+    location.query = qs.parse(location.search.replace('?', ''));
+  }
+
+  const asideTerm = getAsideTerm(location);
+  let aside;
+  if (asideTerm) {
+    aside = parseTerm(asideTerm);
+  }
+
+  // parse author or set default
+  switch (match.params[0]) {
+    case 'search':
+    case 'motif': {
+      ({ author, resource, term } = parseTerm(term));
+      break;
+    }
+    case 'source': {
+      if (term.match(/\./)) {
+        [author, resource] = term.split('.');
+      }
+      break;
+    }
+  }
+
   return {
     term,
     author,
@@ -34,7 +78,7 @@ const getQuery = ({ location, match, app }) => {
     search: match.params[0] === 'search',
     motif: match.params[0] === 'motif',
     source: match.params[0] === 'source',
-    aside: aside && aside.params.term,
+    aside,
     isLinked: app.motifLinksAreActive
   };
 };
@@ -97,7 +141,11 @@ const DocContainer = ({ search, match, query, history, showDisambiguate }) =>
           {query.aside &&
             <aside>
               <Doc
-                query={{ motif: true, term: query.aside, isLinked: query.isLinked }}
+                query={{
+                  ...query,
+                  motif: true,
+                  ...query.aside,
+                }}
                 path={['aside']}
                 ready={state === 'entered'}
               />
@@ -119,7 +167,7 @@ export default compose(
           motif: props.app.doc[query.term]
         } : {}),
         ...(query.aside ? {
-          aside: props.app.doc[query.aside]
+          aside: props.app.doc[query.aside.term]
         } : {}),
         ...(query.source ? {
           source: props.app.entriesBySource[query.term]
@@ -139,13 +187,19 @@ export default compose(
           }),
         } : {}),
         ...(query.aside ? {
-          aside: () => props.fetchMotif({ mid: query.aside }),
+          aside: () => props.fetchMotif({
+            mid: query.aside.resource,
+            author: DEFAULT_AUTHOR
+          }),
         } : {}),
         ...(query.source ? {
           source: () => props.fetchSource({ sid: query.term }),
         } : {}),
         ...(query.search ? {
-          results: () => props.searchEntries({ query: query.term })
+          results: () => props.searchEntries({
+            query: query.resource,
+            author: query.author,
+          })
         } : {})
       };
     },

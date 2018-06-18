@@ -4,9 +4,11 @@ const initialState = {
   doc: {},
   entriesBySource: {},
   biblio: null,
+  authorDict: null,
   entryList: null,
   sourceList: null,
   motifList: null,
+  motifDict: {},
   query: '',
   maskIsVisible: false,
   isLoading: false,
@@ -27,7 +29,10 @@ const initialState = {
     position: {
       left: 0, top: 0
     }
-  }
+  },
+  pages: {},
+  menus: {},
+  idLinksAreActive: false
 };
 
 export default function appReducer(state = initialState, action) {
@@ -59,8 +64,48 @@ export default function appReducer(state = initialState, action) {
         ...state,
         doc: {
           ...state.doc,
-          [author ? `${mid}:${author}` : mid]: motif
+          [`${mid}:${author}`]: motif
         },
+      };
+    }
+
+    case 'RECEIVE_MOTIFS': {
+      const { motifList, motifDict } = action.payload;
+      return {
+        ...state,
+        motifList,
+        motifDict,
+      };
+    }
+
+    case 'RECEIVE_AUTHORS': {
+      const { authorList, authorDict } = action.payload;
+      return {
+        ...state,
+        authorList,
+        authorDict,
+      };
+    }
+
+    case 'RECEIVE_PAGE': {
+      const { path, content } = action.payload;
+      return {
+        ...state,
+        pages: {
+          ...state.pages,
+          [path]: content,
+        }
+      };
+    }
+
+    case 'RECEIVE_MENU': {
+      const { path, menu } = action.payload;
+      return {
+        ...state,
+        menus: {
+          ...state.menus,
+          [path]: menu,
+        }
       };
     }
 
@@ -163,6 +208,10 @@ export default function appReducer(state = initialState, action) {
 
     case 'MOTIF_LINKS_ACTIVE': {
       return { ...state, motifLinksAreActive: action.payload };
+    }
+
+    case 'ID_LINKS_ACTIVE': {
+      return { ...state, idLinksAreActive: action.payload };
     }
 
     case 'HIDE_DISAMBIGUATE': {

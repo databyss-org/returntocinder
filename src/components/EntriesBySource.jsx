@@ -12,7 +12,8 @@ const EntriesBySource = ({
   path,
   setScroll,
   location,
-  isLinked
+  isLinked,
+  showMotifNav
 }) =>
   <section style={style}>
     <Entries
@@ -27,6 +28,7 @@ const EntriesBySource = ({
           {sid}
         </Link></h3> : null
       }
+      showMotifNav={showMotifNav}
     />
   </section>;
 

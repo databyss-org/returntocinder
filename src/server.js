@@ -6,53 +6,49 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import userAgent from 'express-useragent';
 import cors from 'cors';
-import Dbx from './lib/dropbox';
-import contentFiles from './content';
+import dotenv from 'dotenv';
 
 import api from './server/api';
+import sockets from './server/sockets';
+import upload from './server/upload';
 import sitemap from './server/sitemap';
 // import motif from './server/motif';
 
+dotenv.config();
+
 const app = express();
-let dbx = null;
-if (process.env.DBX) {
-  dbx = new Dbx({ fileList: contentFiles, gitUrl: process.env.GIT_URL });
-}
 
 app.set('port', (process.env.PORT || 5000));
 
 const middleware = [
   userAgent.express(),
   compression(),
-  ...(process.env.DBX ? [] : [express.static('./public')])
+  express.static('./public')
 ];
 
-app.use(...middleware);
-app.use(bodyParser.json());
+function getClientApp(req, res) {
+  const { API_ADMIN_TOKEN } = process.env;
 
-app.get('/dropbox-webhook', (req, res) => {
-  res.send(req.query.challenge);
-});
-
-app.post('/dropbox-webhook', (req, res) => {
-  console.log('---DBX---', req.body);
-  dbx.requestSync();
-  res.status(200).end();
-});
-
-// SEARCH API
-app.use('/api', cors(), api);
-
-// Server router
-/*
-app.get('/motif/:mid', (req, res, next) => {
-  if (!req.useragent.isBot) {
-    next();
-  } else {
-    res.send(motif(req.params.mid));
+  if (req.path.match(/\/source:(.*)?/)) {
+    return res.redirect(301, req.originalUrl.replace(/\/source:(.*)?/g, ''));
   }
-});
-*/
+
+  const indexFilename = API_ADMIN_TOKEN ? 'admin' : 'index';
+
+  res.sendFile(path.join(
+    __dirname.replace('/build', '').replace('/src', ''),
+    `/public/${indexFilename}.html`)
+  );
+}
+
+app.get('/', getClientApp);
+app.use(...middleware);
+
+// API
+app.use('/api', cors(), bodyParser.json(), api);
+
+// UPLOADS
+app.use('/upload', cors(), upload);
 
 // sitemap
 app.get('/sitemap.txt', (req, res) => {
@@ -64,22 +60,8 @@ app.get('/!about/:page', (req, res) => {
   res.redirect(301, `/about/${req.params.page}`);
 });
 
-function getClientApp(req, res) {
-  if (process.env.DBX) {
-    res.status(301).end();
-  } else if (req.path.match(/\/source:(.*)?/)) {
-    res.redirect(301, req.originalUrl.replace(/\/source:(.*)?/g, ''));
-  } else {
-    res.sendFile(path.join(
-      __dirname.replace('/build', '').replace('/src', ''),
-      '/public/index.html')
-    );
-  }
-}
-
 app.get('/*', getClientApp);
-// app.get('/source/*.*', getClientApp);
 
-app.listen(app.get('port'), () => {
+sockets(app).listen(app.get('port'), () => {
   console.log('server started on port', app.get('port'));
 });

@@ -25,7 +25,7 @@ function rtfToJson(doc) {
 
     // capture title and citations
     const html = renderPara(doc.content[i]);
-    const title = html.match(/^[^\s]*?\s+([^[]*)/)[1];
+    const name = html.match(/^[^\s]*?\s+([^[]*)/)[1];
     const re = /\[(.*?)\]/g;
     const citations = allMatches(re, html, 1);
     let author = defaultAuthor;
@@ -35,7 +35,7 @@ function rtfToJson(doc) {
 
     sources[sid] = {
       id: sid,
-      title,
+      name,
       citations,
       author,
     };

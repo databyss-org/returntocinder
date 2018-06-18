@@ -7,6 +7,7 @@ const initialState = {
     count: 0
   },
   query: '',
+  cfauthors: [],
   isWorking: false
 };
 
@@ -49,17 +50,19 @@ export default function appReducer(state = initialState, action) {
       };
     }
     case 'SEARCH_ENTRIES_RESULTS': {
+      const term = `${action.payload.query}:${action.payload.author}`;
       return {
         ...state,
         results: {
           ...state.results,
-          [action.payload.query]: action.payload.results,
+          [term]: action.payload.results,
         },
         isWorking: false,
         resultsMeta: {
-          ...state.resultMeta,
-          [action.payload.query]: action.payload.resultsMeta
-        }
+          ...state.resultsMeta,
+          [term]: action.payload.resultsMeta
+        },
+        cfauthors: action.payload.cfauthors
       };
     }
 

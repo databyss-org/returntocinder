@@ -22,12 +22,18 @@ const DocHead = ({ transitionState, query, app, search, toggleMotifLinks }) =>
       biblio={app.biblio}
       entriesBySource={app.entriesBySource}
       styles={styles}
+      authorDict={app.authorDict}
     />
     {query.aside &&
       <ColumnHead
-        query={{ motif: true, term: query.aside, type: 'motif' }}
+        query={{
+          motif: true,
+          type: 'motif',
+          ...query.aside,
+        }}
         doc={app.doc}
         styles={styles}
+        authorDict={app.authorDict}
       />
     }
   </div>;

@@ -5,6 +5,8 @@ public/images/
 npm-debug.log
 bundle.js
 bundle.js.map
+bundle.admin.js
+bundle.admin.js.map
 build/
 
 # OSX
@@ -13,3 +15,12 @@ build/
 
 # YARN
 yarn.lock
+yarn-error.log
+
+# ENV
+production.env
+.env
+
+# TEMP
+uploads/
+dump/

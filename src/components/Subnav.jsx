@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import styles from '../app.scss';
 
@@ -9,14 +8,11 @@ class Subnav extends PureComponent {
 
     this.activeElem = null;
   }
-  makePath(path) {
-    return `/${this.props.basePath}/${path}`;
-  }
   setActive(elem, item) {
     if (!elem) {
       return;
     }
-    if (!this.props.location.pathname.match(this.makePath(item.path))) {
+    if (!this.props.location.pathname.match(item.pagePath)) {
       return;
     }
     if (this.activeElem) {
@@ -34,7 +30,7 @@ class Subnav extends PureComponent {
           {menu.map((item, idx) => (
             <li key={idx} ref={e => this.setActive(e, item)}>
               <Link to={
-                location.pathname.replace(/\/about\/.+/, this.makePath(item.path))
+                location.pathname.replace(/\/about\/.+/, item.pagePath)
               }>
                 <span dangerouslySetInnerHTML={{ __html: item.title }} />
               </Link>

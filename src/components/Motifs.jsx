@@ -1,16 +1,18 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import motifDict from '../content/motifs.json';
+import { connect } from 'react-redux';
 import styles from '../app.scss';
 
-const Motifs = ({ history }) =>
+const Motifs = ({ history, motifList }) =>
   <ul className={styles.motifs}>
-    {Object.keys(motifDict).map(mid => (
-      <li key={mid}
-        dangerouslySetInnerHTML={{ __html: motifDict[mid] }}
-        onClick={() => history.push(`/motif/${mid}`)}
+    {motifList.map(motif => (
+      <li key={motif.id}
+        dangerouslySetInnerHTML={{ __html: motif.name }}
+        onClick={() => history.push(`/motif/${motif.id}`)}
       />
     ))}
   </ul>;
 
-export default withRouter(Motifs);
+export default withRouter(
+  connect(state => ({ motifList: state.app.motifList }))(Motifs)
+);

@@ -9,6 +9,8 @@ import searchActions from '../redux/search/actions';
 import EntriesByMotif from './EntriesByMotif.jsx';
 import EntriesBySource from './EntriesBySource.jsx';
 
+const { DEFAULT_AUTHOR } = process.env;
+
 class Doc extends PureComponent {
   constructor(props) {
     super(props);
@@ -19,6 +21,14 @@ class Doc extends PureComponent {
       hash: null
     };
     this.setScroll = this.setScroll.bind(this);
+  }
+
+  componentWillMount() {
+    document.addEventListener('keypress', this.onKeyPress.bind(this));
+  }
+
+  componentWillUnount() {
+    document.removeEventListener('keypress', this.onKeyPress.bind(this));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,6 +47,12 @@ class Doc extends PureComponent {
     }
   }
 
+  onKeyPress(e) {
+    if (e.key === '/' && e.getModifierState('Control')) {
+      this.props.toggleIdLinks(!this.props.appState.idLinksAreActive);
+    }
+  }
+
   setScroll(hash) {
     if (!this.props.ready) {
       return false;
@@ -52,7 +68,7 @@ class Doc extends PureComponent {
   _updateRows(props) {
     const { entriesBySource, doc } = props.appState;
     const { results } = props.searchState;
-    const { search, motif, source, term, isLinked } = this.query;
+    const { search, motif, source, term, isLinked, resource } = this.query;
     const { path } = this.props;
 
     if (motif) {
@@ -79,6 +95,7 @@ class Doc extends PureComponent {
           path={path}
           showHeader
           setScroll={this.setScroll}
+          showMotifNav={this.query.author === DEFAULT_AUTHOR}
         />;
     } else if (search) {
       this._rows = Object.keys(results[term]);
@@ -90,9 +107,10 @@ class Doc extends PureComponent {
           key={key}
           style={style}
           showHeader
-          highlight={term.split(/\s/)}
+          highlight={resource.split(/\s/)}
           path={path}
           setScroll={this.setScroll}
+          showMotifNav={this.query.author === DEFAULT_AUTHOR}
         />;
     }
   }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import pluralize from 'pluralize';
-import authorDict from '../content/authors.json';
-import { defaultAuthor } from '../content/config.json';
+import urlencode from 'urlencode';
+
+const { DEFAULT_AUTHOR } = process.env;
 
 const ColumnHead = ({
   doc,
@@ -11,43 +12,38 @@ const ColumnHead = ({
   resultsMeta,
   entriesBySource,
   query,
-  styles
+  styles,
+  authorDict,
 }) => {
   const stats = {
     motif: term => ({
-      title: doc[term].title,
+      name: doc[term].name,
       entryCount: doc[term].entryCount,
       sourceCount: Object.keys(doc[term].sources).length,
       authors: doc[term].cfauthors &&
         doc[term].cfauthors.filter(author => author !== query.author)
     }),
     source: term => ({
-      title: biblio[term].title,
+      name: biblio[term].title,
       entryCount: entriesBySource[term].length,
-      motifCount: biblio[term].motifs.length
     }),
-    search: term => ({
-      title: `Results for: ${term}`,
+    search: (term, resource) => ({
+      name: `Results for: ${urlencode.decode(resource)}`,
       entryCount: resultsMeta.count,
-      motifCount: resultsMeta.motifList.length,
-      sourceCount: resultsMeta.sourceList.length
+      sourceCount: resultsMeta.sourceList.length,
+      authors: resultsMeta.cfauthors
     }),
-  }[query.type](query.term);
+  }[query.type](query.term, query.resource);
 
-  // add default author if viewing supplement
-  if (query.author && query.author !== defaultAuthor) {
-    stats.authors = (stats.authors || []).concat(defaultAuthor);
+  // add default author if viewing supplement motif
+  if (query.motif && query.author && query.author !== DEFAULT_AUTHOR) {
+    stats.authors = (stats.authors || []).concat(DEFAULT_AUTHOR);
   }
 
   const display = {
     entries: (
       <span>
         {stats.entryCount} {pluralize('entry', stats.entryCount)}
-      </span>
-    ),
-    motifs: (
-      <span>
-        {stats.motifCount} {pluralize('motif', stats.motifCount)}
       </span>
     ),
     sources: (
@@ -60,9 +56,9 @@ const ColumnHead = ({
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
           <span key={author}>
-            <Link to={`/motif/${query.resource}${
-                author === defaultAuthor
-                  ? '' : `:${author}`}`}>
+            <Link to={`/${query.type}/${query.resource}${
+              author === DEFAULT_AUTHOR ? '' : `:${author}`
+            }`}>
               {authorDict[author].lastName}
             </Link>
           </span>
@@ -75,8 +71,8 @@ const ColumnHead = ({
     <header>
       <div className={styles.titleAndAuthor}>
         <span className={styles.title}>
-          <span dangerouslySetInnerHTML={{ __html: stats.title }} />
-          {query.author && (
+          <span dangerouslySetInnerHTML={{ __html: stats.name }} />
+          {query.author !== DEFAULT_AUTHOR && (
             <span className={styles.author}>
               [{authorDict[query.author].lastName}]
             </span>
@@ -86,7 +82,6 @@ const ColumnHead = ({
       <div className={styles.statsAndAuthors}>
         <div className={styles.stats}>
           {display.entries}
-          {!query.motif && display.motifs}
           {!query.source && display.sources}
         </div>
         <div className={styles.authors}>

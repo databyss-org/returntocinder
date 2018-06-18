@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom';
 import freezeProps from '../hoc/freezeProps';
 import { getViewportHeight } from '../lib/dom';
 import styles from '../app.scss';
-import motifs from '../content/motifs.json';
 import CloseIcon from '../icons/close.svg';
 import actions from '../redux/app/actions';
 import { elipses } from '../lib/_helpers';
@@ -25,7 +24,13 @@ const reposition = (el) => {
   }
 };
 
-const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
+const Disambiguate = ({
+  midList,
+  isVisible,
+  position,
+  hideDisambiguate,
+  motifs
+}) => (
   <div
     className={cx(styles.disambiguate, { [styles.isVisible]: isVisible })}
     style={{ top: position.top }}
@@ -42,14 +47,14 @@ const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
             className={styles.desktop}
             href={`/motif/${mid}`}
             dangerouslySetInnerHTML={{
-              __html: elipses({ text: motifs[mid], maxLength: 58 })
+              __html: elipses({ text: motifs[mid].name, maxLength: 58 })
             }}
           />
           <a
             className={styles.mobile}
             href={`/motif/${mid}`}
             dangerouslySetInnerHTML={{
-              __html: elipses({ text: motifs[mid], maxLength: 36 })
+              __html: elipses({ text: motifs[mid].name, maxLength: 36 })
             }}
           />
         </span>))}
@@ -67,7 +72,10 @@ const Disambiguate = ({ midList, isVisible, position, hideDisambiguate }) => (
 );
 
 export default compose(
-  connect(state => ({ ...state.app.disambiguate }), actions),
+  connect(state => ({
+    motifs: state.app.motifDict,
+    ...state.app.disambiguate
+  }), actions),
   withRouter,
   freezeProps({
     propsToFreeze: props => ({

@@ -27,7 +27,7 @@
         transform: rotate(180deg);
         transition: transform 300ms linear;
 
-        polyline {
+        path {
           stroke: rgba(215,69,182,1);
         }
       }

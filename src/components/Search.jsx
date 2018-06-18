@@ -8,14 +8,14 @@ import cx from 'classnames';
 import latinize from 'latinize';
 import pluralize from 'pluralize';
 import _ from 'lodash';
-import { motifListFromDict } from '../lib/indexers';
+import urlencode from 'urlencode';
 import searchActions from '../redux/search/actions';
 import appActions from '../redux/app/actions';
 import theme from '../app.scss';
 import { textify } from '../lib/_helpers';
-import motifDict from '../content/motifs.json';
-
 import CloseIcon from '../icons/close.svg';
+
+const { DEFAULT_AUTHOR } = process.env;
 
 class Search extends PureComponent {
   constructor(props) {
@@ -50,7 +50,7 @@ class Search extends PureComponent {
 
     if (motif) {
       this.setState({
-        value: textify(doc[motif].title)
+        value: textify(doc[motif].name)
       });
     }
     if (source) {
@@ -66,7 +66,7 @@ class Search extends PureComponent {
     }
   }
   setQuery(query) {
-    this.props.setQuery(query);
+    this.props.setQuery({ query, author: DEFAULT_AUTHOR });
   }
   getQuery() {
     return this.props.searchState.query;
@@ -150,7 +150,9 @@ class Search extends PureComponent {
 
     const motifMatches = compile({
       ...compileDefaults,
-      collection: motifListFromDict(motifDict),
+      collection: this.props.appState.motifList.map(
+        m => ({ ...m, type: 'motif' })
+      ),
       filter: c => c.map(m => ({
         ...m,
         name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')
@@ -248,7 +250,7 @@ class Search extends PureComponent {
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
-      this.onSearch(`/search/${this.state.value}`);
+      this.onSearch(`/search/${urlencode(this.state.value)}`);
     } else {
       this.onSearch(`/${suggestion.type}/${suggestion.id}`);
     }
@@ -287,7 +289,7 @@ class Search extends PureComponent {
   }
   onKeyDown(event) {
     if (event.key === 'Enter' && !this.state.highlightedSuggestion) {
-      this.onSearch(`/search/${this.getQuery()}`);
+      this.onSearch(`/search/${urlencode(this.getQuery())}`);
     }
   }
   renderInputComponent(inputProps) {

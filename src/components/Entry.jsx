@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter, matchPath } from 'react-router-dom';
 import highlighter from '../lib/highlight';
-import { scrollDocToElement } from '../lib/dom';
+import { scrollDocToElement, copyTextToClipboard } from '../lib/dom';
 import { rangeOverlapExists } from '../lib/indexers';
 
 const formatAsidePath = (pathname, mid) =>
@@ -34,6 +34,12 @@ const activeStyle = {
   backgroundColor: '#f0f0f0'
 };
 
+const copyIdToClipboard = ({ e, id }) => {
+  if (copyTextToClipboard(id)) {
+    e.currentTarget.style.transform = 'rotate(90deg)';
+  }
+};
+
 const Entry = ({
   entry,
   content,
@@ -45,7 +51,9 @@ const Entry = ({
   inlineHead,
   setScroll,
   location,
-  isLinkedContent
+  isLinkedContent,
+  idLinksAreActive,
+  showMotifNav
 }) => {
   const eid = entry.locations.low === entry.locations.high
     ? `${entry.locations.low}`
@@ -83,11 +91,18 @@ const Entry = ({
           })
         ].join('') }}
       />
-      {entry.motif && !entry.source.author ? (
+      {idLinksAreActive && (
+        <button
+          onClick={e => copyIdToClipboard({ e, id: entry.id })}
+        >
+          👶
+        </button>
+      )}
+      {entry.motif && showMotifNav ? (
         <nav>{entry.motif.map(m =>
           <Link
             key={m.id}
-            dangerouslySetInnerHTML={{ __html: m.title }}
+            dangerouslySetInnerHTML={{ __html: m.name }}
             to={{
               pathname: formatAsidePath(location.pathname, m.id),
               hash: `${entryHash}.${cardinal}`
