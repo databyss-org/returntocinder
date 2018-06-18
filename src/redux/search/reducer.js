@@ -50,7 +50,7 @@ export default function appReducer(state = initialState, action) {
       };
     }
     case 'SEARCH_ENTRIES_RESULTS': {
-      const term = `${action.payload.query}__${action.payload.author}`;
+      const term = `${action.payload.query}:${action.payload.author}`;
       return {
         ...state,
         results: {

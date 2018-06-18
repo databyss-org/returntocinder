@@ -56,14 +56,9 @@ const ColumnHead = ({
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
           <span key={author}>
-            <Link to={{
-              motif: `/motif/${query.resource}${
-                author === DEFAULT_AUTHOR ? '' : `:${author}`
-              }`,
-              search: `/search/${query.resource}${
-                author === DEFAULT_AUTHOR ? '' : `?author=${author}`
-              }`,
-            }[query.type]}>
+            <Link to={`/${query.type}/${query.resource}${
+              author === DEFAULT_AUTHOR ? '' : `:${author}`
+            }`}>
               {authorDict[author].lastName}
             </Link>
           </span>

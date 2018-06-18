@@ -25,7 +25,7 @@ const getAsideTerm = (location) => {
   return null;
 };
 
-const parseMotifTerm = (term) => {
+const parseTerm = (term) => {
   let author = DEFAULT_AUTHOR;
   let resource = term;
   if (term.match(/:/)) {
@@ -52,26 +52,20 @@ const getQuery = ({ location, match, app }) => {
   const asideTerm = getAsideTerm(location);
   let aside;
   if (asideTerm) {
-    aside = parseMotifTerm(asideTerm);
+    aside = parseTerm(asideTerm);
   }
 
   // parse author or set default
   switch (match.params[0]) {
+    case 'search':
     case 'motif': {
-      ({ author, resource, term } = parseMotifTerm(term));
+      ({ author, resource, term } = parseTerm(term));
       break;
     }
     case 'source': {
       if (term.match(/\./)) {
         [author, resource] = term.split('.');
       }
-      break;
-    }
-    case 'search': {
-      if (location.query && location.query.author) {
-        ({ author } = location.query);
-      }
-      term = `${term}__${author}`;
       break;
     }
   }

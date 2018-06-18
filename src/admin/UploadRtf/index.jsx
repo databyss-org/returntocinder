@@ -38,7 +38,11 @@ class UploadRtf extends React.Component {
         this.setState({ needSnapshot: false });
         this.processSupplement();
       } else {
-        this.setState({ running: false });
+        this.setState({
+          running: false,
+          needSnapshot: true,
+          output: this.state.output.concat(success ? 'DONE' : 'IMPORT FAILED')
+        });
       }
     });
     this.onDrop = this.onDrop.bind(this);

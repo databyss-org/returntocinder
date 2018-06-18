@@ -21,8 +21,14 @@ function readRtf(path) {
   });
 }
 
-async function rtfToJson({ rtfPath, motifDict, biblio }) {
-  const rtf = await readRtf(rtfPath);
+async function rtfToJson({ rtfPath, motifDict, biblio, stdOut, stdErr }) {
+  let rtf;
+  try {
+    rtf = await readRtf(rtfPath);
+  } catch (err) {
+    stdErr(err);
+    return;
+  }
   // setup return obj
   const doc = {
     entries: [],
@@ -32,7 +38,7 @@ async function rtfToJson({ rtfPath, motifDict, biblio }) {
   const [code, lastName, firstName]
     = renderPara(rtf.content[0]).split(',').map(n => n.trim());
   doc.author = code;
-  console.log('AUTHOR', `${code} (${firstName} ${lastName})`);
+  stdOut('AUTHOR', `${code} (${firstName} ${lastName})`);
 
   // generate stem dict
   const stemDict = makeStemDict(motifDict);
@@ -57,7 +63,7 @@ async function rtfToJson({ rtfPath, motifDict, biblio }) {
       if (!dsid) {
         continue;
       }
-      console.log('SOURCE', dsid);
+      stdOut('SOURCE', dsid);
       const sid = sidFromSourceCode(dsid);
 
       // capture entries
