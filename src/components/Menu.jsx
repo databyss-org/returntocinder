@@ -43,7 +43,7 @@ class Menu extends PureComponent {
                   <ul key={idx}>
                     {items.map((item, idx) => (
                       <li key={idx} onClick={() => this.props.toggleMenuIsVisible(false)}>
-                        <Link to={item.path} replace>{item.title}</Link>
+                        <Link to={item.pagePath} replace>{item.title}</Link>
                       </li>
                     ))}
                   </ul>
