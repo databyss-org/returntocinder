@@ -5,7 +5,6 @@ module.exports = {
     {
       name: 'r2c-express',
       script: './build/server.js',
-      node_args: '--expose-gc',
       watch: true,
       instances: 1,
       // env
