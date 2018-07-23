@@ -52,7 +52,7 @@ const ColumnHead = ({
       </span>
     ),
     authors: stats.authors && stats.authors.length ? (
-      <span>
+      <React.Fragment>
         [cf.&nbsp;
         {stats.authors.map((author, idx) => (
           <span key={author}>
@@ -63,7 +63,7 @@ const ColumnHead = ({
             </Link>
           </span>
         ))}]
-      </span>
+      </React.Fragment>
     ) : null
   };
 
