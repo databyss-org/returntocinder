@@ -22,7 +22,8 @@ const Front = ({ location, toggleSearchIsFocused, app }) =>
         </div>
         <p>
           {app.pages['/'].body}
-          <Link to='/about/frontis'>read more</Link>
+          &nbsp;
+          <Link to='/about/frontis'>&hellip;</Link>
         </p>
       </div>
       <div className={cx(styles.body, styles.show)}>
