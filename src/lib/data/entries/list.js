@@ -31,11 +31,20 @@ export const groupByMotif = entries => entries.reduce((dict, entry) => {
 
 export default async (query) => {
   const q = query || {};
+  let content = {};
+  if (q.content) {
+    const words = q.content.split(' ');
+    if (words.length <= 1 || q.content.match('"')) {
+      content = { '$text': { '$search': q.content } };
+    } else {
+      content = { '$text': { '$search': words.map(word => `"${word}"`).join(' ') } };
+    }
+  }
   const findQuery = {
     ...q.author ? { 'source.author': q.author } : {},
     ...q.motifId ? { 'motif.id': q.motifId } : {},
     ...q.sourceId ? { 'source.id': q.sourceId } : {},
-    ...q.content ? { '$text': { '$search': q.content } } : {},
+    ...content,
   };
   const orderBy = {
     'locations.low': 1,
