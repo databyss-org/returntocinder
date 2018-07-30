@@ -21,7 +21,7 @@ const Front = ({ location, toggleSearchIsFocused, app }) =>
           {app.pages['/'].title}
         </div>
         <p>
-          {app.pages['/'].body}
+          <span dangerouslySetInnerHTML={{ __html: app.pages['/'].body }} />
           &nbsp;
           <Link to='/about/frontis'>&hellip;</Link>
         </p>
