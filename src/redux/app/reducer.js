@@ -1,6 +1,7 @@
 import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
+  config: null,
   doc: {},
   entriesBySource: {},
   biblio: null,
@@ -32,7 +33,9 @@ const initialState = {
   },
   pages: {},
   menus: {},
-  idLinksAreActive: false
+  idLinksAreActive: false,
+  showAllMotifEntries: false,
+  showAllSourceEntries: false,
 };
 
 export default function appReducer(state = initialState, action) {
@@ -59,12 +62,13 @@ export default function appReducer(state = initialState, action) {
       };
 
     case 'RECEIVE_MOTIF': {
-      const { author, mid, motif } = action.payload;
+      const { author, mid, motif, sid } = action.payload;
+      const key = sid ? `${mid}:${sid}` : `${mid}:${author}`;
       return {
         ...state,
         doc: {
           ...state.doc,
-          [`${mid}:${author}`]: motif
+          [key]: motif
         },
       };
     }
@@ -106,6 +110,14 @@ export default function appReducer(state = initialState, action) {
           ...state.menus,
           [path]: menu,
         }
+      };
+    }
+
+    case 'RECEIVE_CONFIG': {
+      const { config } = action.payload;
+      return {
+        ...state,
+        config: config.reduce((dict, c) => ({ ...dict, [c.key]: c.value }), {})
       };
     }
 

@@ -28,24 +28,33 @@ export default {
       });
     };
   },
-  fetchMotif({ mid, author }) {
+  fetchMotif({ mid, author, sid }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_MOTIF',
         payload: {
           mid,
+          sid,
           author
         }
       });
-      const motif = (await axios.get(
-        `${API_URL}/motifs/${mid}?author=${author || DEFAULT_AUTHOR}`
-      )).data;
+      let csid = sid;
+      if (!csid) {
+        csid = getState().app.showAllMotifEntries ? '_all' : '';
+      }
+      const motif = (await axios.get([
+        API_URL,
+        'motifs',
+        mid,
+        ...(csid ? [csid] : []),
+      ].join('/').concat(`?author=${author}`))).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {
           mid,
           motif,
-          author
+          author,
+          sid,
         }
       });
     };
@@ -141,6 +150,21 @@ export default {
           menu,
           path
         }
+      });
+    };
+  },
+  fetchConfig() {
+    return async (dispatch) => {
+      dispatch({
+        type: 'FETCH_CONFIG',
+      });
+      const config = (
+        await axios.get(`${API_URL}/config`)
+      ).data;
+
+      return dispatch({
+        type: 'RECEIVE_CONFIG',
+        payload: { config }
       });
     };
   },

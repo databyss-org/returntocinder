@@ -49,7 +49,7 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) =>
                   })}
                 >
                   <Route
-                    path="/(motif|source|search)/:term"
+                    path="/(motif|source|search)/:term/:filterBy?"
                     children={({ match }) =>
                       <DocContainer match={match} />
                   }/>
@@ -92,6 +92,7 @@ export default compose(
   connect(state => state, actions),
   withLoader({
     propsToLoad: props => ({
+      config: props.app.config,
       biblio: props.app.biblio,
       motifs: props.app.motifList,
       authors: props.app.authorDict,
@@ -99,6 +100,7 @@ export default compose(
       menu: props.app.menus['/']
     }),
     loaderActions: props => ({
+      config: () => props.fetchConfig(),
       biblio: () => props.fetchBiblio(),
       motifs: () => props.fetchMotifs(),
       authors: () => props.fetchAuthors(),

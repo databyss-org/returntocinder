@@ -3,9 +3,16 @@
 import express from 'express';
 import { searchEntries } from '../lib/search';
 import { list as listEntries } from '../lib/data/entries';
-import { list as listMotifs } from '../lib/data/motifs';
-import { list as listSources } from '../lib/data/sources';
+import {
+  list as listMotifs,
+  bySource as motifsBySource
+} from '../lib/data/motifs';
+import {
+  list as listSources,
+  byMotif as sourcesByMotif
+} from '../lib/data/sources';
 import { list as listAuthors } from '../lib/data/authors';
+import { list as listConfig } from '../lib/data/config';
 import { get as getPage } from '../lib/data/pages';
 import { get as getMenu } from '../lib/data/menus';
 import { motifDictFromList } from '../lib/indexers';
@@ -32,6 +39,22 @@ router.get('/motifs/:mid', async (req, res) => {
   if (!motif) {
     return res.status(404).end();
   }
+  const sources = await sourcesByMotif({
+    motifId: req.params.mid,
+    author: req.query.author
+  });
+  return res.status(200).json({
+    ...motif,
+    sources
+  });
+});
+
+router.get('/motifs/:mid/_all', async (req, res) => {
+  const motifDict = motifDictFromList(await listMotifs());
+  const motif = motifDict[req.params.mid];
+  if (!motif) {
+    return res.status(404).end();
+  }
   const { sources, entryCount } = await listEntries({
     motifId: req.params.mid,
     author: req.query.author,
@@ -44,7 +67,36 @@ router.get('/motifs/:mid', async (req, res) => {
   });
 });
 
+router.get('/motifs/:mid/:sid', async (req, res) => {
+  const motifDict = motifDictFromList(await listMotifs());
+  const motif = motifDict[req.params.mid];
+  if (!motif) {
+    return res.status(404).end();
+  }
+  const { sources, entryCount } = await listEntries({
+    motifId: req.params.mid,
+    sourceId: req.params.sid,
+    author: req.query.author,
+    groupBy: 'source',
+  });
+  return res.status(200).json({
+    ...motif,
+    entryCount,
+    sources,
+  });
+});
+
 router.get('/sources/:sid', async (req, res) => {
+  const motifs = await motifsBySource({
+    sourceId: req.params.sid
+  });
+  if (!motifs.length) {
+    return res.status(404).end();
+  }
+  return res.status(200).json(motifs);
+});
+
+router.get('/sources/:sid/_all', async (req, res) => {
   const entries = await listEntries({
     sourceId: req.params.sid
   });
@@ -68,6 +120,16 @@ router.get('/menus/:path', async (req, res) => {
   try {
     const menu = await getMenu(req.params.path);
     return res.status(200).json(menu);
+  } catch (err) {
+    console.error(err);
+    return res.status(404).end();
+  }
+});
+
+router.get('/config', async (req, res) => {
+  try {
+    const config = await listConfig();
+    return res.status(200).json(config);
   } catch (err) {
     console.error(err);
     return res.status(404).end();

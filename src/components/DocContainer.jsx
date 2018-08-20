@@ -12,6 +12,7 @@ import appActions from '../redux/app/actions';
 import searchActions from '../redux/search/actions';
 import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
+import { parseTerm } from '../lib/url';
 import styles from '../app.scss';
 
 const { DEFAULT_AUTHOR } = process.env;
@@ -25,21 +26,10 @@ const getAsideTerm = (location) => {
   return null;
 };
 
-const parseTerm = (term) => {
-  let author = DEFAULT_AUTHOR;
-  let resource = term;
-  if (term.match(/:/)) {
-    [resource, author] = term.split(':');
-  } else {
-    term = `${term}:${DEFAULT_AUTHOR}`;
-  }
-  return { author, resource, term };
-};
-
 let mainElement = null;
 
 const getQuery = ({ location, match, app }) => {
-  let { term } = match.params;
+  let { term, filterBy } = match.params;
   let author = DEFAULT_AUTHOR;
   let resource = term;
 
@@ -59,7 +49,11 @@ const getQuery = ({ location, match, app }) => {
   switch (match.params[0]) {
     case 'search':
     case 'motif': {
-      ({ author, resource, term } = parseTerm(term));
+      if (filterBy) {
+        term = `${resource}:${filterBy}`;
+      } else {
+        ({ author, resource, term } = parseTerm(term));
+      }
       break;
     }
     case 'source': {
@@ -79,7 +73,8 @@ const getQuery = ({ location, match, app }) => {
     motif: match.params[0] === 'motif',
     source: match.params[0] === 'source',
     aside,
-    isLinked: app.motifLinksAreActive
+    isLinked: app.motifLinksAreActive,
+    filterBy,
   };
 };
 
@@ -183,7 +178,8 @@ export default compose(
         ...(query.motif ? {
           motif: () => props.fetchMotif({
             mid: query.resource,
-            author: query.author
+            author: query.author,
+            sid: query.filterBy
           }),
         } : {}),
         ...(query.aside ? {

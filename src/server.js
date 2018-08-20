@@ -12,6 +12,7 @@ import api from './server/api';
 import sockets from './server/sockets';
 import upload from './server/upload';
 import sitemap from './server/sitemap';
+import metaTemplate from './lib/metaTemplate';
 // import motif from './server/motif';
 
 dotenv.config();
@@ -35,10 +36,13 @@ function getClientApp(req, res) {
 
   const indexFilename = API_ADMIN_TOKEN ? 'admin' : 'index';
 
-  res.sendFile(path.join(
-    __dirname.replace('/build', '').replace('/src', ''),
-    `/public/${indexFilename}.html`)
-  );
+  return res.send(metaTemplate({
+    templatePath: path.join(
+      __dirname.replace('/build', '').replace('/src', ''),
+      `/public/${indexFilename}.html`
+    ),
+    requestPath: req.path
+  }));
 }
 
 app.get('/', getClientApp);
