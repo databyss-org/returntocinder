@@ -7,6 +7,7 @@
 	"author": "pzhine",
 	"main": "index.js",
 	"scripts": {
+		"test": "jest",
 		"heroku-postbuild": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --config webpack/webpack.app.js --progress && webpack -p --config webpack/webpack.admin.js --progress",
 		"build-server": "babel src -d build --plugins transform-runtime",
 		"start": "node build/server.js",
@@ -99,6 +100,7 @@
 		"babel-cli": "^6.26.0",
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^7.2.3",
+		"babel-jest": "^23.4.2",
 		"babel-loader": "^7.1.2",
 		"babel-plugin-transform-regenerator": "^6.26.0",
 		"babel-plugin-transform-runtime": "^6.23.0",
@@ -120,9 +122,10 @@
 		"eslint-plugin-jsx-a11y": "^5.1.1",
 		"eslint-plugin-react": "^7.5.1",
 		"eslint-plugin-react-native": "^3.2.0",
-		"jest": "^23.0.0",
+		"jest": "^23.5.0",
 		"json-loader": "^0.5.7",
 		"react-svg-loader": "^2.1.0",
+		"regenerator-runtime": "^0.12.1",
 		"webpack-cli": "^3.0.1"
 	},
 	"engines": {
