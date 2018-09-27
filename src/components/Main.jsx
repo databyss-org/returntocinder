@@ -50,7 +50,7 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) =>
                 >
                   <Route
                     path="/(motif|source|search)/:term"
-                    children={({ match }) =>
+                    render={({ match }) =>
                       <DocContainer match={match} />
                   }/>
                 </div>
