@@ -75,7 +75,8 @@ class Search extends PureComponent {
     if (!value) {
       return [{ suggestions: [] }];
     }
-    const { sourceList } = this.props.appState;
+    const { sourceList, authorDict } = this.props.appState;
+    console.log(authorDict)
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value.trim().toLowerCase().split(wordSeparator);
 
@@ -102,13 +103,27 @@ class Search extends PureComponent {
       return matchCount;
     };
 
+    // base matcher
+    const baseMatch = m => matchStems(
+      latinize(m.name).toLowerCase().split(wordSeparator),
+      searchWords
+      // only pass when all query terms are matched
+    ) === searchWords.length;
+
     // filter collection
     const findMatches = collection => collection
-      .filter(m => matchStems(
-        latinize(m.name).toLowerCase().split(wordSeparator),
-        searchWords
-      // only pass when all query terms are matched
-      ) === searchWords.length);
+      .filter(m => baseMatch);
+
+    const findSourceMatches = collection => collection
+      .filter(m => baseMatch(m) ||
+        matchStems(
+          [
+            latinize(authorDict[m.authorCode].lastName).toLowerCase(),
+            latinize(authorDict[m.authorCode].firstName).toLowerCase()
+          ],
+          searchWords
+        ) === searchWords.length
+      );
 
     // sort matches so that results starting with query are prioritized
     const sortMatches = collection => collection
@@ -122,6 +137,41 @@ class Search extends PureComponent {
           return 1;
         }
         return 0;
+      });
+
+    const sortBase = (a, b) => {
+      if (a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+      && !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+        return -1;
+      }
+      if (b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+      && !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+        return 1;
+      }
+      return 0;
+    };
+
+    const sortSourceMatches = collection => collection
+      .sort((a, b) => {
+        const authorA = authorDict[a.authorCode];
+        const authorB = authorDict[b.authorCode];
+        if (authorA.firstName.toLowerCase().startsWith(searchWords[0])
+        && !authorB.firstName.toLowerCase().startsWith(searchWords[0])) {
+          return -1;
+        }
+        if (authorB.firstName.toLowerCase().startsWith(searchWords[0])
+        && !authorA.firstName.toLowerCase().startsWith(searchWords[0])) {
+          return 1;
+        }
+        if (authorA.lastName.toLowerCase().startsWith(searchWords[0])
+        && !authorB.lastName.toLowerCase().startsWith(searchWords[0])) {
+          return -1;
+        }
+        if (authorB.lastName.toLowerCase().startsWith(searchWords[0])
+        && !authorA.lastName.toLowerCase().startsWith(searchWords[0])) {
+          return 1;
+        }
+        return sortBase(a, b);
       });
 
     const trimTo = max => c => c.slice(0, max);
@@ -161,7 +211,8 @@ class Search extends PureComponent {
     });
 
     const sourceMatches = compile({
-      ...compileDefaults,
+      match: findSourceMatches,
+      sort: sortSourceMatches,
       collection: sourceList,
       trim: trimTo(5)
     });
