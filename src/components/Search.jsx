@@ -249,7 +249,7 @@ class Search extends PureComponent {
         <div className={cx(theme.instructions, {
           [theme.show]: !this.state.value.length
         })}>
-          Search by word, phrase, name, motif, or source text
+          Search by word, phrase, author, motif, or source title
         </div>
         {children}
       </div>
