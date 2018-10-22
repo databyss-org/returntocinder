@@ -4,7 +4,7 @@ import { Link, withRouter, matchPath } from 'react-router-dom';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import styles from '../app.scss';
-import Motifs from './Motifs.jsx';
+import Authors from './Authors.jsx';
 import actions from '../redux/app/actions';
 
 const Front = ({ location, toggleSearchIsFocused, app }) =>
@@ -27,7 +27,7 @@ const Front = ({ location, toggleSearchIsFocused, app }) =>
         </p>
       </div>
       <div className={cx(styles.body, styles.show)}>
-        <Motifs />
+        <Authors />
       </div>
     </div>
   </div>;
