@@ -24,6 +24,8 @@ const Front = ({ location, toggleSearchIsFocused, app }) =>
           <span dangerouslySetInnerHTML={{ __html: app.pages['/'].body }} />
           &nbsp;
           <Link to='/about/frontis'>&hellip;</Link>
+          <br></br>
+          <span style={{float: "right"}}><a>Motifs</a> | <a>Authors</a></span>
         </p>
       </div>
       <div className={cx(styles.body, styles.show)}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 class Author extends React.Component {
@@ -19,7 +20,7 @@ class Author extends React.Component {
       return (
         <ul>
           { authorsSourceList.map(source => {
-            return <li key={`${id}${source.id}`}>{source.title}</li>
+            return (<li key={`${id}${source.id}`}><Link to={`/source/${source.id}`}>{source.title}</Link></li>)
           }) }
         </ul>
       )
