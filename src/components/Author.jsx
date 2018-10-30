@@ -1,8 +1,8 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import styles from "../app.scss";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import styles from '../app.scss';
 
 class Author extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class Author extends React.Component {
         }
       >
         {`${firstName} ${lastName}`}
-        {shouldShowSources ? renderAuthorsSources(sources) : ""}
+        {shouldShowSources ? renderAuthorsSources(sources) : ''}
       </li>
     );
   }

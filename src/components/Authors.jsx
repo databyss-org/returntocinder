@@ -1,8 +1,8 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import styles from "../app.scss";
-import Author from "./Author";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import styles from '../app.scss';
+import Author from './Author';
 
 const Authors = ({ history, authorList }) => (
   <ul className={styles.motifs}>

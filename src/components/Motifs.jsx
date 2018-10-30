@@ -1,7 +1,7 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import styles from "../app.scss";
+import React from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import styles from '../app.scss';
 
 const Motifs = ({ history, motifList }) => (
   <ul className={styles.motifs}>
