@@ -14,10 +14,11 @@ import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 import { parseTerm } from '../lib/url';
 import styles from '../app.scss';
+import MotifLanding from './Landing/MotifLanding.jsx';
 
 const { DEFAULT_AUTHOR } = process.env;
 
-const getAsideTerm = (location) => {
+const getAsideTerm = location => {
   const asidePath = '/(motif|source|search)/(.*)/motif::term';
   const match = matchPath(location.pathname, asidePath);
   if (match) {
@@ -89,16 +90,17 @@ const onClick = ({ history, e, showDisambiguate }) => {
   ) {
     e.preventDefault();
     const position = {
-      top: target.getBoundingClientRect().top
-        - mainElement.getBoundingClientRect().top
-        + mainElement.scrollTop
-        + 15
+      top:
+        target.getBoundingClientRect().top -
+        mainElement.getBoundingClientRect().top +
+        mainElement.scrollTop +
+        15,
     };
     showDisambiguate({
       midList: target.search.match(/mids=(.+)&?/)[1].split(','),
       position,
       target,
-      className: styles.disambiguateLink
+      className: styles.disambiguateLink,
     });
     return;
   }
@@ -112,28 +114,54 @@ const onClick = ({ history, e, showDisambiguate }) => {
   }
 };
 
-const DocContainer = ({ search, match, query, history, showDisambiguate }) =>
+const DocContainer = ({
+  search,
+  match,
+  query,
+  history,
+  showDisambiguate,
+  motif,
+  app,
+}) => (
+  // console.log('MATCH', match);
   <Transition in={Boolean(query.aside)} timeout={300}>
-    {state =>
+    {state => (
       <div
         onClick={e => onClick({ e, history, showDisambiguate })}
         className={cx(styles.docContainer, {
-          [styles.withAside]: query.aside
+          [styles.withAside]: query.aside,
+          [styles.landing]: query.motif,
         })}
       >
-        <DocHead transitionState={state} query={query} />
-        <div className={cx(styles.doc, styles[state], {
-          [styles.show]: true
-        })}>
-          <main ref={(elem) => { mainElement = elem; }}>
-            <Doc
-              query={query}
-              path={['main']}
-              ready={state === 'entered'}
-            />
+        {!query.motif && <DocHead transitionState={state} query={query} />}
+        <div
+          className={cx(styles.doc, styles[state], {
+            [styles.show]: true,
+          })}
+        >
+          <main
+            ref={elem => {
+              mainElement = elem;
+            }}
+          >
+            {query.motif ? (
+              <MotifLanding
+                motif={motif}
+                cfList={
+                  motif.cfauthors
+                    ? motif.cfauthors.map(id => app.authorDict[id])
+                    : null
+                }
+                meta={app.config.motif_meta}
+                author={app.authorDict[query.author]}
+                query={query}
+              />
+            ) : (
+              <Doc query={query} path={['main']} ready={state === 'entered'} />
+            )}
             <Disambiguate />
           </main>
-          {query.aside &&
+          {query.aside && (
             <aside>
               <Doc
                 query={{
@@ -144,65 +172,89 @@ const DocContainer = ({ search, match, query, history, showDisambiguate }) =>
                 path={['aside']}
                 ready={state === 'entered'}
               />
-            </aside>}
+            </aside>
+          )}
         </div>
       </div>
-    }
-  </Transition>;
+    )}
+  </Transition>
+);
 
 export default compose(
-  connect(state => state, { ...appActions, ...searchActions }),
+  connect(
+    state => state,
+    { ...appActions, ...searchActions }
+  ),
   withRouter,
   withLoader({
-    propsToLoad: (props) => {
+    propsToLoad: props => {
       const query = getQuery(props);
       return {
         query,
-        ...(query.motif ? {
-          motif: props.app.doc[query.term]
-        } : {}),
-        ...(query.aside ? {
-          aside: props.app.doc[query.aside.term]
-        } : {}),
-        ...(query.source ? {
-          source: props.app.entriesBySource[query.term]
-        } : {}),
-        ...(query.search ? {
-          results: props.search.results[query.term]
-        } : {})
+        ...(query.motif
+          ? {
+              motif: props.app.doc[query.term],
+            }
+          : {}),
+        ...(query.aside
+          ? {
+              aside: props.app.doc[query.aside.term],
+            }
+          : {}),
+        ...(query.source
+          ? {
+              source: props.app.entriesBySource[query.term],
+            }
+          : {}),
+        ...(query.search
+          ? {
+              results: props.search.results[query.term],
+            }
+          : {}),
       };
     },
-    loaderActions: (props) => {
+    loaderActions: props => {
       const query = getQuery(props);
       return {
-        ...(query.motif ? {
-          motif: () => props.fetchMotif({
-            mid: query.resource,
-            author: query.author,
-            sid: query.filterBy
-          }),
-        } : {}),
-        ...(query.aside ? {
-          aside: () => props.fetchMotif({
-            mid: query.aside.resource,
-            author: DEFAULT_AUTHOR
-          }),
-        } : {}),
-        ...(query.source ? {
-          source: () => props.fetchSource({ sid: query.term }),
-        } : {}),
-        ...(query.search ? {
-          results: () => props.searchEntries({
-            query: query.resource,
-            author: query.author,
-          })
-        } : {})
+        ...(query.motif
+          ? {
+              motif: () =>
+                props.fetchMotif({
+                  mid: query.resource,
+                  author: query.author,
+                  sid: query.filterBy,
+                }),
+            }
+          : {}),
+        ...(query.aside
+          ? {
+              aside: () =>
+                props.fetchMotif({
+                  mid: query.aside.resource,
+                  author: DEFAULT_AUTHOR,
+                }),
+            }
+          : {}),
+        ...(query.source
+          ? {
+              source: () => props.fetchSource({ sid: query.term }),
+            }
+          : {}),
+        ...(query.search
+          ? {
+              results: () =>
+                props.searchEntries({
+                  query: query.resource,
+                  author: query.author,
+                }),
+            }
+          : {}),
       };
     },
   }),
   freezeProps({
     propsToFreeze: props => ({
       query: !props.isLoading,
-    })
-  }),
+    }),
+  })
 )(DocContainer);

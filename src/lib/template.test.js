@@ -1,10 +1,4 @@
-import { replaceTokens, replaceMetaTokens, renderMetaTemplte } from './template';
-
-test('tokens are replaced', () => {
-  const template = 'my {ONE} is too {TWO}';
-  const tokenDict = { ONE: 'spoon', TWO: 'big' };
-  expect(replaceTokens(template, tokenDict)).toBe('my spoon is too big');
-});
+import { replaceMetaTokens } from './template';
 
 test('meta tag tokens are replaced', () => {
   const template = 'keywords="{KEYWORDS}", description="{DESCRIPTION}"';
