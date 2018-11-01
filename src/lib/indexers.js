@@ -79,6 +79,7 @@ export function sourceListFromSources(sources) {
     id: source.id,
     type: 'source',
     name: `${source.id} ${textify(source.title)}`,
+    authorCode: source.author,
     display: (
       <div><h3>{source.id}</h3> <span>{textify(source.title)}</span></div>
     )
