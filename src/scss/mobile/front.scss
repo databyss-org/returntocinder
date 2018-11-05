@@ -2,7 +2,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  background-image: url("/stone.jpg");
+  background-image: url('/stone.jpg');
   background-size: 130%;
   width: 100%;
   height: 9vh;
@@ -71,7 +71,7 @@
       font-size: 3em;
       line-height: 1em;
       margin-bottom: 0.3em;
-      font-family: "BaskervilleLT-RegularOldFace", serif;
+      font-family: 'BaskervilleLT-RegularOldFace', serif;
       letter-spacing: -0.05em;
       white-space: nowrap;
     }
