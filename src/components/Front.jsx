@@ -12,7 +12,7 @@ class Front extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: 'Motifs' // "Motifs" || "Authors"
+      show: 'Motifs' // 'Motifs' || 'Authors'
     };
     this.showMotifs = this.showMotifs.bind(this);
     this.showAuthors = this.showAuthors.bind(this);

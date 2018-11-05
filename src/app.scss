@@ -8,79 +8,79 @@ $hamburger-layer-border-radius: 0;
 $hamburger-hover-transition-duration: 0.15s;
 $hamburger-hover-transition-timing-function: linear;
 
-@import "scss/desktop/mixins";
-@import "scss/desktop/global";
+@import 'scss/desktop/mixins';
+@import 'scss/desktop/global';
 
 .app {
-  @import "scss/desktop/mask";
-  @import "scss/desktop/source";
-  @import "scss/desktop/loader";
-  @import "scss/desktop/defer";
-  @import "scss/desktop/subnav";
-  @import "scss/desktop/authors";
+  @import 'scss/desktop/mask';
+  @import 'scss/desktop/source';
+  @import 'scss/desktop/loader';
+  @import 'scss/desktop/defer';
+  @import 'scss/desktop/subnav';
+  @import 'scss/desktop/authors';
 
-  @import "scss/desktop/modalMenu";
-  @import "scss/desktop/toggle";
+  @import 'scss/desktop/modalMenu';
+  @import 'scss/desktop/toggle';
 }
 
 /* mobile and tablet */
 @media (max-width: 1024px) {
   .app {
-    @import "scss/mobile/docModal";
-    @import "scss/mobile/menu";
-    @import "scss/mobile/motifs";
-    @import "scss/mobile/footer";
+    @import 'scss/mobile/docModal';
+    @import 'scss/mobile/menu';
+    @import 'scss/mobile/motifs';
+    @import 'scss/mobile/footer';
   }
 }
 
 /* mobile only */
 @media (max-width: 480px) {
   .app {
-    @import "scss/mobile/doc";
-    @import "scss/mobile/docHead";
-    @import "scss/mobile/about";
-    @import "scss/mobile/front";
-    @import "scss/mobile/motifs";
-    @import "scss/mobile/navbar";
-    @import "scss/mobile/search";
-    @import "scss/mobile/hamburger";
-    @import "scss/mobile/disambiguate";
+    @import 'scss/mobile/doc';
+    @import 'scss/mobile/docHead';
+    @import 'scss/mobile/about';
+    @import 'scss/mobile/front';
+    @import 'scss/mobile/motifs';
+    @import 'scss/mobile/navbar';
+    @import 'scss/mobile/search';
+    @import 'scss/mobile/hamburger';
+    @import 'scss/mobile/disambiguate';
   }
 }
 
 /* tablet only */
 @media (min-width: 481px) and (max-width: 1024px) {
   .app {
-    @import "scss/desktop/docContainer";
-    @import "scss/desktop/doc";
-    @import "scss/desktop/docHead";
-    @import "scss/desktop/about";
-    @import "scss/tablet/front";
-    @import "scss/tablet/motifs";
-    @import "scss/desktop/navbar";
-    @import "scss/desktop/search";
-    @import "scss/desktop/hamburger";
-    @import "scss/tablet/docHead";
-    @import "scss/desktop/disambiguate";
+    @import 'scss/desktop/docContainer';
+    @import 'scss/desktop/doc';
+    @import 'scss/desktop/docHead';
+    @import 'scss/desktop/about';
+    @import 'scss/tablet/front';
+    @import 'scss/tablet/motifs';
+    @import 'scss/desktop/navbar';
+    @import 'scss/desktop/search';
+    @import 'scss/desktop/hamburger';
+    @import 'scss/tablet/docHead';
+    @import 'scss/desktop/disambiguate';
   }
 }
 
 /* desktop */
 @media (min-width: 1025px) {
   .app {
-    @import "scss/desktop/docContainer";
-    @import "scss/desktop/doc";
-    @import "scss/desktop/front";
-    @import "scss/desktop/docModal";
-    @import "scss/desktop/menu";
-    @import "scss/desktop/motifs";
-    @import "scss/desktop/docHead";
-    @import "scss/desktop/about";
-    @import "scss/desktop/footer";
-    @import "scss/desktop/navbar";
-    @import "scss/desktop/hamburger";
-    @import "scss/desktop/search";
-    @import "scss/desktop/toggle";
-    @import "scss/desktop/disambiguate";
+    @import 'scss/desktop/docContainer';
+    @import 'scss/desktop/doc';
+    @import 'scss/desktop/front';
+    @import 'scss/desktop/docModal';
+    @import 'scss/desktop/menu';
+    @import 'scss/desktop/motifs';
+    @import 'scss/desktop/docHead';
+    @import 'scss/desktop/about';
+    @import 'scss/desktop/footer';
+    @import 'scss/desktop/navbar';
+    @import 'scss/desktop/hamburger';
+    @import 'scss/desktop/search';
+    @import 'scss/desktop/toggle';
+    @import 'scss/desktop/disambiguate';
   }
 }
