@@ -1,4 +1,4 @@
-.motifs {
+.authors {
   display: flex;
   flex-wrap: wrap;
   position: relative;
@@ -15,11 +15,6 @@
     a:visited,
     a:active {
       color: inherit;
-      font-size: 0.8em;
-    }
-    &.sublist {
-      width: 100%;
-      padding: 0.4em 1em;
     }
   }
 }
