@@ -44,8 +44,8 @@
     "cors": "^2.8.4",
     "css-loader": "^0.28.7",
     "debounce": "^1.1.0",
-    "dotenv": "^5.0.1",
     "diff": "^3.4.0",
+    "dotenv": "^5.0.1",
     "dropbox": "^2.5.13",
     "es6-promise": "^4.2.2",
     "express": "^4.16.2",
@@ -101,6 +101,7 @@
     "webpack-dev-server": "^3.1.4"
   },
   "devDependencies": {
+    "async": "^2.6.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
@@ -130,6 +131,7 @@
     "jest": "^23.5.0",
     "json-loader": "^0.5.7",
     "nodemon": "^1.18.5",
+    "ora": "^3.0.0",
     "prettier": "^1.14.3",
     "prettier-eslint": "^8.8.2",
     "react-svg-loader": "^2.1.0",

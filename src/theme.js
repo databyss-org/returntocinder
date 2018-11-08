@@ -6,4 +6,5 @@ export default {
   bodyFont: "'Baskerville', serif",
   navFont: "'DINNextLTPro-Light', 'Helvetica', sans-serif",
   fontSizeBase: '13pt',
+  fontSizeS: '0.9em',
 };
