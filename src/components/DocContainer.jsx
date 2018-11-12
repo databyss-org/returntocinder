@@ -51,7 +51,8 @@ const getQuery = ({ location, match, app }) => {
     case 'search':
     case 'motif': {
       if (filterBy) {
-        term = `${resource}:${filterBy}`;
+        ({ author } = app.biblio[filterBy]);
+        term = `${resource}:${author}:${filterBy}`;
       } else {
         ({ author, resource, term } = parseTerm(term));
       }
@@ -152,9 +153,15 @@ const DocContainer = ({
                     ? motif.cfauthors.map(id => app.authorDict[id])
                     : null
                 }
-                meta={app.config.motif_meta}
+                meta={
+                  query.filterBy
+                    ? app.config.source_motif_meta
+                    : app.config.motif_meta
+                }
                 author={app.authorDict[query.author]}
                 query={query}
+                source={query.filterBy && app.biblio[query.filterBy]}
+                showAll={app.showAllMotifEntries}
               />
             ) : (
               <Doc query={query} path={['main']} ready={state === 'entered'} />

@@ -5,11 +5,11 @@ import { searchEntries } from '../lib/search';
 import { list as listEntries } from '../lib/data/entries';
 import {
   list as listMotifs,
-  bySource as motifsBySource
+  bySource as motifsBySource,
 } from '../lib/data/motifs';
 import {
   list as listSources,
-  byMotif as sourcesByMotif
+  byMotif as sourcesByMotif,
 } from '../lib/data/sources';
 import { list as listAuthors } from '../lib/data/authors';
 import { list as listConfig } from '../lib/data/config';
@@ -25,11 +25,11 @@ router.get('/search', async (req, res) => {
     query,
     groupBy,
     withMeta,
-    author
+    author,
   });
   res.status(200).json({
     id,
-    results
+    results,
   });
 });
 
@@ -41,11 +41,11 @@ router.get('/motifs/:mid', async (req, res) => {
   }
   const sources = await sourcesByMotif({
     motifId: req.params.mid,
-    author: req.query.author
+    author: req.query.author,
   });
   return res.status(200).json({
     ...motif,
-    sources
+    sources,
   });
 });
 
@@ -79,16 +79,33 @@ router.get('/motifs/:mid/:sid', async (req, res) => {
     author: req.query.author,
     groupBy: 'source',
   });
+  const locationsDict = sources[req.params.sid].reduce((dict, entry) => {
+    if (!dict[entry.locations.raw]) {
+      dict[entry.locations.raw] = { locations: entry.locations, entries: [] };
+    }
+    dict[entry.locations.raw].entries.push(entry);
+    return dict;
+  }, {});
+  const entriesByLocation = Object.values(locationsDict)
+    .sort((a, b) => a.locations.low - b.locations.low)
+    .map(location => ({
+      raw: location.locations.raw,
+      entries: location.entries.map(entry => {
+        const { content, linkedContent, motif, starred } = entry;
+        return { content, linkedContent, motifs: motif, starred };
+      }),
+    }));
+
   return res.status(200).json({
     ...motif,
     entryCount,
-    sources,
+    entriesByLocation,
   });
 });
 
 router.get('/sources/:sid', async (req, res) => {
   const motifs = await motifsBySource({
-    sourceId: req.params.sid
+    sourceId: req.params.sid,
   });
   if (!motifs.length) {
     return res.status(404).end();
@@ -98,7 +115,7 @@ router.get('/sources/:sid', async (req, res) => {
 
 router.get('/sources/:sid/_all', async (req, res) => {
   const entries = await listEntries({
-    sourceId: req.params.sid
+    sourceId: req.params.sid,
   });
   if (!entries.length) {
     return res.status(404).end();
@@ -159,18 +176,18 @@ router.post('/admin/dumptobeta', (req, res) => {
   }
   res.writeHead(200, {
     'Content-Type': 'text/plain',
-    'Content-Disposition': 'attachment; filename="stream.txt"'
+    'Content-Disposition': 'attachment; filename="stream.txt"',
   });
   const dump = new DumpDbToBeta();
   dump.on('end', () => {
     console.log('END');
     res.end();
   });
-  dump.on('stdout', (msg) => {
+  dump.on('stdout', msg => {
     console.log(msg);
     res.write(msg);
   });
-  dump.on('stderr', (msg) => {
+  dump.on('stderr', msg => {
     console.error(msg);
     res.write(msg);
   });

@@ -48,7 +48,7 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => (
                   })}
                 >
                   <Route
-                    path="/(source|search|motif)/:term"
+                    path="/(source|search|motif)/:term/:filterBy?"
                     render={({ match }) => <DocContainer match={match} />}
                   />
                 </div>
