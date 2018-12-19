@@ -38,7 +38,7 @@
       transition: height 200ms ease-in-out;
     }
 
-    &.withMotifs .head{
+    &.withMotifs .head {
       height: 35vh;
       padding-top: 3vh;
     }
@@ -57,6 +57,10 @@
       &.show {
         opacity: 1;
       }
+      .sublist {
+        font-size: 1em;
+        margin-left: 1em;
+      }
     }
 
     &.withMotifs .body {
@@ -72,6 +76,25 @@
       white-space: nowrap;
     }
 
+    .toggles {
+      display: flex;
+      margin-top: 1em;
+      font-size: 1.5em;
+      text-decoration: underline;
+      cursor: pointer;
+      text-transform: uppercase;
+      & > * {
+        margin-right: 1em;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .motifs {
+      margin-bottom: 1em;
+    }
+
     p {
       font-size: 1.3em;
       max-width: 750px;
@@ -80,7 +103,10 @@
       position: relative;
       max-width: 375px;
 
-      a, a:hover, a:active, a:visited {
+      a,
+      a:hover,
+      a:active,
+      a:visited {
         text-decoration: underline;
         color: rgba(255, 255, 255, 0.45);
         transition: color 50ms ease;

@@ -14,26 +14,26 @@ class UploadRtf extends React.Component {
       dropMessage: '',
       output: [],
       running: false,
-      needSnapshot: true,
+      needSnapshot: true
     };
     this.socket = io({
       transportOptions: {
         polling: {
           extraHeaders: {
-            'Authorization': API_ADMIN_TOKEN
+            Authorization: API_ADMIN_TOKEN
           }
         }
       }
     });
-    this.socket.on('stdout', (msg) => {
+    this.socket.on('stdout', msg => {
       console.log('stdout', msg);
       this.setState({ output: this.state.output.concat(msg) });
     });
-    this.socket.on('stderr', (msg) => {
+    this.socket.on('stderr', msg => {
       console.log('stderr', msg);
       this.setState({ output: this.state.output.concat(msg.toString()) });
     });
-    this.socket.on('end', (success) => {
+    this.socket.on('end', success => {
       if (this.state.needSnapshot) {
         this.setState({ needSnapshot: false });
         this.processSupplement();
@@ -63,7 +63,7 @@ class UploadRtf extends React.Component {
         const res = await axios.post(`${UPLOAD_URL}/supplement`, data);
         this.setState({
           output: this.state.output.concat(`Uploaded ${f.name}`),
-          filename: res.data.filename,
+          filename: res.data.filename
         });
       } catch (err) {
         this.setState({
