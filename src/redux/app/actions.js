@@ -16,7 +16,7 @@ export default {
         type: 'FETCH_SOURCE_ENTRIES',
         payload: {
           sid,
-        }
+        },
       });
       const entries = (await axios.get(`${API_URL}/sources/${sid}`)).data;
       return dispatch({
@@ -24,30 +24,29 @@ export default {
         payload: {
           sid,
           entries,
-        }
+        },
       });
     };
   },
-  fetchMotif({ mid, author, sid }) {
+  fetchMotif({ mid, author, sid, showAll }) {
     return async (dispatch, getState) => {
       dispatch({
         type: 'FETCH_MOTIF',
         payload: {
           mid,
           sid,
-          author
-        }
+          author,
+        },
       });
       let csid = sid;
       if (!csid) {
-        csid = getState().app.showAllMotifEntries ? '_all' : '';
+        csid = showAll ? '_all' : '';
       }
-      const motif = (await axios.get([
-        API_URL,
-        'motifs',
-        mid,
-        ...(csid ? [csid] : []),
-      ].join('/').concat(`?author=${author}`))).data;
+      const motif = (await axios.get(
+        [API_URL, 'motifs', mid, ...(csid ? [csid] : [])]
+          .join('/')
+          .concat(`?author=${author}`)
+      )).data;
       return dispatch({
         type: 'RECEIVE_MOTIF',
         payload: {
@@ -55,14 +54,14 @@ export default {
           motif,
           author,
           sid,
-        }
+        },
       });
     };
   },
   fetchBiblio() {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
-        type: 'FETCH_BIBLIO'
+        type: 'FETCH_BIBLIO',
       });
       const sources = (await axios.get(`${API_URL}/sources`)).data;
       const sourceList = sourceListFromSources(sources);
@@ -72,15 +71,15 @@ export default {
         type: 'RECEIVE_BIBLIO',
         payload: {
           biblio,
-          sourceList
-        }
+          sourceList,
+        },
       });
     };
   },
   fetchMotifs() {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
-        type: 'FETCH_MOTIFS'
+        type: 'FETCH_MOTIFS',
       });
       const motifList = (await axios.get(`${API_URL}/motifs`)).data;
       const motifDict = motifDictFromList(motifList);
@@ -90,14 +89,14 @@ export default {
         payload: {
           motifList,
           motifDict,
-        }
+        },
       });
     };
   },
   fetchAuthors() {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
-        type: 'FETCH_AUTHORS'
+        type: 'FETCH_AUTHORS',
       });
       const authorList = (await axios.get(`${API_URL}/authors`)).data;
       const authorDict = authorDictFromList(authorList);
@@ -107,71 +106,69 @@ export default {
         payload: {
           authorList,
           authorDict,
-        }
+        },
       });
     };
   },
   fetchPage(path) {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
         type: 'FETCH_PAGE',
         payload: {
-          path
-        }
+          path,
+        },
       });
-      const content = (
-        await axios.get(`${API_URL}/pages/${path.replace(/\//g, '%2f')}`)
-      ).data;
+      const content = (await axios.get(
+        `${API_URL}/pages/${path.replace(/\//g, '%2f')}`
+      )).data;
 
       return dispatch({
         type: 'RECEIVE_PAGE',
         payload: {
           content,
-          path
-        }
+          path,
+        },
       });
     };
   },
   fetchMenu(path) {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
         type: 'FETCH_MENU',
         payload: {
-          path
-        }
+          path,
+        },
       });
-      const menu = (
-        await axios.get(`${API_URL}/menus/${path.replace(/\//g, '%2f')}`)
-      ).data;
+      const menu = (await axios.get(
+        `${API_URL}/menus/${path.replace(/\//g, '%2f')}`
+      )).data;
 
       return dispatch({
         type: 'RECEIVE_MENU',
         payload: {
           menu,
-          path
-        }
+          path,
+        },
       });
     };
   },
   fetchConfig() {
-    return async (dispatch) => {
+    return async dispatch => {
       dispatch({
         type: 'FETCH_CONFIG',
       });
-      const config = (
-        await axios.get(`${API_URL}/config`)
-      ).data;
+      const config = (await axios.get(`${API_URL}/config`)).data;
 
       return dispatch({
         type: 'RECEIVE_CONFIG',
-        payload: { config }
+        payload: { config },
       });
     };
   },
   setLoading(loading) {
     return {
       type: 'SET_LOADING',
-      payload: loading
+      payload: loading,
     };
   },
   showMask(show) {
@@ -184,30 +181,30 @@ export default {
       }
       return dispatch({
         type: 'SHOW_MASK',
-        payload: show
+        payload: show,
       });
     };
   },
   toggleSearchIsVisible() {
     return {
-      type: 'TOGGLE_SEARCH_IS_VISIBLE'
+      type: 'TOGGLE_SEARCH_IS_VISIBLE',
     };
   },
   hideSearch() {
     return {
-      type: 'HIDE_SEARCH'
+      type: 'HIDE_SEARCH',
     };
   },
   toggleSearchIsFocused(focused) {
     return {
       type: 'SEARCH_FOCUSED',
-      payload: focused
+      payload: focused,
     };
   },
   maskClicked(target) {
     return {
       type: 'MASK_CLICKED',
-      payload: target
+      payload: target,
     };
   },
   toggleMenuIsVisible(isVisible, target) {
@@ -216,19 +213,19 @@ export default {
       payload: {
         isVisible,
         target,
-      }
+      },
     };
   },
   toggleMotifLinks(areActive) {
     return {
       type: 'MOTIF_LINKS_ACTIVE',
-      payload: areActive
+      payload: areActive,
     };
   },
   toggleIdLinks(areActive) {
     return {
       type: 'ID_LINKS_ACTIVE',
-      payload: areActive
+      payload: areActive,
     };
   },
   hideDisambiguate() {
@@ -239,7 +236,7 @@ export default {
   showDisambiguate({ midList, position, target, className }) {
     return {
       type: 'SHOW_DISAMBIGUATE',
-      payload: { midList, position, target, className }
+      payload: { midList, position, target, className },
     };
-  }
+  },
 };

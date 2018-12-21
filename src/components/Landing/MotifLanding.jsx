@@ -9,6 +9,7 @@ import {
   ThemeProvider,
   Entry,
   EntriesByLocation,
+  EntriesBySource,
 } from '@databyss-org/ui';
 import renderTemplate from 'react-text-templates';
 import theme from '../../theme';
@@ -23,12 +24,13 @@ class MotifLanding extends React.Component {
   }
   updateTemplates() {
     const { motif, cfList, meta, author, query, source } = this.props;
+    console.log('source', source);
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
       MOTIF_NAME: motif.name,
       ENTRY_COUNT: motif.entryCount || '',
       SOURCE_COUNT: motif.sources ? motif.sources.length : 1,
-      SOURCE_TITLE: source && source.title,
+      SOURCE_TITLE: source && source.name,
     };
     this.contentTitle = renderTemplate(
       meta.LANDING_SUMMARY,
@@ -55,11 +57,11 @@ class MotifLanding extends React.Component {
       <LandingSources
         sources={motif.sources}
         renderSource={source => {
-          const href = `/motif/${query.resource}/${source.id}`;
+          const href = `/motif/${query.resource}/sources/${source.id}`;
           return (
             <Link href={href} onClick={this.onSourceClick(href)}>
               <Raw
-                html={`${source.title}${
+                html={`${source.name}${
                   source.entryCount ? ` (${source.entryCount})` : null
                 }`}
               />
@@ -69,13 +71,21 @@ class MotifLanding extends React.Component {
       />
     );
   }
-  renderEntries() {
+  renderEntries(source) {
+    const renderEntry = entry => <Entry {...entry} />;
     return (
       <LandingEntries>
-        <EntriesByLocation
-          locations={this.props.motif.entriesByLocation}
-          renderEntry={entry => <Entry {...entry} />}
-        />
+        {source ? (
+          <EntriesByLocation
+            locations={this.props.motif.entriesByLocation}
+            renderEntry={renderEntry}
+          />
+        ) : (
+          <EntriesBySource
+            sources={this.props.motif.sources}
+            renderEntry={renderEntry}
+          />
+        )}
       </LandingEntries>
     );
   }
@@ -85,7 +95,9 @@ class MotifLanding extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Landing {...this.landingProps}>
-          {source || showAll ? this.renderEntries() : this.renderSourcesToc()}
+          {source || showAll
+            ? this.renderEntries(source)
+            : this.renderSourcesToc()}
         </Landing>
       </ThemeProvider>
     );

@@ -20,10 +20,12 @@ export function sourcesFromEntries(entries) {
       sources[sid].entriesByMotif[entry.motif.id] = {
         id: entry.motif.id,
         name: entry.motif.name,
-        sources: { [sid]: [] }
+        sources: { [sid]: [] },
       };
     }
-    sources[sid].entriesByMotif[entry.motif.id].sources[sid].push(entry.content);
+    sources[sid].entriesByMotif[entry.motif.id].sources[sid].push(
+      entry.content
+    );
     return sources;
   }, {});
 }
@@ -37,9 +39,9 @@ export function sidFromSourceCode(dsid) {
 
 export function entriesFromMotifs(motifs, biblio) {
   const entries = {};
-  Object.keys(motifs).forEach((mid) => {
+  Object.keys(motifs).forEach(mid => {
     const motif = motifs[mid];
-    Object.keys(motif.sources).forEach((dsid) => {
+    Object.keys(motif.sources).forEach(dsid => {
       const source = motif.sources[dsid];
       const sid = sidFromSourceCode(dsid);
       if (!biblio[sid]) {
@@ -51,14 +53,14 @@ export function entriesFromMotifs(motifs, biblio) {
           ...entry,
           motif: {
             id: mid,
-            name: motif.name
+            name: motif.name,
           },
           source: {
             id: sid,
             name: biblio[sid] && biblio[sid].name,
-            display: dsid
+            display: dsid,
           },
-          id: eid
+          id: eid,
         };
       });
     });
@@ -70,20 +72,27 @@ export function entryListFromEntries(entries) {
   return Object.keys(entries).map(eid => ({
     id: entries[eid].id,
     content: latinize(textify(entries[eid].content))
-      .replace(/[“”]/g, '"').replace('’', "'")
+      .replace(/[“”]/g, '"')
+      .replace('’', "'"),
   }));
 }
 
 export function sourceListFromSources(sources) {
-  return sources.reduce((list, source) => list.concat({
-    id: source.id,
-    type: 'source',
-    name: `${source.id} ${textify(source.title)}`,
-    authorCode: source.author,
-    display: (
-      <div><h3>{source.id}</h3> <span>{textify(source.title)}</span></div>
-    )
-  }), []);
+  return sources.reduce(
+    (list, source) =>
+      list.concat({
+        id: source.id,
+        type: 'source',
+        name: `${source.id} ${textify(source.title)}`,
+        authorCode: source.author,
+        display: (
+          <div>
+            <h3>{source.id}</h3> <span>{textify(source.title)}</span>
+          </div>
+        ),
+      }),
+    []
+  );
 }
 
 export function biblioFromSources(sources) {
@@ -98,9 +107,7 @@ export function sanitizeMotifName(name) {
 }
 
 export function motifNamesFromMotifs(motifs) {
-  return Object.keys(motifs).map(mid =>
-    sanitizeMotifName(motifs[mid].name)
-  );
+  return Object.keys(motifs).map(mid => sanitizeMotifName(motifs[mid].name));
 }
 
 export function motifDictFromList(motifList) {
@@ -118,16 +125,22 @@ export function authorDictFromList(authorList) {
 }
 
 export function motifDictFromMotifs(motifs) {
-  return Object.keys(motifs).reduce((dict, mid) => ({
-    ...dict, [mid]: sanitizeMotifName(motifs[mid].name || motifs[mid].title)
-  }), {});
+  return Object.keys(motifs).reduce(
+    (dict, mid) => ({
+      ...dict,
+      [mid]: sanitizeMotifName(motifs[mid].name || motifs[mid].title),
+    }),
+    {}
+  );
 }
 
 export function rangeOverlapExists(range1, range2) {
-  return (range1.low >= range2.low && range1.low <= range2.high) ||
+  return (
+    (range1.low >= range2.low && range1.low <= range2.high) ||
     (range1.high >= range2.low && range1.high <= range2.high) ||
     (range2.low >= range1.low && range2.low <= range1.high) ||
-    (range2.high >= range1.low && range2.high <= range1.high);
+    (range2.high >= range1.low && range2.high <= range1.high)
+  );
 }
 
 export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
@@ -137,7 +150,7 @@ export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
   const entries = entryList.slice(1);
   const firstEntry = {
     ...entryList[0],
-    motif: { [entryList[0].motif.id]: entryList[0].motif }
+    motif: { [entryList[0].motif.id]: entryList[0].motif },
   };
   const mergeResult = mergedList.concat(firstEntry);
 
@@ -145,7 +158,7 @@ export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
   log(firstEntry.locations);
   log(' ');
 
-  const filteredEntries = entries.filter((entry) => {
+  const filteredEntries = entries.filter(entry => {
     const score = compare(firstEntry.content, entry.content, minCount);
     if (score) {
       log(entry.content);
@@ -163,8 +176,10 @@ export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
         log('⭐ content');
       }
       // take the longest page range
-      if (entry.locations.low < firstEntry.locations.low
-      || entry.locations.high > firstEntry.locations.high) {
+      if (
+        entry.locations.low < firstEntry.locations.low ||
+        entry.locations.high > firstEntry.locations.high
+      ) {
         log('⭐ locations', entry.locations);
         firstEntry.locations = entry.locations;
       }
@@ -187,15 +202,13 @@ export function mergeEntries({ entryList, minCount, mergedList = [], log }) {
     entryList: filteredEntries,
     minCount,
     mergedList: mergeResult,
-    log
+    log,
   });
 }
 
 export function compare(s1, s2, minCount) {
   return JsDiff.diffWords(s1, s2).reduce((score, r) => {
-    if (r.added ||
-      r.removed ||
-      r.value.split(/\s/).length < minCount) {
+    if (r.added || r.removed || r.value.split(/\s/).length < minCount) {
       return score;
     }
     return score + 1;
@@ -215,7 +228,9 @@ export function groupEntriesBySource(entryList) {
 
 export function motifListFromEntries(entries) {
   const motifs = entries.reduce((motifs, entry) => {
-    entry.motif.forEach((m) => { motifs[m.id] = m; });
+    entry.motif.forEach(m => {
+      motifs[m.id] = m;
+    });
     return motifs;
   }, {});
   return Object.keys(motifs).map(mid => motifs[mid]);
@@ -223,7 +238,7 @@ export function motifListFromEntries(entries) {
 
 export function addMotifsToBiblio(biblio, entriesBySource) {
   const bib = { ...biblio };
-  Object.keys(entriesBySource).forEach((sid) => {
+  Object.keys(entriesBySource).forEach(sid => {
     bib[sid].motifs = motifListFromEntries(entriesBySource[sid]);
   });
   return bib;
@@ -281,10 +296,7 @@ export function makeStemDict(motifDict) {
       .map(w => latinize(w.toLowerCase()))
       .filter(w => !junkWords.includes(w))
       .map(w => pluralize.singular(w))
-      .map(w => w
-        .replace(cleanPattern, '')
-        .replace(suffixPattern, '')
-      )
+      .map(w => w.replace(cleanPattern, '').replace(suffixPattern, ''))
       .filter(w => !junkWords.includes(w))
       .filter(w => w.length > 2);
 
@@ -296,13 +308,17 @@ export function makeStemDict(motifDict) {
 
 export function linkMotifsInAllEntries({ entries, motifDict }) {
   const stemDoc = makeStemDict(motifDict);
-  return Object.keys(entries.sources).reduce((lm, sid) => {
-    lm.sources[sid] = entries.sources[sid].map(source => ({
-      ...source,
-      linkedContent: linkMotifsInEntry({ content: source.content, stemDoc }).entry
-    }));
-    return lm;
-  }, { ...entries });
+  return Object.keys(entries.sources).reduce(
+    (lm, sid) => {
+      lm.sources[sid] = entries.sources[sid].map(source => ({
+        ...source,
+        linkedContent: linkMotifsInEntry({ content: source.content, stemDoc })
+          .entry,
+      }));
+      return lm;
+    },
+    { ...entries }
+  );
 }
 
 // tokenize content and replace motif names with links
@@ -314,43 +330,49 @@ export function linkMotifsInAllEntries({ entries, motifDict }) {
 export function linkMotifsInEntry({ content, stemDoc }) {
   const words = content.split(' ');
   let motifDict = {};
-  const entry = words.map((word) => {
-    // stem-ify
-    const stemifiedWord = stemify(word);
-    const stemWord
-      = pluralize.singular(stemifiedWord).replace(suffixPattern, '');
-    const entryMotifDict = stemDoc[stemWord];
-    if (!entryMotifDict) {
-      return word;
-    }
-    // merge motifs with cumulitive motif list for entry
-    motifDict = { ...motifDict, ...entryMotifDict };
-    // move punctuation out of link
-    const pre = word.match(/^[.,![\]*():;“”?]/);
-    const post = word.match(/[.,![\]*():;“”?]$/);
-    if (post) {
-      word = word.substr(0, word.length - 1);
-    }
-    if (pre) {
-      word = word.substr(1);
-    }
-    // generate motif link urls
-    const midList = Object.keys(entryMotifDict);
-    let url = `/motif/${midList[0]}`;
-    if (midList.length > 1) {
-      url = `/disambiguate/motif?mids=${
-        midList.join(',')
-      }`;
-    }
-    const link = `<a href='${url}'>${word}</a>`;
-    return (pre ? pre[0] : '') + link + (post ? post[0] : '');
-  }).join(' ');
+  const entry = words
+    .map(word => {
+      // stem-ify
+      const stemifiedWord = stemify(word);
+      const stemWord = pluralize
+        .singular(stemifiedWord)
+        .replace(suffixPattern, '');
+      const entryMotifDict = stemDoc[stemWord];
+      if (!entryMotifDict) {
+        return word;
+      }
+      // merge motifs with cumulitive motif list for entry
+      motifDict = { ...motifDict, ...entryMotifDict };
+      // move punctuation out of link
+      const pre = word.match(/^[.,![\]*():;“”?]/);
+      const post = word.match(/[.,![\]*():;“”?]$/);
+      if (post) {
+        word = word.substr(0, word.length - 1);
+      }
+      if (pre) {
+        word = word.substr(1);
+      }
+      // generate motif link urls
+      const midList = Object.keys(entryMotifDict);
+      let url = `/motif/${midList[0]}`;
+      if (midList.length > 1) {
+        url = `/disambiguate/motif?mids=${midList.join(',')}`;
+      }
+      const link = `<a href='${url}'>${word}</a>`;
+      return (pre ? pre[0] : '') + link + (post ? post[0] : '');
+    })
+    .join(' ');
 
   return {
     entry,
-    motifs: Object.keys(motifDict).reduce((motifList, id) => motifList.concat({
-      name: motifDict[id], id
-    }), [])
+    motifs: Object.keys(motifDict).reduce(
+      (motifList, id) =>
+        motifList.concat({
+          name: motifDict[id],
+          id,
+        }),
+      []
+    ),
   };
 }
 
@@ -365,7 +387,7 @@ export function linkMotifsInEntry({ content, stemDoc }) {
 // }
 export function filterEntriesByAuthor({ entryList, author }) {
   const cfauthorsDict = {};
-  const filteredEntryList = entryList.filter((entry) => {
+  const filteredEntryList = entryList.filter(entry => {
     if (entry.source.author !== author) {
       // record author
       cfauthorsDict[entry.source.author] = true;
@@ -377,4 +399,22 @@ export function filterEntriesByAuthor({ entryList, author }) {
     filteredEntryList,
     cfauthors: Object.keys(cfauthorsDict),
   };
+}
+export function entriesByLocation(entries) {
+  const locationsDict = entries.reduce((dict, entry) => {
+    if (!dict[entry.locations.raw]) {
+      dict[entry.locations.raw] = { locations: entry.locations, entries: [] };
+    }
+    dict[entry.locations.raw].entries.push(entry);
+    return dict;
+  }, {});
+  return Object.values(locationsDict)
+    .sort((a, b) => a.locations.low - b.locations.low)
+    .map(location => ({
+      raw: location.locations.raw,
+      entries: location.entries.map(entry => {
+        const { content, linkedContent, motif, starred } = entry;
+        return { content, linkedContent, motifs: motif, starred };
+      }),
+    }));
 }

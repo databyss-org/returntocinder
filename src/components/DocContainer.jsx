@@ -30,7 +30,8 @@ const getAsideTerm = location => {
 let mainElement = null;
 
 const getQuery = ({ location, match, app }) => {
-  let { term, filterBy } = match.params;
+  let { term } = match.params;
+  const { groupBy, filterBy } = match.params;
   let author = DEFAULT_AUTHOR;
   let resource = term;
 
@@ -76,6 +77,7 @@ const getQuery = ({ location, match, app }) => {
     source: match.params[0] === 'source',
     aside,
     isLinked: app.motifLinksAreActive,
+    groupBy,
     filterBy,
   };
 };
@@ -150,7 +152,15 @@ const DocContainer = ({
                 motif={motif}
                 cfList={
                   motif.cfauthors
-                    ? motif.cfauthors.map(id => app.authorDict[id])
+                    ? motif.cfauthors
+                        .concat(DEFAULT_AUTHOR)
+                        .reduce(
+                          (list, id) =>
+                            query.author === id
+                              ? list
+                              : list.concat(app.authorDict[id]),
+                          []
+                        )
                     : null
                 }
                 meta={
@@ -161,7 +171,7 @@ const DocContainer = ({
                 author={app.authorDict[query.author]}
                 query={query}
                 source={query.filterBy && app.biblio[query.filterBy]}
-                showAll={app.showAllMotifEntries}
+                showAll={!query.groupBy}
               />
             ) : (
               <Doc query={query} path={['main']} ready={state === 'entered'} />
@@ -230,6 +240,7 @@ export default compose(
                   mid: query.resource,
                   author: query.author,
                   sid: query.filterBy,
+                  showAll: !query.groupBy,
                 }),
             }
           : {}),

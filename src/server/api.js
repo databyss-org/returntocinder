@@ -15,7 +15,7 @@ import { list as listAuthors } from '../lib/data/authors';
 import { list as listConfig } from '../lib/data/config';
 import { get as getPage } from '../lib/data/pages';
 import { get as getMenu } from '../lib/data/menus';
-import { motifDictFromList } from '../lib/indexers';
+import { motifDictFromList, entriesByLocation } from '../lib/indexers';
 
 const router = express.Router();
 
@@ -46,6 +46,7 @@ router.get('/motifs/:mid', async (req, res) => {
   return res.status(200).json({
     ...motif,
     sources,
+    entryCount: sources.reduce((sum, src) => sum + src.entryCount, 0),
   });
 });
 
@@ -63,7 +64,15 @@ router.get('/motifs/:mid/_all', async (req, res) => {
   return res.status(200).json({
     ...motif,
     entryCount,
-    sources,
+    sources: Object.values(sources).reduce(
+      (entries, source) =>
+        entries.concat({
+          title: source[0].source.title,
+          display: source[0].source.display,
+          locations: entriesByLocation(source),
+        }),
+      []
+    ),
   });
 });
 
@@ -79,27 +88,11 @@ router.get('/motifs/:mid/:sid', async (req, res) => {
     author: req.query.author,
     groupBy: 'source',
   });
-  const locationsDict = sources[req.params.sid].reduce((dict, entry) => {
-    if (!dict[entry.locations.raw]) {
-      dict[entry.locations.raw] = { locations: entry.locations, entries: [] };
-    }
-    dict[entry.locations.raw].entries.push(entry);
-    return dict;
-  }, {});
-  const entriesByLocation = Object.values(locationsDict)
-    .sort((a, b) => a.locations.low - b.locations.low)
-    .map(location => ({
-      raw: location.locations.raw,
-      entries: location.entries.map(entry => {
-        const { content, linkedContent, motif, starred } = entry;
-        return { content, linkedContent, motifs: motif, starred };
-      }),
-    }));
 
   return res.status(200).json({
     ...motif,
     entryCount,
-    entriesByLocation,
+    entriesByLocation: entriesByLocation(sources[req.params.sid]),
   });
 });
 
@@ -155,7 +148,9 @@ router.get('/config', async (req, res) => {
 
 router.get('/sources', async (req, res) => {
   const sources = await listSources();
-  return res.status(200).json(sources);
+  return res
+    .status(200)
+    .json(sources.map(src => ({ ...src, name: src.title })));
 });
 
 router.get('/authors', async (req, res) => {
