@@ -54,6 +54,7 @@ export default {
           motif,
           author,
           sid,
+          showAll,
         },
       });
     };
@@ -237,6 +238,12 @@ export default {
     return {
       type: 'SHOW_DISAMBIGUATE',
       payload: { midList, position, target, className },
+    };
+  },
+  toggleSourceModal(sourceId) {
+    return {
+      type: 'TOGGLE_SOURCE_MODAL',
+      payload: sourceId,
     };
   },
 };

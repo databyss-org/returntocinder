@@ -37,6 +37,7 @@ const initialState = {
   idLinksAreActive: false,
   showAllMotifEntries: false,
   showAllSourceEntries: false,
+  sourceModalIsActive: false,
 };
 
 export default function appReducer(state = initialState, action) {
@@ -63,8 +64,11 @@ export default function appReducer(state = initialState, action) {
       };
 
     case 'RECEIVE_MOTIF': {
-      const { author, mid, motif, sid } = action.payload;
-      const key = sid ? `${mid}:${author}:${sid}` : `${mid}:${author}`;
+      const { author, mid, motif, sid, showAll } = action.payload;
+      let key = sid ? `${mid}:${author}:${sid}` : `${mid}:${author}`;
+      if (!sid && !showAll) {
+        key = `${key}:sources`;
+      }
       return {
         ...state,
         doc: {
@@ -255,6 +259,13 @@ export default function appReducer(state = initialState, action) {
           isVisible: true,
           ...action.payload,
         },
+      };
+    }
+
+    case 'TOGGLE_SOURCE_MODAL': {
+      return {
+        ...state,
+        sourceModalIsActive: action.payload,
       };
     }
 

@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
 import qs from 'qs';
+import { ThemeProvider } from '@databyss-org/ui';
 import Doc from './Doc.jsx';
 import DocHead from './DocHead.jsx';
 import Disambiguate from './Disambiguate.jsx';
@@ -15,6 +16,7 @@ import freezeProps from '../hoc/freezeProps';
 import { parseTerm } from '../lib/url';
 import styles from '../app.scss';
 import MotifLanding from './Landing/MotifLanding.jsx';
+import theme from '../theme';
 
 const { DEFAULT_AUTHOR } = process.env;
 
@@ -56,6 +58,9 @@ const getQuery = ({ location, match, app }) => {
         term = `${resource}:${author}:${filterBy}`;
       } else {
         ({ author, resource, term } = parseTerm(term));
+        if (groupBy) {
+          term = `${term}:sources`;
+        }
       }
       break;
     }
@@ -71,6 +76,7 @@ const getQuery = ({ location, match, app }) => {
     term,
     author,
     resource,
+    authoredResource: `${resource}:${author}`,
     type: match.params[0],
     search: match.params[0] === 'search',
     motif: match.params[0] === 'motif',
@@ -127,74 +133,80 @@ const DocContainer = ({
   app,
 }) => (
   // console.log('MATCH', match);
-  <Transition in={Boolean(query.aside)} timeout={300}>
-    {state => (
-      <div
-        onClick={e => onClick({ e, history, showDisambiguate })}
-        className={cx(styles.docContainer, {
-          [styles.withAside]: query.aside,
-          [styles.landing]: query.motif,
-        })}
-      >
-        {!query.motif && <DocHead transitionState={state} query={query} />}
+  <ThemeProvider theme={theme}>
+    <Transition in={Boolean(query.aside)} timeout={300}>
+      {state => (
         <div
-          className={cx(styles.doc, styles[state], {
-            [styles.show]: true,
+          onClick={e => onClick({ e, history, showDisambiguate })}
+          className={cx(styles.docContainer, {
+            [styles.withAside]: query.aside,
+            [styles.landing]: query.motif,
           })}
         >
-          <main
-            ref={elem => {
-              mainElement = elem;
-            }}
+          {!query.motif && <DocHead transitionState={state} query={query} />}
+          <div
+            className={cx(styles.doc, styles[state], {
+              [styles.show]: true,
+            })}
           >
-            {query.motif ? (
-              <MotifLanding
-                motif={motif}
-                cfList={
-                  motif.cfauthors
-                    ? motif.cfauthors
-                        .concat(DEFAULT_AUTHOR)
-                        .reduce(
-                          (list, id) =>
-                            query.author === id
-                              ? list
-                              : list.concat(app.authorDict[id]),
-                          []
-                        )
-                    : null
-                }
-                meta={
-                  query.filterBy
-                    ? app.config.source_motif_meta
-                    : app.config.motif_meta
-                }
-                author={app.authorDict[query.author]}
-                query={query}
-                source={query.filterBy && app.biblio[query.filterBy]}
-                showAll={!query.groupBy}
-              />
-            ) : (
-              <Doc query={query} path={['main']} ready={state === 'entered'} />
+            <main
+              ref={elem => {
+                mainElement = elem;
+              }}
+            >
+              {query.motif ? (
+                <MotifLanding
+                  motif={motif}
+                  cfList={
+                    motif.cfauthors
+                      ? motif.cfauthors
+                          .concat(DEFAULT_AUTHOR)
+                          .reduce(
+                            (list, id) =>
+                              query.author === id
+                                ? list
+                                : list.concat(app.authorDict[id]),
+                            []
+                          )
+                      : null
+                  }
+                  meta={
+                    query.filterBy
+                      ? app.config.source_motif_meta
+                      : app.config.motif_meta
+                  }
+                  author={app.authorDict[query.author]}
+                  query={query}
+                  source={query.filterBy && app.biblio[query.filterBy]}
+                  showAll={!query.groupBy}
+                />
+              ) : (
+                <Doc
+                  query={query}
+                  path={['main']}
+                  ready={state === 'entered'}
+                />
+              )}
+              <Disambiguate />
+            </main>
+            {query.aside && (
+              <aside>
+                <Doc
+                  query={{
+                    ...query,
+                    motif: true,
+                    ...query.aside,
+                  }}
+                  path={['aside']}
+                  ready={state === 'entered'}
+                />
+              </aside>
             )}
-            <Disambiguate />
-          </main>
-          {query.aside && (
-            <aside>
-              <Doc
-                query={{
-                  ...query,
-                  motif: true,
-                  ...query.aside,
-                }}
-                path={['aside']}
-                ready={state === 'entered'}
-              />
-            </aside>
-          )}
+          </div>
         </div>
-      </div>
-    )}
-  </Transition>
+      )}
+    </Transition>
+  </ThemeProvider>
 );
 
 export default compose(

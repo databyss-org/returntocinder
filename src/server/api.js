@@ -67,9 +67,11 @@ router.get('/motifs/:mid/_all', async (req, res) => {
     sources: Object.values(sources).reduce(
       (entries, source) =>
         entries.concat({
-          title: source[0].source.title,
+          name: source[0].source.name,
           display: source[0].source.display,
+          id: source[0].source.id,
           locations: entriesByLocation(source),
+          entryCount: source.length,
         }),
       []
     ),
@@ -97,13 +99,20 @@ router.get('/motifs/:mid/:sid', async (req, res) => {
 });
 
 router.get('/sources/:sid', async (req, res) => {
-  const motifs = await motifsBySource({
+  const entries = await listEntries({
     sourceId: req.params.sid,
   });
-  if (!motifs.length) {
+  if (!entries.length) {
     return res.status(404).end();
   }
-  return res.status(200).json(motifs);
+  return res.status(200).json(entries);
+  // const motifs = await motifsBySource({
+  //   sourceId: req.params.sid,
+  // });
+  // if (!motifs.length) {
+  //   return res.status(404).end();
+  // }
+  // return res.status(200).json(motifs);
 });
 
 router.get('/sources/:sid/_all', async (req, res) => {
@@ -150,7 +159,7 @@ router.get('/sources', async (req, res) => {
   const sources = await listSources();
   return res
     .status(200)
-    .json(sources.map(src => ({ ...src, name: src.title })));
+    .json(sources.map(src => ({ ...src, name: src.title, display: src.id })));
 });
 
 router.get('/authors', async (req, res) => {

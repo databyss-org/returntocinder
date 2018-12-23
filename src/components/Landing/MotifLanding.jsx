@@ -1,18 +1,19 @@
 import React from 'react';
 import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import {
   Landing,
   LandingEntries,
   LandingSources,
   Link,
   Raw,
-  ThemeProvider,
   Entry,
   EntriesByLocation,
   EntriesBySource,
 } from '@databyss-org/ui';
 import renderTemplate from 'react-text-templates';
-import theme from '../../theme';
+import actions from '../../redux/app/actions';
 
 class MotifLanding extends React.Component {
   constructor(props) {
@@ -21,10 +22,12 @@ class MotifLanding extends React.Component {
     this.renderEntries = this.renderEntries.bind(this);
     this.renderSourcesToc = this.renderSourcesToc.bind(this);
     this.updateTemplates = this.updateTemplates.bind(this);
+    this.onMotifLinksChange = this.onMotifLinksChange.bind(this);
+    this.onAllEntriesClick = this.onAllEntriesClick.bind(this);
+    this.onSourcesClick = this.onSourcesClick.bind(this);
   }
   updateTemplates() {
-    const { motif, cfList, meta, author, query, source } = this.props;
-    console.log('source', source);
+    const { motif, cfList, meta, author, query, source, showAll } = this.props;
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
       MOTIF_NAME: motif.name,
@@ -43,7 +46,11 @@ class MotifLanding extends React.Component {
         meta.LANDING_SUB_HEADING &&
         renderTemplate(meta.LANDING_SUB_HEADING, this.templateTokens),
       renderCfItem: cf => (
-        <Link href={`/motif/${query.resource}:${cf.id}`}>{cf.lastName}</Link>
+        <Link
+          href={`/motif/${query.resource}:${cf.id}${showAll ? '' : '/sources'}`}
+        >
+          {cf.lastName}
+        </Link>
       ),
       contentTitle: this.contentTitle,
     };
@@ -51,11 +58,28 @@ class MotifLanding extends React.Component {
   onSourceClick(href) {
     return () => this.props.history.push(href);
   }
+  onEntrySourceOnClick(source) {
+    return () => {
+      this.props.toggleSourceModal(source.id);
+    };
+  }
+  onMotifLinksChange(checked) {
+    this.props.toggleMotifLinks(checked);
+  }
+  onAllEntriesClick() {
+    this.props.history.push(`/motif/${this.props.query.authoredResource}`);
+  }
+  onSourcesClick() {
+    this.props.history.push(
+      `/motif/${this.props.query.authoredResource}/sources`
+    );
+  }
   renderSourcesToc() {
     const { motif, query } = this.props;
     return (
       <LandingSources
         sources={motif.sources}
+        onAllEntriesClick={this.onAllEntriesClick}
         renderSource={source => {
           const href = `/motif/${query.resource}/sources/${source.id}`;
           return (
@@ -72,13 +96,26 @@ class MotifLanding extends React.Component {
     );
   }
   renderEntries(source) {
-    const renderEntry = entry => <Entry {...entry} />;
+    const { motifLinksAreActive } = this.props.app;
+    const renderEntry = entry => (
+      <Entry
+        sourceHref={`/source/${source ? source.id : entry.source.id}`}
+        onSourceClick={this.onEntrySourceOnClick(source || entry.source)}
+        {...entry}
+        content={motifLinksAreActive ? entry.linkedContent : entry.content}
+      />
+    );
     return (
-      <LandingEntries>
+      <LandingEntries
+        onMotifLinksChange={this.onMotifLinksChange}
+        showMotifLinks={motifLinksAreActive}
+        onSourcesClick={this.onSourcesClick}
+      >
         {source ? (
           <EntriesByLocation
             locations={this.props.motif.entriesByLocation}
             renderEntry={renderEntry}
+            source={source}
           />
         ) : (
           <EntriesBySource
@@ -93,15 +130,19 @@ class MotifLanding extends React.Component {
     const { source, showAll } = this.props;
     this.updateTemplates();
     return (
-      <ThemeProvider theme={theme}>
-        <Landing {...this.landingProps}>
-          {source || showAll
-            ? this.renderEntries(source)
-            : this.renderSourcesToc()}
-        </Landing>
-      </ThemeProvider>
+      <Landing {...this.landingProps}>
+        {source || showAll
+          ? this.renderEntries(source)
+          : this.renderSourcesToc()}
+      </Landing>
     );
   }
 }
 
-export default withRouter(MotifLanding);
+export default compose(
+  connect(
+    state => state,
+    actions
+  ),
+  withRouter
+)(MotifLanding);

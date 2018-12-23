@@ -73,17 +73,12 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => (
                   )}
                 />
                 <Navbar withMaskClassName={styles.withMask} />
-                <Route
-                  path="(.*)/source::sid/(.*)?"
-                  children={({ match, ...props }) => (
-                    <DocModal isActive={Boolean(match)} {...props}>
-                      <SourceModal
-                        isActive={match}
-                        sid={match && match.params.sid}
-                      />
-                    </DocModal>
-                  )}
-                />
+                <DocModal isActive={app.sourceModalIsActive}>
+                  <SourceModal
+                    isActive={app.sourceModalIsActive}
+                    sid={app.sourceModalIsActive}
+                  />
+                </DocModal>
                 <Front />
                 <Menu items={menu} />
               </div>
