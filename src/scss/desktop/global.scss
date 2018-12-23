@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
   overflow: hidden;
 }
 body {
@@ -23,16 +24,13 @@ h2 {
   font-weight: bold;
   font-size: 14pt;
 }
-h3, h3 a {
+h3,
+h3 a {
   display: inline;
   color: #675d71;
   font-size: 12pt;
   font-weight: bold;
   text-decoration: none;
-}
-
-article {
-  padding-bottom: 2.5em;
 }
 
 em {
@@ -49,7 +47,7 @@ section {
 
   span {
     display: block;
-    margin-top: .6em;
+    margin-top: 0.6em;
     position: relative;
 
     &:first-of-type {

@@ -74,7 +74,7 @@ async function rtfToJson({ rtfPath, motifDict, biblio, stdOut, stdErr }) {
         entry.source = {
           display: dsid,
           id: sid,
-          name: biblio[sid] && biblio[sid].name,
+          title: biblio[sid] && biblio[sid].title,
           author: code
         };
 

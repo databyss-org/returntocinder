@@ -8,6 +8,7 @@ import searchActions from '../redux/search/actions';
 
 import EntriesByMotif from './EntriesByMotif.jsx';
 import EntriesBySource from './EntriesBySource.jsx';
+import SourcesByMotif from './SourcesByMotif.jsx';
 
 const { DEFAULT_AUTHOR } = process.env;
 
@@ -68,10 +69,18 @@ class Doc extends PureComponent {
   _updateRows(props) {
     const { entriesBySource, doc } = props.appState;
     const { results } = props.searchState;
-    const { search, motif, source, term, isLinked, resource } = this.query;
+    const {
+      search,
+      motif,
+      source,
+      term,
+      isLinked,
+      resource,
+      filterBy
+    } = this.query;
     const { path } = this.props;
 
-    if (motif) {
+    if (motif && filterBy) {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>
         <EntriesByMotif
@@ -83,6 +92,10 @@ class Doc extends PureComponent {
           path={path}
           setScroll={this.setScroll}
           />;
+    } else if (motif) {
+      this._rows = [term];
+      this._rowComponent = () =>
+        <SourcesByMotif doc={doc} term={term} />;
     } else if (source) {
       this._rows = [term];
       this._rowComponent = ({ index, key, style }) =>

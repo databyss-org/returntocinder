@@ -12,6 +12,7 @@ import api from './server/api';
 import sockets from './server/sockets';
 import upload from './server/upload';
 import sitemap from './server/sitemap';
+import { renderMetaTemplate } from './lib/template';
 // import motif from './server/motif';
 
 dotenv.config();
@@ -26,7 +27,7 @@ const middleware = [
   express.static('./public')
 ];
 
-function getClientApp(req, res) {
+async function getClientApp(req, res) {
   const { API_ADMIN_TOKEN } = process.env;
 
   if (req.path.match(/\/source:(.*)?/)) {
@@ -34,11 +35,20 @@ function getClientApp(req, res) {
   }
 
   const indexFilename = API_ADMIN_TOKEN ? 'admin' : 'index';
-
-  res.sendFile(path.join(
+  const templatePath = path.join(
     __dirname.replace('/build', '').replace('/src', ''),
-    `/public/${indexFilename}.html`)
+    `/public/${indexFilename}.html`
   );
+  try {
+    const rendered = await renderMetaTemplate({
+      templatePath,
+      requestPath: req.path
+    });
+    return res.send(rendered);
+  } catch (err) {
+    console.error(err);
+    return res.status(501).end();
+  }
 }
 
 app.get('/', getClientApp);

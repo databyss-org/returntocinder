@@ -7,21 +7,23 @@ import { rangeOverlapExists } from '../lib/indexers';
 const formatAsidePath = (pathname, mid) =>
   `${pathname.replace(/\/motif:[^/]+/, '')}/motif:${mid}`;
 
-const parseRange = (range) => {
+const parseRange = range => {
   const r = range.split('-');
   return {
     low: r[0],
-    high: r.length > 1 ? r[1] : r[0]
+    high: r.length > 1 ? r[1] : r[0],
   };
 };
 
 const sourceAndRangeMatch = ({ entry, location }) => {
   const [source, range] = location.hash.replace('#', '').split('.');
-  return entry.source.id === source &&
-    rangeOverlapExists(parseRange(range), entry.locations);
+  return (
+    entry.source.id === source &&
+    rangeOverlapExists(parseRange(range), entry.locations)
+  );
 };
 
-const getAsideMotif = (location) => {
+const getAsideMotif = location => {
   const asidePath = '(.*)/motif::term';
   const match = matchPath(location.pathname, asidePath);
   if (match) {
@@ -31,7 +33,7 @@ const getAsideMotif = (location) => {
 };
 
 const activeStyle = {
-  backgroundColor: '#f0f0f0'
+  backgroundColor: '#f0f0f0',
 };
 
 const copyIdToClipboard = ({ e, id }) => {
@@ -53,16 +55,18 @@ const Entry = ({
   location,
   isLinkedContent,
   idLinksAreActive,
-  showMotifNav
+  showMotifNav,
 }) => {
-  const eid = entry.locations.low === entry.locations.high
-    ? `${entry.locations.low}`
-    : `${entry.locations.low}-${entry.locations.high}`;
+  const eid =
+    entry.locations.low === entry.locations.high
+      ? `${entry.locations.low}`
+      : `${entry.locations.low}-${entry.locations.high}`;
   const { hash } = location;
   const entryHash = `#${path[1]}.${eid}`;
-  const isActive = path[0] === 'main'
-    ? hash === `${entryHash}.${cardinal}`
-    : sourceAndRangeMatch({ entry, location });
+  const isActive =
+    path[0] === 'main'
+      ? hash === `${entryHash}.${cardinal}`
+      : sourceAndRangeMatch({ entry, location });
   const elemId = c => `${path.join('.')}.${eid}.${c}`;
   const asideMotif = isActive && getAsideMotif(location);
 
@@ -70,46 +74,45 @@ const Entry = ({
     <span
       style={{
         style,
-        ...isActive ? activeStyle : {}
+        ...(isActive ? activeStyle : {}),
       }}
       id={elemId(cardinal)}
-      ref={elem => elem && isActive && setScroll(hash)
-        ? scrollDocToElement(path[0], elem)
-        : null
+      ref={elem =>
+        elem && isActive && setScroll(hash)
+          ? scrollDocToElement(path[0], elem)
+          : null
       }
     >
       {inlineHead}
       <p
         style={inlineHead ? { display: 'inline' } : {}}
-        dangerouslySetInnerHTML={{ __html: [
-          inlineHead ? '&nbsp;' : '',
-          entry.starred ? '***' : '',
-          entry.locations.repeat && showRepeats ? '—— ' : entry.locations.raw,
-          highlighter({
-            searchWords: highlight,
-            textToHighlight: content
-          })
-        ].join('') }}
+        dangerouslySetInnerHTML={{
+          __html: [
+            inlineHead ? '&nbsp;' : '',
+            entry.starred ? '***' : '',
+            entry.locations.repeat && showRepeats ? '—— ' : entry.locations.raw,
+            highlighter({
+              searchWords: highlight,
+              textToHighlight: content,
+            }),
+          ].join(''),
+        }}
       />
       {idLinksAreActive && (
-        <button
-          onClick={e => copyIdToClipboard({ e, id: entry.id })}
-        >
+        <button onClick={e => copyIdToClipboard({ e, id: entry.id })}>
           👶
         </button>
       )}
       {entry.motif && showMotifNav ? (
-        <nav>{entry.motif.map(m =>
-          <Link
-            key={m.id}
-            dangerouslySetInnerHTML={{ __html: m.name }}
-            to={{
-              pathname: formatAsidePath(location.pathname, m.id),
-              hash: `${entryHash}.${cardinal}`
-            }}
-            style={asideMotif === m.id ? { fontWeight: 'bold' } : {}}
-          />
-        )}</nav>
+        <nav>
+          {entry.motif.map(m => (
+            <Link
+              key={m.id}
+              dangerouslySetInnerHTML={{ __html: m.name }}
+              to={`/motif/${m.id}`}
+            />
+          ))}
+        </nav>
       ) : null}
     </span>
   );
