@@ -13,23 +13,22 @@ class Navbar extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      searchIsVisible: false
+      searchIsVisible: false,
     };
   }
   hideMenu() {
     this.props.history.goBack();
   }
   aboutIsVisible() {
-    return this.props.location.pathname.match('about/');
+    return (
+      this.props.location.pathname.match('about/') ||
+      this.props.location.hash.match('about/')
+    );
   }
   onAboutClick() {
-    const { location, history } = this.props;
-    if (this.aboutIsVisible()) {
-      history.push(location.pathname.replace(/\/about\/.+/, ''));
-    } else {
-      history.push(
-        `${location.pathname === '/' ? '' : location.pathname}/about/frontis`
-      );
+    const { history } = this.props;
+    if (!this.aboutIsVisible()) {
+      history.push('/about/frontis');
     }
   }
   onMenuClick(evt) {
@@ -44,7 +43,7 @@ class Navbar extends PureComponent {
     return (
       <div
         className={cx(styles.navbar, {
-          [styles.searchIsFocused]: appState.search.isFocused
+          [styles.searchIsFocused]: appState.search.isFocused,
         })}
       >
         <div className={styles.barContainer}>
@@ -74,7 +73,7 @@ class Navbar extends PureComponent {
               </button>
               <div
                 className={cx(styles.menuBar, {
-                  [styles.show]: appState.searchIsVisible
+                  [styles.show]: appState.searchIsVisible,
                 })}
               >
                 <Search withMaskClassName={this.props.withMaskClassName} />
@@ -90,7 +89,7 @@ class Navbar extends PureComponent {
 export default withRouter(
   connect(
     state => ({
-      appState: state.app
+      appState: state.app,
     }),
     actions
   )(Navbar)

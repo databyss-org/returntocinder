@@ -29,7 +29,10 @@ const EntriesByMotif = ({
           inlineHead={
             <EntrySource
               href={`/source/${sid}`}
-              onClick={() => toggleSourceModal(sid)}
+              onClick={() => {
+                history.push(`#source:${sid}`);
+                toggleSourceModal(sid);
+              }}
             >
               {sid}
             </EntrySource>

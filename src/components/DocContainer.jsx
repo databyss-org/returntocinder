@@ -53,7 +53,7 @@ const getQuery = ({ location, match, app }) => {
   switch (match.params[0]) {
     case 'search':
     case 'motif': {
-      if (filterBy) {
+      if (filterBy && filterBy !== 'about') {
         ({ author } = app.biblio[filterBy]);
         term = `${resource}:${author}:${filterBy}`;
       } else {

@@ -20,6 +20,7 @@ import Front from './Front.jsx';
 import ScrollToTop from './ScrollToTop.jsx';
 import actions from '../redux/app/actions';
 import SyncHistory from './SyncHistory.jsx';
+import { aboutHash } from '../lib/url';
 
 import styles from '../app.scss';
 
@@ -53,21 +54,35 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => (
                   />
                 </div>
                 <Route
-                  path="(.*)about/:page"
-                  children={({ match }) => (
-                    <ModalMenu isActive={match}>
+                  path="/about/:page"
+                  children={({ match, location }) => (
+                    <ModalMenu isActive={match || location.hash.match('about')}>
                       <Route
-                        path="(.*)about/:page"
-                        render={({ match }) => (
-                          <Page
-                            path={`/about/${match.params.page}`}
-                            subnavPath="/about"
-                            contentFunc={
-                              match.params.page === 'bibliography' &&
-                              biblioToPage({ biblio, authors })
-                            }
-                          />
-                        )}
+                        path="/about/:page"
+                        children={({ match, location }) => {
+                          let aboutPath;
+                          let useHash = false;
+                          if (!match && aboutHash(location.hash)) {
+                            // get about path from hash
+                            aboutPath = aboutHash(location.hash);
+                            useHash = true;
+                          } else if (match) {
+                            aboutPath = match.params.page;
+                          } else {
+                            return null;
+                          }
+                          return (
+                            <Page
+                              path={`/about/${aboutPath}`}
+                              subnavPath="/about"
+                              contentFunc={
+                                aboutPath === 'bibliography' &&
+                                biblioToPage({ biblio, authors })
+                              }
+                              useHash={useHash}
+                            />
+                          );
+                        }}
                       />
                     </ModalMenu>
                   )}

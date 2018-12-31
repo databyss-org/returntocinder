@@ -34,14 +34,17 @@ class Search extends PureComponent {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onSuggestionsFetchRequested = _.debounce(
       this.onSuggestionsFetchRequested.bind(this),
-      300, { leading: true, trailing: true }
+      300,
+      { leading: true, trailing: true }
     );
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this);
     this.onClearInput = this.onClearInput.bind(this);
     this.renderInputComponent = this.renderInputComponent.bind(this);
     this.renderSuggestion = this.renderSuggestion.bind(this);
-    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this);
+    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(
+      this
+    );
     this.getSuggestions = this.getSuggestions.bind(this);
   }
   componentDidMount() {
@@ -50,12 +53,12 @@ class Search extends PureComponent {
 
     if (motif) {
       this.setState({
-        value: textify(doc[motif].name)
+        value: textify(doc[motif].name),
       });
     }
     if (source) {
       this.setState({
-        value: textify(sourceList.find(s => s.id === source).name)
+        value: textify(sourceList.find(s => s.id === source).name),
       });
     }
   }
@@ -76,9 +79,12 @@ class Search extends PureComponent {
       return [{ suggestions: [] }];
     }
     const { sourceList, authorDict } = this.props.appState;
-    console.log(authorDict)
+    console.log(authorDict);
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
-    const searchWords = value.trim().toLowerCase().split(wordSeparator);
+    const searchWords = value
+      .trim()
+      .toLowerCase()
+      .split(wordSeparator);
 
     if (!searchWords.length || searchWords[0] === '') {
       return [{ suggestions: [] }];
@@ -104,71 +110,91 @@ class Search extends PureComponent {
     };
 
     // base matcher
-    const baseMatch = m => matchStems(
-      latinize(m.name).toLowerCase().split(wordSeparator),
-      searchWords
-      // only pass when all query terms are matched
-    ) === searchWords.length;
+    const baseMatch = m =>
+      matchStems(
+        latinize(m.name)
+          .toLowerCase()
+          .split(wordSeparator),
+        searchWords
+        // only pass when all query terms are matched
+      ) === searchWords.length;
 
     // filter collection
-    const findMatches = collection => collection
-      .filter(m => baseMatch);
+    const findMatches = collection => collection.filter(m => baseMatch);
 
-    const findSourceMatches = collection => collection
-      .filter(m => baseMatch(m) ||
-        matchStems(
-          [
-            latinize(authorDict[m.authorCode].lastName).toLowerCase(),
-            latinize(authorDict[m.authorCode].firstName).toLowerCase()
-          ],
-          searchWords
-        ) === searchWords.length
+    const findSourceMatches = collection =>
+      collection.filter(
+        m =>
+          baseMatch(m) ||
+          matchStems(
+            [
+              latinize(authorDict[m.authorCode].lastName).toLowerCase(),
+              latinize(authorDict[m.authorCode].firstName).toLowerCase(),
+            ],
+            searchWords
+          ) === searchWords.length
       );
 
     // sort matches so that results starting with query are prioritized
-    const sortMatches = collection => collection
-      .sort((a, b) => {
-        if (a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
-        && !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+    const sortMatches = collection =>
+      collection.sort((a, b) => {
+        if (
+          a.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
+          !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+        ) {
           return -1;
         }
-        if (b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
-        && !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+        if (
+          b.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
+          !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+        ) {
           return 1;
         }
         return 0;
       });
 
     const sortBase = (a, b) => {
-      if (a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
-      && !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+      if (
+        a.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
+        !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+      ) {
         return -1;
       }
-      if (b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
-      && !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())) {
+      if (
+        b.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
+        !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
+      ) {
         return 1;
       }
       return 0;
     };
 
-    const sortSourceMatches = collection => collection
-      .sort((a, b) => {
+    const sortSourceMatches = collection =>
+      collection.sort((a, b) => {
         const authorA = authorDict[a.authorCode];
         const authorB = authorDict[b.authorCode];
-        if (authorA.firstName.toLowerCase().startsWith(searchWords[0])
-        && !authorB.firstName.toLowerCase().startsWith(searchWords[0])) {
+        if (
+          authorA.firstName.toLowerCase().startsWith(searchWords[0]) &&
+          !authorB.firstName.toLowerCase().startsWith(searchWords[0])
+        ) {
           return -1;
         }
-        if (authorB.firstName.toLowerCase().startsWith(searchWords[0])
-        && !authorA.firstName.toLowerCase().startsWith(searchWords[0])) {
+        if (
+          authorB.firstName.toLowerCase().startsWith(searchWords[0]) &&
+          !authorA.firstName.toLowerCase().startsWith(searchWords[0])
+        ) {
           return 1;
         }
-        if (authorA.lastName.toLowerCase().startsWith(searchWords[0])
-        && !authorB.lastName.toLowerCase().startsWith(searchWords[0])) {
+        if (
+          authorA.lastName.toLowerCase().startsWith(searchWords[0]) &&
+          !authorB.lastName.toLowerCase().startsWith(searchWords[0])
+        ) {
           return -1;
         }
-        if (authorB.lastName.toLowerCase().startsWith(searchWords[0])
-        && !authorA.lastName.toLowerCase().startsWith(searchWords[0])) {
+        if (
+          authorB.lastName.toLowerCase().startsWith(searchWords[0]) &&
+          !authorA.lastName.toLowerCase().startsWith(searchWords[0])
+        ) {
           return 1;
         }
         return sortBase(a, b);
@@ -190,7 +216,10 @@ class Search extends PureComponent {
       if (trim) {
         res = trim(res);
       }
-      return res.map((r, idx) => { r.idx = idx; return r; });
+      return res.map((r, idx) => {
+        r.idx = idx;
+        return r;
+      });
     };
 
     const compileDefaults = {
@@ -200,21 +229,23 @@ class Search extends PureComponent {
 
     const motifMatches = compile({
       ...compileDefaults,
-      collection: this.props.appState.motifList.map(
-        m => ({ ...m, type: 'motif' })
-      ),
-      filter: c => c.map(m => ({
+      collection: this.props.appState.motifList.map(m => ({
         ...m,
-        name: m.name.replace(/\(.+?[a-z]+.+?\)/, '')
+        type: 'motif',
       })),
-      trim: trimTo(5)
+      filter: c =>
+        c.map(m => ({
+          ...m,
+          name: m.name.replace(/\(.+?[a-z]+.+?\)/, ''),
+        })),
+      trim: trimTo(5),
     });
 
     const sourceMatches = compile({
       match: findSourceMatches,
       sort: sortSourceMatches,
       collection: sourceList,
-      trim: trimTo(5)
+      trim: trimTo(5),
     });
 
     return [
@@ -222,18 +253,26 @@ class Search extends PureComponent {
         suggestions: [
           {
             type: 'entry',
-            count: this.props.searchState.resultCount
-          }
-        ]
+            count: this.props.searchState.resultCount,
+          },
+        ],
       },
-      ...(motifMatches.length ? [{
-        title: 'Motifs',
-        suggestions: motifMatches
-      }] : []),
-      ...(sourceMatches.length ? [{
-        title: 'Sources',
-        suggestions: sourceMatches
-      }] : [])
+      ...(motifMatches.length
+        ? [
+            {
+              title: 'Motifs',
+              suggestions: motifMatches,
+            },
+          ]
+        : []),
+      ...(sourceMatches.length
+        ? [
+            {
+              title: 'Sources',
+              suggestions: sourceMatches,
+            },
+          ]
+        : []),
     ];
   }
   getSuggestionValue(suggestion) {
@@ -242,13 +281,15 @@ class Search extends PureComponent {
   renderSuggestionsContainer({ containerProps, children, query }) {
     const props = {
       ...containerProps,
-      className: cx(containerProps.className, this.props.withMaskClassName)
+      className: cx(containerProps.className, this.props.withMaskClassName),
     };
     return (
       <div {...props}>
-        <div className={cx(theme.instructions, {
-          [theme.show]: !this.state.value.length
-        })}>
+        <div
+          className={cx(theme.instructions, {
+            [theme.show]: !this.state.value.length,
+          })}
+        >
           Search by word, phrase, name, motif, or source text
         </div>
         {children}
@@ -264,7 +305,9 @@ class Search extends PureComponent {
         />
       ),
       source: (
-        <div className={cx(theme.sourceSuggestion, theme[`row${suggestion.idx}`])}>
+        <div
+          className={cx(theme.sourceSuggestion, theme[`row${suggestion.idx}`])}
+        >
           {suggestion.display}
         </div>
       ),
@@ -279,7 +322,7 @@ class Search extends PureComponent {
             {pluralize('result', this.props.searchState.queryMeta.count)}
           </div>
         </div>
-      )
+      ),
     }[suggestion.type];
   }
   onChange(event, { newValue, method }) {
@@ -288,7 +331,7 @@ class Search extends PureComponent {
     }
     if (newValue && method === 'type') {
       this.setState({
-        value: newValue
+        value: newValue,
       });
       this.setQuery(newValue);
     }
@@ -302,15 +345,19 @@ class Search extends PureComponent {
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
       this.onSearch(`/search/${urlencode(this.state.value)}`);
+    } else if (suggestion.type === 'motif') {
+      this.onSearch(`/${suggestion.type}/${suggestion.id}/sources`);
     } else {
       this.onSearch(`/${suggestion.type}/${suggestion.id}`);
     }
   }
   onSuggestionHighlighted({ suggestion }) {
-    if (!suggestion) { return; }
+    if (!suggestion) {
+      return;
+    }
 
     this.setState({
-      highlightedSuggestion: suggestion
+      highlightedSuggestion: suggestion,
     });
   }
   onSuggestionsFetchRequested({ value, reason }) {
@@ -318,7 +365,7 @@ class Search extends PureComponent {
       // this.props.showMask(true);
     }
     this.setState({
-      suggestions: this.getSuggestions(value)
+      suggestions: this.getSuggestions(value),
     });
   }
   onClearInput(andClose) {
@@ -346,20 +393,19 @@ class Search extends PureComponent {
   renderInputComponent(inputProps) {
     return [
       <input className={theme.input} {...inputProps} key={0} />,
-      <button key={1}
+      <button
+        key={1}
         className={cx(theme.clear, {
-          [theme.show]: this.props.appState.search.isFocused
+          [theme.show]: this.props.appState.search.isFocused,
         })}
         onClick={() => this.onClearInput(true)}
       >
         <CloseIcon />
-      </button>
+      </button>,
     ];
   }
   renderSectionTitle(section) {
-    return (
-      <strong>{section.title}</strong>
-    );
+    return <strong>{section.title}</strong>;
   }
   getSectionSuggestions(section) {
     return section.suggestions;
@@ -374,13 +420,15 @@ class Search extends PureComponent {
         timeout={200}
         onEntered={() => this.inputElement.focus()}
       >
-        {(state) => {
+        {state => {
           return (
-            <div className={cx(theme.search, {
-              [theme.entering]: state === 'entering',
-              [theme.entered]: state === 'entered',
-              [theme.withMenu]: this.props.withMenu
-            })}>
+            <div
+              className={cx(theme.search, {
+                [theme.entering]: state === 'entering',
+                [theme.entered]: state === 'entered',
+                [theme.withMenu]: this.props.withMenu,
+              })}
+            >
               <Autosuggest
                 suggestions={suggestions}
                 alwaysRenderSuggestions={true}
@@ -401,10 +449,12 @@ class Search extends PureComponent {
                   onChange: this.onChange,
                   onBlur: this.onBlur,
                   onFocus: this.onFocus,
-                  onKeyDown: this.onKeyDown
+                  onKeyDown: this.onKeyDown,
                 }}
-                ref={(autosuggest) => {
-                  if (!autosuggest) { return; }
+                ref={autosuggest => {
+                  if (!autosuggest) {
+                    return;
+                  }
                   this.autosuggest = autosuggest;
                   this.inputElement = autosuggest.input;
                 }}
@@ -418,7 +468,12 @@ class Search extends PureComponent {
   }
 }
 
-export default withRouter(connect(state => ({
-  appState: state.app,
-  searchState: state.search
-}), { ...appActions, ...searchActions })(Search));
+export default withRouter(
+  connect(
+    state => ({
+      appState: state.app,
+      searchState: state.search,
+    }),
+    { ...appActions, ...searchActions }
+  )(Search)
+);

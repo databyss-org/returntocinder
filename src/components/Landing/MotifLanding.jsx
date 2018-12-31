@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import pluralize from 'pluralize';
 import {
   Landing,
   LandingEntries,
@@ -30,10 +31,14 @@ class MotifLanding extends React.Component {
     const { motif, cfList, meta, author, query, source, showAll } = this.props;
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
-      MOTIF_NAME: motif.name,
-      ENTRY_COUNT: motif.entryCount || '',
-      SOURCE_COUNT: motif.sources ? motif.sources.length : 1,
-      SOURCE_TITLE: source && source.name,
+      MOTIF_NAME: <Raw html={motif.name} />,
+      ENTRY_COUNT: motif.entryCount
+        ? `${motif.entryCount} ${pluralize('entry', motif.entryCount)}`
+        : '',
+      SOURCE_COUNT: motif.sources
+        ? `${motif.sources.length} ${pluralize('source', motif.sources.length)}`
+        : '',
+      SOURCE_TITLE: <Raw html={source && source.name} />,
     };
     this.contentTitle = renderTemplate(
       meta.LANDING_SUMMARY,
@@ -61,6 +66,7 @@ class MotifLanding extends React.Component {
   onEntrySourceOnClick(source) {
     return () => {
       this.props.toggleSourceModal(source.id);
+      this.props.history.push(`#source:${source.id}`);
     };
   }
   onMotifLinksChange(checked) {

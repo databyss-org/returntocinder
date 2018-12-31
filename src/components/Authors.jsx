@@ -5,7 +5,7 @@ import styles from '../app.scss';
 import Author from './Author';
 
 const Authors = ({ history, authorList }) => (
-  <ul className={styles.motifs}>
+  <ul className={styles.frontAuthors}>
     {authorList.map(author => (
       <Author key={author.id} author={author} />
     ))}
