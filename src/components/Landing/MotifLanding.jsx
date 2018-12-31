@@ -44,7 +44,6 @@ class MotifLanding extends React.Component {
       meta.LANDING_SUMMARY,
       this.templateTokens
     );
-    console.log('meta', meta, this.contentTitle);
     this.landingProps = {
       cfList,
       title: renderTemplate(meta.LANDING_HEADING, this.templateTokens),
