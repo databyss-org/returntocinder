@@ -3,6 +3,7 @@ import React from 'react';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withRouter } from 'react-router';
 import actions from '../redux/app/actions';
 import withAction from '../hoc/withAction';
 import styles from '../app.scss';
@@ -15,6 +16,7 @@ const DocModal = ({
   location,
   history,
   toggleSourceModal,
+  app,
 }) => (
   <div className={cx(styles.docModal, { [styles.show]: isActive })}>
     <div className={styles.mask} onClick={() => toggleSourceModal()} />
@@ -31,5 +33,6 @@ export default compose(
     state => state,
     actions
   ),
-  withAction(props => props.showMask(props.isActive))
+  withAction(props => props.showMask(props.isActive)),
+  withRouter
 )(DocModal);

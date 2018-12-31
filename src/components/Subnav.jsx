@@ -8,11 +8,11 @@ class Subnav extends PureComponent {
 
     this.activeElem = null;
   }
-  setActive(elem, item) {
+  setActive(elem, item, currentPath) {
     if (!elem) {
       return;
     }
-    if (!this.props.location.pathname.match(item.pagePath)) {
+    if (!currentPath.match(item.pagePath)) {
       return;
     }
     if (this.activeElem) {
@@ -21,17 +21,32 @@ class Subnav extends PureComponent {
     }
   }
   render() {
-    const { location, menu } = this.props;
+    const { location, menu, useHash } = this.props;
+
+    const currentPath = useHash
+      ? `/${location.hash.replace('#', '')}`
+      : location.pathname;
+
+    const link = nextPagePath => {
+      const nextPath = currentPath.replace(/\/about\/.+/, nextPagePath);
+      return {
+        pathname: useHash ? location.pathname : nextPath,
+        hash: useHash ? nextPath.substr(1) : location.hash,
+      };
+    };
 
     return (
       <div className={styles.subnav}>
-        <div className={styles.active} ref={(e) => { this.activeElem = e; }} />
+        <div
+          className={styles.active}
+          ref={e => {
+            this.activeElem = e;
+          }}
+        />
         <ul>
           {menu.map((item, idx) => (
-            <li key={idx} ref={e => this.setActive(e, item)}>
-              <Link to={
-                location.pathname.replace(/\/about\/.+/, item.pagePath)
-              }>
+            <li key={idx} ref={e => this.setActive(e, item, currentPath)}>
+              <Link to={link(item.pagePath)}>
                 <span dangerouslySetInnerHTML={{ __html: item.title }} />
               </Link>
             </li>

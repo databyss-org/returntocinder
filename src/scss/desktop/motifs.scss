@@ -1,4 +1,23 @@
-.motifs {
+.frontMotifs {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+
+  a,
+  a:hover,
+  a:visited,
+  a:active {
+    font-size: 1.3em;
+    width: 50%;
+    padding: 0.4em 1.5em;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.frontAuthors {
   display: flex;
   flex-wrap: wrap;
   position: relative;

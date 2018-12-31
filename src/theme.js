@@ -7,4 +7,6 @@ export default {
   navFont: "'DINNextLTPro-Light', 'Helvetica', sans-serif",
   fontSizeBase: '13pt',
   fontSizeS: '0.9em',
+  contentWidth: '550px',
+  mediumGrey: '#666461',
 };
