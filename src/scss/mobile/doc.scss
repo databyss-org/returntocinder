@@ -1,7 +1,6 @@
 .doc {
   display: flex;
-  height: 91vh;
-  margin-top: 9vh;
+  height: 76vh;
   position: relative;
   transition: left 300ms ease;
   overflow: hidden;
@@ -10,6 +9,11 @@
   opacity: 0;
   transition: opacity 150ms ease;
   z-index: 10;
+
+  &.landing {
+    height: 91vh;
+    margin-top: 9vh;
+  }
 
   &.show {
     opacity: 1;
@@ -21,7 +25,7 @@
     -webkit-overflow-scrolling: touch;
     width: 100vw;
     max-width: 750px;
-    padding: 2em 3em 2em 1em;
+    padding: 2em 3em 10em 1em;
     position: relative;
   }
 

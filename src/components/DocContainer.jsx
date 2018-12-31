@@ -147,6 +147,7 @@ const DocContainer = ({
           <div
             className={cx(styles.doc, styles[state], {
               [styles.show]: true,
+              [styles.landing]: query.motif,
             })}
           >
             <main
