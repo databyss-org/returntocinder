@@ -10,27 +10,35 @@
   transition: opacity 150ms ease;
   z-index: 10;
 
+  &.landing {
+    height: 91vh;
+    margin-top: 9vh;
+  }
+
   &.show {
     opacity: 1;
   }
 
-  main, aside {
+  main,
+  aside {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     width: 100vw;
     max-width: 750px;
-    padding: 2em 3em 0 1em;
+    padding: 2em 3em 10em 1em;
     position: relative;
   }
 
   aside {
-    section, h2 {
+    section,
+    h2 {
       opacity: 0;
       transition: opacity 300ms ease;
     }
   }
 
-  &.entered, &.entering {
+  &.entered,
+  &.entering {
     width: 200vw;
     left: -100vw;
 
@@ -42,16 +50,19 @@
   }
 
   &.entered {
-    aside section, aside h2 {
+    aside section,
+    aside h2 {
       opacity: 1;
     }
   }
 
-  section p a, section p a:visited, section p a:active {
+  section p a,
+  section p a:visited,
+  section p a:active {
     color: inherit;
     text-decoration: none;
     display: inline-block;
-    border-bottom: 1px dotted #D745B6;
+    border-bottom: 1px dotted #d745b6;
     line-height: 12px;
   }
 }
