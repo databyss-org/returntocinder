@@ -7,8 +7,9 @@ import {
   linkMotifsInEntry,
   makeStemDict,
   sidFromSourceCode,
-  motifDictFromList
+  motifDictFromList,
 } from '../lib/indexers';
+import { textify } from '../lib/_helpers';
 
 function readRtf(path) {
   return new Promise((resolve, reject) => {
@@ -35,8 +36,9 @@ async function rtfToJson({ rtfPath, motifDict, biblio, stdOut, stdErr }) {
     motifs: {},
   };
   // author should be first line
-  const [code, lastName, firstName]
-    = renderPara(rtf.content[0]).split(',').map(n => n.trim());
+  const [code, lastName, firstName] = renderPara(rtf.content[0])
+    .split(',')
+    .map(n => textify(n.trim()));
   doc.author = code;
   stdOut('AUTHOR', `${code} (${firstName} ${lastName})`);
 
@@ -74,20 +76,20 @@ async function rtfToJson({ rtfPath, motifDict, biblio, stdOut, stdErr }) {
         entry.source = {
           display: dsid,
           id: sid,
-          title: biblio[sid] && biblio[sid].title,
-          author: code
+          name: biblio[sid] && biblio[sid].title,
+          author: code,
         };
 
         // find motifs in entry and get linked Entry
         const { entry: linkedEntry, motifs } = linkMotifsInEntry({
           content: entry.content,
-          stemDoc: stemDict
+          stemDoc: stemDict,
         });
 
         // merge motifs into doc.motifs
         doc.motifs = {
           ...doc.motifs,
-          ...motifDictFromList(motifs)
+          ...motifDictFromList(motifs),
         };
 
         // search and source view expect entry.motif to be array of motif objs
