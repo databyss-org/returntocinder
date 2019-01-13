@@ -14,7 +14,9 @@ import {
   EntriesBySource,
 } from '@databyss-org/ui';
 import renderTemplate from 'react-text-templates';
+import { Helmet } from 'react-helmet';
 import actions from '../../redux/app/actions';
+import { textify } from '../../lib/_helpers';
 
 class MotifLanding extends React.Component {
   constructor(props) {
@@ -39,6 +41,11 @@ class MotifLanding extends React.Component {
         ? `${motif.sources.length} ${pluralize('source', motif.sources.length)}`
         : '',
       SOURCE_TITLE: <Raw html={source && source.name} />,
+    };
+    this.textOnlyTokens = {
+      ...this.templateTokens,
+      MOTIF_NAME: textify(motif.name),
+      SOURCE_TITLE: source ? textify(source.name) : '',
     };
     this.contentTitle = renderTemplate(
       meta.LANDING_SUMMARY,
@@ -133,10 +140,22 @@ class MotifLanding extends React.Component {
     );
   }
   render() {
-    const { source, showAll } = this.props;
+    const { source, showAll, meta } = this.props;
+    const { META_TITLE, META_DESCRIPTION, META_KEYWORDS } = meta;
     this.updateTemplates();
     return (
       <Landing {...this.landingProps}>
+        <Helmet>
+          <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
+          <meta
+            name="description"
+            content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
+          />
+          <meta
+            name="keywords"
+            content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
+          />
+        </Helmet>
         {source || showAll
           ? this.renderEntries(source)
           : this.renderSourcesToc()}
