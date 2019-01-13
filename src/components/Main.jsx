@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import Transition from 'react-transition-group/Transition';
 import cx from 'classnames';
+import { Helmet } from 'react-helmet';
 import withLoader from '../hoc/withLoader';
 import freezeProps from '../hoc/freezeProps';
 
@@ -30,80 +31,95 @@ const SourceModal = freezeProps({
   }),
 })(Source);
 
-const Main = ({ app, maskClicked, location, menu, biblio, authors }) => (
-  <Router>
-    <SyncHistory onLocationChanged={() => maskClicked()}>
-      <ScrollToTop>
-        <Transition in={app.maskIsVisible} timeout={50}>
-          {state => {
-            return (
-              <div
-                className={cx(styles.app, {
-                  [styles.showWithMask]: state === 'entered',
-                })}
-                onClick={evt => maskClicked(evt.target)}
-              >
+const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
+  const {
+    META_TITLE,
+    META_DESCRIPTION,
+    META_KEYWORDS,
+  } = app.config.default_meta;
+  return (
+    <Router>
+      <SyncHistory onLocationChanged={() => maskClicked()}>
+        <Helmet>
+          <title>{META_TITLE}</title>
+          <meta name="description" content={META_DESCRIPTION} />
+          <meta name="keywords" content={META_KEYWORDS} />
+        </Helmet>
+        <ScrollToTop>
+          <Transition in={app.maskIsVisible} timeout={50}>
+            {state => {
+              return (
                 <div
-                  className={cx(styles.mask, {
-                    [styles.show]: state === 'entering' || state === 'entered',
+                  className={cx(styles.app, {
+                    [styles.showWithMask]: state === 'entered',
                   })}
+                  onClick={evt => maskClicked(evt.target)}
                 >
+                  <div
+                    className={cx(styles.mask, {
+                      [styles.show]:
+                        state === 'entering' || state === 'entered',
+                    })}
+                  >
+                    <Route
+                      path="/(source|search|motif)/:term/:groupBy?/:filterBy?"
+                      render={({ match }) => <DocContainer match={match} />}
+                    />
+                  </div>
                   <Route
-                    path="/(source|search|motif)/:term/:groupBy?/:filterBy?"
-                    render={({ match }) => <DocContainer match={match} />}
+                    path="/about/:page"
+                    children={({ match, location }) => (
+                      <ModalMenu
+                        isActive={match || location.hash.match('about')}
+                      >
+                        <Route
+                          path="/about/:page"
+                          children={({ match, location }) => {
+                            let aboutPath;
+                            let useHash = false;
+                            if (!match && aboutHash(location.hash)) {
+                              // get about path from hash
+                              aboutPath = aboutHash(location.hash);
+                              useHash = true;
+                            } else if (match) {
+                              aboutPath = match.params.page;
+                            } else {
+                              return null;
+                            }
+                            return (
+                              <Page
+                                path={`/about/${aboutPath}`}
+                                subnavPath="/about"
+                                contentFunc={
+                                  aboutPath === 'bibliography' &&
+                                  biblioToPage({ biblio, authors })
+                                }
+                                useHash={useHash}
+                              />
+                            );
+                          }}
+                        />
+                      </ModalMenu>
+                    )}
                   />
+                  <Navbar withMaskClassName={styles.withMask} />
+                  <DocModal isActive={app.sourceModalIsActive}>
+                    <SourceModal
+                      isActive={app.sourceModalIsActive}
+                      sid={app.sourceModalIsActive}
+                    />
+                  </DocModal>
+                  <Front />
+                  <Menu items={menu} />
                 </div>
-                <Route
-                  path="/about/:page"
-                  children={({ match, location }) => (
-                    <ModalMenu isActive={match || location.hash.match('about')}>
-                      <Route
-                        path="/about/:page"
-                        children={({ match, location }) => {
-                          let aboutPath;
-                          let useHash = false;
-                          if (!match && aboutHash(location.hash)) {
-                            // get about path from hash
-                            aboutPath = aboutHash(location.hash);
-                            useHash = true;
-                          } else if (match) {
-                            aboutPath = match.params.page;
-                          } else {
-                            return null;
-                          }
-                          return (
-                            <Page
-                              path={`/about/${aboutPath}`}
-                              subnavPath="/about"
-                              contentFunc={
-                                aboutPath === 'bibliography' &&
-                                biblioToPage({ biblio, authors })
-                              }
-                              useHash={useHash}
-                            />
-                          );
-                        }}
-                      />
-                    </ModalMenu>
-                  )}
-                />
-                <Navbar withMaskClassName={styles.withMask} />
-                <DocModal isActive={app.sourceModalIsActive}>
-                  <SourceModal
-                    isActive={app.sourceModalIsActive}
-                    sid={app.sourceModalIsActive}
-                  />
-                </DocModal>
-                <Front />
-                <Menu items={menu} />
-              </div>
-            );
-          }}
-        </Transition>
-      </ScrollToTop>
-    </SyncHistory>
-  </Router>
-);
+              );
+            }}
+          </Transition>
+        </ScrollToTop>
+      </SyncHistory>
+    </Router>
+  );
+};
 
 export default compose(
   connect(
