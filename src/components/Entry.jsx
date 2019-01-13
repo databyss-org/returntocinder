@@ -105,13 +105,15 @@ const Entry = ({
       )}
       {entry.motif && showMotifNav ? (
         <nav>
-          {entry.motif.map(m => (
-            <Link
-              key={m.id}
-              dangerouslySetInnerHTML={{ __html: m.name }}
-              to={`/motif/${m.id}`}
-            />
-          ))}
+          {entry.motif.map((m, idx) =>
+            idx <= 4 ? (
+              <Link
+                key={m.id}
+                dangerouslySetInnerHTML={{ __html: m.name }}
+                to={`/motif/${m.id}`}
+              />
+            ) : null
+          )}
         </nav>
       ) : null}
     </span>
