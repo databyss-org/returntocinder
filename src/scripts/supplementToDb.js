@@ -27,7 +27,11 @@ class SupplementToDb extends ServerProcess {
       });
       // add author to motifs
       for (const motif of Object.values(doc.motifs)) {
-        await addAuthorToMotif({ mid: motif.id, authorCode: doc.author, ...io });
+        await addAuthorToMotif({
+          mid: motif.id,
+          authorCode: doc.author,
+          ...io,
+        });
       }
       // add entries
       const entries = Object.values(doc.entries);
@@ -49,14 +53,14 @@ export default SupplementToDb;
 
 if (require.main === module) {
   const batch = new SupplementToDb();
-  batch.on('end', (success) => {
+  batch.on('end', success => {
     process.exit();
   });
-  batch.on('stdout', (msg) => {
+  batch.on('stdout', msg => {
     console.log(msg);
   });
-  batch.on('stderr', (msg) => {
+  batch.on('stderr', msg => {
     console.error(msg);
   });
-  batch.run('../doc/supplement.rtf');
+  batch.run('supplement.rtf');
 }
