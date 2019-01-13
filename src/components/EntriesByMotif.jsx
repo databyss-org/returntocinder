@@ -1,22 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { EntrySource } from '@databyss-org/ui';
+import actions from '../redux/app/actions';
 import Entries from './Entries';
-
-const sourceLink = ({ location, history, sid }) => {
-  const href = `${location.pathname}/source:${sid}`;
-  return (
-    <a
-      href={href}
-      rel="nofollow"
-      onClick={(e) => {
-        e.preventDefault();
-        history.replace(href);
-      }}
-    >
-      {sid}
-    </a>
-  );
-};
 
 const EntriesByMotif = ({
   doc,
@@ -26,8 +14,9 @@ const EntriesByMotif = ({
   style,
   path,
   setScroll,
-  isLinked
-}) =>
+  isLinked,
+  toggleSourceModal,
+}) => (
   <article key={mid} style={style}>
     {Object.keys(doc[mid].sources).map((sid, sidx) => (
       <section key={mid + sid}>
@@ -37,10 +26,27 @@ const EntriesByMotif = ({
           showRepeats
           path={path.concat(sid)}
           setScroll={setScroll}
-          inlineHead={ <h3>{sourceLink({ location, history, sid })}</h3> }
+          inlineHead={
+            <EntrySource
+              href={`/source/${sid}`}
+              onClick={() => {
+                history.push(`#source:${sid}`);
+                toggleSourceModal(sid);
+              }}
+            >
+              {sid}
+            </EntrySource>
+          }
         />
       </section>
     ))}
-  </article>;
+  </article>
+);
 
-export default withRouter(EntriesByMotif);
+export default compose(
+  connect(
+    state => state,
+    actions
+  ),
+  withRouter
+)(EntriesByMotif);

@@ -1,11 +1,11 @@
-$hamburger-padding-x                       : 0;
-$hamburger-padding-y                       : 0;
-$hamburger-layer-width                     : 20px;
-$hamburger-layer-height                    : 3px;
-$hamburger-layer-spacing                   : 4px;
-$hamburger-layer-color                     : #fff;
-$hamburger-layer-border-radius             : 0;
-$hamburger-hover-transition-duration       : 0.15s;
+$hamburger-padding-x: 0;
+$hamburger-padding-y: 0;
+$hamburger-layer-width: 20px;
+$hamburger-layer-height: 3px;
+$hamburger-layer-spacing: 4px;
+$hamburger-layer-color: #fff;
+$hamburger-layer-border-radius: 0;
+$hamburger-hover-transition-duration: 0.15s;
 $hamburger-hover-transition-timing-function: linear;
 
 @import 'scss/desktop/mixins';
@@ -17,6 +17,8 @@ $hamburger-hover-transition-timing-function: linear;
   @import 'scss/desktop/loader';
   @import 'scss/desktop/defer';
   @import 'scss/desktop/subnav';
+  @import 'scss/desktop/authors';
+
   @import 'scss/desktop/modalMenu';
   @import 'scss/desktop/toggle';
 }

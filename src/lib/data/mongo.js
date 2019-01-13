@@ -75,6 +75,31 @@ export const list = (entity, query, orderBy) =>
     });
   });
 
+export const aggregate = (entity, group, match, orderBy, unwind) =>
+  new Promise(async (resolve, reject) => {
+    const db = await connect();
+    const collection = db.collection(entity);
+    const aggregateArgs = [];
+    // unwind must be first in pipeline
+    if (unwind) {
+      aggregateArgs.push({ $unwind: unwind });
+    }
+    // match must be 2nd
+    if (match) {
+      aggregateArgs.push({ $match: match });
+    }
+    aggregateArgs.push({ $group: group });
+    if (orderBy) {
+      aggregateArgs.push({ $sort: orderBy });
+    }
+    collection.aggregate(aggregateArgs).toArray((err, docs) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(objectIdsToIds(docs));
+    });
+  });
+
 export const update = (entity, query, doc) =>
   new Promise(async (resolve, reject) => {
     const db = await connect();

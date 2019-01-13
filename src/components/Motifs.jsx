@@ -3,15 +3,21 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import styles from '../app.scss';
 
-const Motifs = ({ history, motifList }) =>
-  <ul className={styles.motifs}>
+const Motifs = ({ history, motifList }) => (
+  <div className={styles.frontMotifs}>
     {motifList.map(motif => (
-      <li key={motif.id}
+      <a
+        href={`/motif/${motif.id}/sources`}
+        key={motif.id}
         dangerouslySetInnerHTML={{ __html: motif.name }}
-        onClick={() => history.push(`/motif/${motif.id}`)}
+        onClick={e => {
+          e.preventDefault();
+          history.push(`/motif/${motif.id}/sources`);
+        }}
       />
     ))}
-  </ul>;
+  </div>
+);
 
 export default withRouter(
   connect(state => ({ motifList: state.app.motifList }))(Motifs)

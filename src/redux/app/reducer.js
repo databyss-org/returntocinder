@@ -1,6 +1,7 @@
 import { addMotifsToBiblio, motifListFromEntries } from '../../lib/indexers';
 
 const initialState = {
+  config: null,
   doc: {},
   entriesBySource: {},
   biblio: null,
@@ -20,19 +21,23 @@ const initialState = {
   search: {
     isVisible: false,
     isFocused: false,
-    target: null
+    target: null,
   },
   disambiguate: {
     target: null,
     isVisible: false,
     midList: [],
     position: {
-      left: 0, top: 0
-    }
+      left: 0,
+      top: 0,
+    },
   },
   pages: {},
   menus: {},
-  idLinksAreActive: false
+  idLinksAreActive: false,
+  showAllMotifEntries: false,
+  showAllSourceEntries: false,
+  sourceModalIsActive: false,
 };
 
 export default function appReducer(state = initialState, action) {
@@ -48,23 +53,27 @@ export default function appReducer(state = initialState, action) {
     case 'RECEIVE_BIBLIO':
       return {
         ...state,
-        ...action.payload
+        ...action.payload,
       };
 
     case 'RECEIVE_DOC':
       return {
         ...state,
         biblio: addMotifsToBiblio(state.biblio, state.entriesBySource),
-        ...action.payload
+        ...action.payload,
       };
 
     case 'RECEIVE_MOTIF': {
-      const { author, mid, motif } = action.payload;
+      const { author, mid, motif, sid, showAll } = action.payload;
+      let key = sid ? `${mid}:${author}:${sid}` : `${mid}:${author}`;
+      if (!sid && !showAll) {
+        key = `${key}:sources`;
+      }
       return {
         ...state,
         doc: {
           ...state.doc,
-          [`${mid}:${author}`]: motif
+          [key]: motif,
         },
       };
     }
@@ -94,7 +103,7 @@ export default function appReducer(state = initialState, action) {
         pages: {
           ...state.pages,
           [path]: content,
-        }
+        },
       };
     }
 
@@ -105,7 +114,15 @@ export default function appReducer(state = initialState, action) {
         menus: {
           ...state.menus,
           [path]: menu,
-        }
+        },
+      };
+    }
+
+    case 'RECEIVE_CONFIG': {
+      const { config } = action.payload;
+      return {
+        ...state,
+        config: config.reduce((dict, c) => ({ ...dict, [c.key]: c.value }), {}),
       };
     }
 
@@ -114,14 +131,14 @@ export default function appReducer(state = initialState, action) {
         ...state,
         entriesBySource: {
           ...state.entriesBySource,
-          [action.payload.sid]: action.payload.entries
+          [action.payload.sid]: action.payload.entries,
         },
         biblio: {
           ...state.biblio,
           [action.payload.sid]: {
             ...state.biblio[action.payload.sid],
-            motifs: motifListFromEntries(action.payload.entries)
-          }
+            motifs: motifListFromEntries(action.payload.entries),
+          },
         },
       };
 
@@ -140,7 +157,7 @@ export default function appReducer(state = initialState, action) {
           ...state.search,
           isVisible: true,
           target: action.payload,
-        }
+        },
       };
     }
 
@@ -150,7 +167,7 @@ export default function appReducer(state = initialState, action) {
         search: {
           ...state.search,
           isVisible: false,
-        }
+        },
       };
     }
 
@@ -160,7 +177,7 @@ export default function appReducer(state = initialState, action) {
         search: {
           ...state.search,
           isFocused: true,
-          target: action.payload
+          target: action.payload,
         },
         menu: {
           ...state.menu,
@@ -168,21 +185,23 @@ export default function appReducer(state = initialState, action) {
         },
         disambiguate: {
           ...state.disambiguate,
-          isVisible: false
-        }
+          isVisible: false,
+        },
       };
     }
 
     case 'MASK_CLICKED': {
       state.disambiguate.target &&
         action.payload !== state.disambiguate.target &&
-        state.disambiguate.target.classList.remove(state.disambiguate.className);
+        state.disambiguate.target.classList.remove(
+          state.disambiguate.className
+        );
       return {
         ...state,
         menu: {
           ...state.menu,
-          isVisible: (action.payload === state.menu.target) &&
-            state.menu.isVisible,
+          isVisible:
+            action.payload === state.menu.target && state.menu.isVisible,
         },
         search: {
           ...state.search,
@@ -191,8 +210,8 @@ export default function appReducer(state = initialState, action) {
         },
         disambiguate: {
           ...state.disambiguate,
-          isVisible: action.payload === state.disambiguate.target
-        }
+          isVisible: action.payload === state.disambiguate.target,
+        },
       };
     }
 
@@ -201,8 +220,8 @@ export default function appReducer(state = initialState, action) {
         ...state,
         menu: {
           ...state.menu,
-          ...action.payload
-        }
+          ...action.payload,
+        },
       };
     }
 
@@ -216,26 +235,37 @@ export default function appReducer(state = initialState, action) {
 
     case 'HIDE_DISAMBIGUATE': {
       state.disambiguate.target &&
-        state.disambiguate.target.classList.remove(state.disambiguate.className);
+        state.disambiguate.target.classList.remove(
+          state.disambiguate.className
+        );
       return {
         ...state,
         disambiguate: {
           ...state.disambiguate,
-          isVisible: false
-        }
+          isVisible: false,
+        },
       };
     }
 
     case 'SHOW_DISAMBIGUATE': {
       state.disambiguate.target &&
-        state.disambiguate.target.classList.remove(state.disambiguate.className);
+        state.disambiguate.target.classList.remove(
+          state.disambiguate.className
+        );
       action.payload.target.classList.add(action.payload.className);
       return {
         ...state,
         disambiguate: {
           isVisible: true,
-          ...action.payload
-        }
+          ...action.payload,
+        },
+      };
+    }
+
+    case 'TOGGLE_SOURCE_MODAL': {
+      return {
+        ...state,
+        sourceModalIsActive: action.payload,
       };
     }
 

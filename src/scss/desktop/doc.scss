@@ -13,27 +13,32 @@
     opacity: 1;
   }
 
-  &.exited, &.exiting {
+  &.exited,
+  &.exiting {
     main {
       width: 100%;
     }
   }
-  &.entered, &.entering {
+  &.entered,
+  &.entering {
     main {
       width: 50%;
     }
   }
   &.entered {
-    aside section, aside h2 {
+    aside section,
+    aside h2 {
       opacity: 1;
     }
   }
 
-  section p a, section p a:visited, section p a:active {
+  section p a,
+  section p a:visited,
+  section p a:active {
     color: inherit;
     text-decoration: none;
     display: inline-block;
-    border-bottom: 1px dotted #D745B6;
+    border-bottom: 1px dotted #d745b6;
     line-height: 12px;
   }
 
@@ -42,6 +47,7 @@
     padding-top: 2em;
     overflow: scroll;
     padding-right: 2em;
+    padding-bottom: 2em;
   }
 
   aside {
@@ -49,12 +55,14 @@
     padding: 2em 3em 0 1em;
     overflow: scroll;
 
-    section, h2 {
+    section,
+    h2 {
       opacity: 0;
     }
 
     &.show {
-      section, h2{
+      section,
+      h2 {
         opacity: 1;
       }
     }

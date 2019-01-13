@@ -18,18 +18,18 @@ class DbActions extends React.Component {
       transportOptions: {
         polling: {
           extraHeaders: {
-            'Authorization': API_ADMIN_TOKEN
+            Authorization: API_ADMIN_TOKEN
           }
         }
       }
     });
-    this.socket.on('stdout', (msg) => {
+    this.socket.on('stdout', msg => {
       this.setState({ output: this.state.output.concat(msg) });
     });
-    this.socket.on('stderr', (msg) => {
+    this.socket.on('stderr', msg => {
       this.setState({ output: this.state.output.concat(msg) });
     });
-    this.socket.on('end', (success) => {
+    this.socket.on('end', success => {
       this.setState({ running: false });
       this.updateSnapshotMeta();
     });
@@ -66,7 +66,8 @@ class DbActions extends React.Component {
               <Panel.Heading>Dump to Beta</Panel.Heading>
               <Panel.Body>
                 <Well>
-                  Clones live database to beta database (overwrites contents of beta database).
+                  Clones live database to beta database (overwrites contents of
+                  beta database).
                 </Well>
                 <Button
                   bsStyle="success"
@@ -88,12 +89,10 @@ class DbActions extends React.Component {
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    alignItems: 'center'
                   }}
                 >
-                  <div style={{ flexGrow: 1 }}>
-                    {snapshot.date}
-                  </div>
+                  <div style={{ flexGrow: 1 }}>{snapshot.date}</div>
                   <div>
                     <Button
                       bsStyle="success"
