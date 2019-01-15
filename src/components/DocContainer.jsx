@@ -161,6 +161,7 @@ const DocContainer = ({
                   cfList={
                     motif.cfauthors
                       ? motif.cfauthors
+                          .filter(id => id !== DEFAULT_AUTHOR)
                           .concat(DEFAULT_AUTHOR)
                           .reduce(
                             (list, id) =>
