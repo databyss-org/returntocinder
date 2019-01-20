@@ -28,20 +28,24 @@ const getAuthorName = async authorId => {
   return `${authorRec.firstName} ${authorRec.lastName}`;
 };
 
-export const renderMetaTemplate = async ({ templatePath, requestPath }) => {
+export const renderMetaTemplate = async ({ templatePath, requestPath, extraDict={} }) => {
   const pattern = '/(motif|source)/:term/:groupBy?/:filterBy?';
   const match = matchPath(requestPath, pattern);
   const config = (await listConfig()).reduce(
     (dict, c) => ({ ...dict, [c.key]: c.value }),
     {}
   );
+  const _replaceMetaTokens = (src, defs, vals) => {
+    const _defs = {...defs, ...extraDict}
+    return replaceMetaTokens(src, _defs, vals)
+  }
   // load the template file if it's not already loaded
   if (!templateSources[templatePath]) {
     templateSources[templatePath] = fs.readFileSync(templatePath).toString();
   }
   // if we're not requesting a motif or source page, use default meta
   if (!match) {
-    return replaceMetaTokens(
+    return _replaceMetaTokens(
       templateSources[templatePath],
       config.default_meta
     );
@@ -56,7 +60,7 @@ export const renderMetaTemplate = async ({ templatePath, requestPath }) => {
         groupBy: 'source',
       });
       const motif = await getMotif(match.params.term);
-      return replaceMetaTokens(
+      return _replaceMetaTokens(
         templateSources[templatePath],
         config.source_motif_meta,
         {
@@ -70,14 +74,14 @@ export const renderMetaTemplate = async ({ templatePath, requestPath }) => {
     // parse term to handle motif:author urls
     const { author, resource } = parseTerm(match.params.term);
     const motifName = (await getMotif(resource)).name;
-    return replaceMetaTokens(templateSources[templatePath], config.motif_meta, {
+    return _replaceMetaTokens(templateSources[templatePath], config.motif_meta, {
       MOTIF_NAME: motifName,
       ...(author ? { AUTHOR_NAME: await getAuthorName(author) } : {}),
     });
   }
   // use tokens for source
   const source = await getSource(match.params.term);
-  return replaceMetaTokens(templateSources[templatePath], config.source_meta, {
+  return _replaceMetaTokens(templateSources[templatePath], config.source_meta, {
     SOURCE_TITLE: source.title,
     AUTHOR_NAME: await getAuthorName(source.author),
   });

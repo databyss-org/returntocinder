@@ -42,7 +42,10 @@ async function getClientApp(req, res) {
   try {
     const rendered = await renderMetaTemplate({
       templatePath,
-      requestPath: req.path
+      requestPath: req.path,
+      extraDict: {
+        PRODUCTION: (process.env.NODE_ENV === 'production').toString()
+      }
     });
     return res.send(rendered);
   } catch (err) {
