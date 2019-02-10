@@ -303,7 +303,6 @@ export function makeStemDict(motifDict) {
     words.forEach(w => addStemmed(stemmed, w, motifName));
     return stemmed;
   }, {});
-  console.log(stemDict);
   return stemDict;
 }
 
