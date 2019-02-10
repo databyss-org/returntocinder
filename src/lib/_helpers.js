@@ -25,5 +25,5 @@ export function elipses({ text, maxLength }) {
 }
 
 export function stemify(str) {
-  return latinize(str.toLowerCase()).replace(/[^a-z]/, '');
+  return latinize(textify(str).toLowerCase()).replace(/[^a-z]/, '');
 }
