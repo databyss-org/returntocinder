@@ -112,7 +112,7 @@ class Search extends PureComponent {
     // base matcher
     const baseMatch = m =>
       matchStems(
-        latinize(m.name)
+        latinize(textify(m.name))
           .toLowerCase()
           .split(wordSeparator),
         searchWords
@@ -120,7 +120,7 @@ class Search extends PureComponent {
       ) === searchWords.length;
 
     // filter collection
-    const findMatches = collection => collection.filter(m => baseMatch);
+    const findMatches = collection => collection.filter(baseMatch);
 
     const findSourceMatches = collection =>
       collection.filter(
