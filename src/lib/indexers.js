@@ -291,7 +291,7 @@ export function makeStemDict(motifDict) {
     dict[word][mid] = motifName;
   };
   const stemDict = Object.values(motifDict).reduce((stemmed, motifName) => {
-    const words = motifName
+    const words = textify(motifName)
       .split(splitPattern)
       .map(w => latinize(w.toLowerCase()))
       .filter(w => !junkWords.includes(w))
@@ -303,6 +303,7 @@ export function makeStemDict(motifDict) {
     words.forEach(w => addStemmed(stemmed, w, motifName));
     return stemmed;
   }, {});
+  console.log(stemDict);
   return stemDict;
 }
 
@@ -328,7 +329,7 @@ export function linkMotifsInAllEntries({ entries, motifDict }) {
 //   motifs: [{ name: (string), id: (string) }, ...]
 // }
 export function linkMotifsInEntry({ content, stemDoc }) {
-  const words = content.split(' ');
+  const words = content.split(/([^a-zA-Z0-9])/);
   let motifDict = {};
   const entry = words
     .map(word => {
@@ -361,7 +362,7 @@ export function linkMotifsInEntry({ content, stemDoc }) {
       const link = `<a href='${url}'>${word}</a>`;
       return (pre ? pre[0] : '') + link + (post ? post[0] : '');
     })
-    .join(' ');
+    .join('');
 
   return {
     entry,
