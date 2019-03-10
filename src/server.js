@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import userAgent from 'express-useragent';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import nakedRedirect from 'express-naked-redirect';
 import api from './server/api';
 import sockets from './server/sockets';
 import upload from './server/upload';
@@ -22,13 +21,19 @@ const app = express();
 app.set('port', process.env.PORT || 5000);
 
 const middleware = [
-  nakedRedirect(true), // redirect from www.returntocinder.com to returntocinder.com
   userAgent.express(),
   compression(),
   express.static('./public'),
 ];
 
-async function getClientApp(req, res) {
+async function getClientApp(req, res, next) {
+  // redirect www.returntocinder.com to returntocinder.com
+  if (req.headers.host.match(/^www/) !== null) {
+    res.redirect(`https://${req.headers.host.replace(/^www\./, '')}${req.url}`);
+  } else {
+    next();
+  }
+
   const { API_ADMIN_TOKEN } = process.env;
 
   if (req.path.match(/\/source:(.*)?/)) {
