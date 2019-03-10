@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import UploadRtf from './UploadRtf';
 import DbActions from './DbActions';
-import MotifLinks from './MotifLinks';
 
 const App = () => (
   <Router>
