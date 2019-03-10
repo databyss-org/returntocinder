@@ -22,10 +22,10 @@ const app = express();
 app.set('port', process.env.PORT || 5000);
 
 const middleware = [
+  nakedRedirect(true), // redirect from www.returntocinder.com to returntocinder.com
   userAgent.express(),
   compression(),
   express.static('./public'),
-  nakedRedirect(true), // redirect from www.returntocinder.com to returntocinder.com
 ];
 
 async function getClientApp(req, res) {
