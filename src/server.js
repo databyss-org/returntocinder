@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 import userAgent from 'express-useragent';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
+import nakedRedirect from 'express-naked-redirect';
 import api from './server/api';
 import sockets from './server/sockets';
 import upload from './server/upload';
@@ -19,12 +19,13 @@ dotenv.config();
 
 const app = express();
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', process.env.PORT || 5000);
 
 const middleware = [
   userAgent.express(),
   compression(),
-  express.static('./public')
+  express.static('./public'),
+  nakedRedirect(true), // redirect from www.returntocinder.com to returntocinder.com
 ];
 
 async function getClientApp(req, res) {
@@ -44,8 +45,8 @@ async function getClientApp(req, res) {
       templatePath,
       requestPath: req.path,
       extraDict: {
-        PRODUCTION: (process.env.NODE_ENV === 'production').toString()
-      }
+        PRODUCTION: (process.env.NODE_ENV === 'production').toString(),
+      },
     });
     return res.send(rendered);
   } catch (err) {
@@ -65,7 +66,7 @@ app.use('/upload', cors(), upload);
 
 // sitemap
 app.get('/sitemap.txt', (req, res) => {
-  res.send(sitemap().join("\n")); // eslint-disable-line quotes
+  res.send(sitemap().join('\n')); // eslint-disable-line quotes
 });
 
 // legacy !about redirects
