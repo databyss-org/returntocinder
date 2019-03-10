@@ -26,12 +26,12 @@ const middleware = [
   express.static('./public'),
 ];
 
-async function getClientApp(req, res, next) {
+async function getClientApp(req, res) {
   // redirect www.returntocinder.com to returntocinder.com
   if (req.headers.host.match(/^www/) !== null) {
-    res.redirect(`https://${req.headers.host.replace(/^www\./, '')}${req.url}`);
-  } else {
-    next();
+    return res.redirect(
+      `https://${req.headers.host.replace(/^www\./, '')}${req.url}`
+    );
   }
 
   const { API_ADMIN_TOKEN } = process.env;
