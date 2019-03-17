@@ -70,8 +70,9 @@ app.use('/api', cors(), bodyParser.json(), api);
 app.use('/upload', cors(), upload);
 
 // sitemap
-app.get('/sitemap.txt', (req, res) => {
-  res.send(sitemap().join('\n')); // eslint-disable-line quotes
+app.get('/sitemap.txt', async (req, res) => {
+  res.send((await sitemap()).join('\n')); // eslint-disable-line quotes
+  res.end();
 });
 
 // legacy !about redirects

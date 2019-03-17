@@ -229,6 +229,10 @@ export function groupEntriesBySource(entryList) {
 export function motifListFromEntries(entries) {
   const motifs = entries.reduce((motifs, entry) => {
     entry.motif.forEach(m => {
+      if (!m) {
+        console.warn('Motif is null', entry._id);
+        return;
+      }
       motifs[m.id] = m;
     });
     return motifs;

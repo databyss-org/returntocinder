@@ -5,30 +5,33 @@ dotenv.config();
 
 const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } = process.env;
 
-export const url =
-  `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`;
+export const url = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`;
 let db = null;
 
-export const objectIdsToIds = list => list.map((doc) => {
-  if (!doc.id) {
-    doc.id = doc._id;
-  }
-  delete doc._id;
-  return doc;
-});
+export const objectIdsToIds = list =>
+  list.map(doc => {
+    if (!doc.id) {
+      doc.id = doc._id;
+      delete doc._id;
+    }
+    return doc;
+  });
 
 export const connect = () =>
   new Promise((resolve, reject) => {
     if (db) {
       return resolve(db);
     }
-    MongoClient.connect(url, (err, client) => {
-      if (err) {
-        return reject(err);
+    MongoClient.connect(
+      url,
+      (err, client) => {
+        if (err) {
+          return reject(err);
+        }
+        db = client.db(DB_NAME);
+        return resolve(db);
       }
-      db = client.db(DB_NAME);
-      return resolve(db);
-    });
+    );
   });
 
 export const add = (entity, doc) =>
@@ -51,7 +54,7 @@ export const reset = async entity =>
     } catch (err) {
       return reject(err);
     }
-    db.collection(entity).remove({}, {}, (err) => {
+    db.collection(entity).remove({}, {}, err => {
       if (err) {
         return reject(err);
       }
@@ -115,18 +118,22 @@ export const update = (entity, query, doc) =>
 export const createIndex = (entity, field, isFulltext) =>
   new Promise(async (resolve, reject) => {
     console.log(
-      `Creating ${isFulltext ? 'a fulltext' : 'an'} index on ${entity}.`);
+      `Creating ${isFulltext ? 'a fulltext' : 'an'} index on ${entity}.`
+    );
     const db = await connect();
     const collection = db.collection(entity);
-    collection.createIndex({
-      [field]: isFulltext ? 'text' : 1,
-    }, (err, result) => {
-      if (err) {
-        return reject(err);
+    collection.createIndex(
+      {
+        [field]: isFulltext ? 'text' : 1,
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        console.log('👍');
+        return resolve(true);
       }
-      console.log('👍');
-      return resolve(true);
-    });
+    );
   });
 
 export const removeIndexes = entity =>

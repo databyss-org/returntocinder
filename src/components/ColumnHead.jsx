@@ -20,8 +20,9 @@ const ColumnHead = ({
       name: doc[term].name,
       entryCount: doc[term].entryCount,
       sourceCount: Object.keys(doc[term].sources).length,
-      authors: doc[term].cfauthors &&
-        doc[term].cfauthors.filter(author => author !== query.author)
+      authors:
+        doc[term].cfauthors &&
+        doc[term].cfauthors.filter(author => author !== query.author),
     }),
     source: term => ({
       name: biblio[term].title,
@@ -31,7 +32,7 @@ const ColumnHead = ({
       name: `Results for: ${urlencode.decode(resource)}`,
       entryCount: resultsMeta.count,
       sourceCount: resultsMeta.sourceList.length,
-      authors: resultsMeta.cfauthors
+      authors: resultsMeta.cfauthors,
     }),
   }[query.type](query.term, query.resource);
 
@@ -51,20 +52,24 @@ const ColumnHead = ({
         {stats.sourceCount} {pluralize('source', stats.sourceCount)}
       </span>
     ),
-    authors: stats.authors && stats.authors.length ? (
-      <React.Fragment>
-        [cf.&nbsp;
-        {stats.authors.map((author, idx) => (
-          <span key={author}>
-            <Link to={`/${query.type}/${query.resource}${
-              author === DEFAULT_AUTHOR ? '' : `:${author}`
-            }`}>
-              {authorDict[author].lastName}
-            </Link>
-          </span>
-        ))}]
-      </React.Fragment>
-    ) : null
+    authors:
+      stats.authors && stats.authors.length ? (
+        <React.Fragment>
+          [cf.&nbsp;
+          {stats.authors.map((author, idx) => (
+            <span key={author}>
+              <Link
+                to={`/${query.type}/${query.resource}${
+                  author === DEFAULT_AUTHOR ? '' : `:${author}`
+                }`}
+              >
+                {authorDict[author].lastName}
+              </Link>
+            </span>
+          ))}
+          ]
+        </React.Fragment>
+      ) : null,
   };
 
   return (
@@ -74,7 +79,10 @@ const ColumnHead = ({
           <span dangerouslySetInnerHTML={{ __html: stats.name }} />
           {query.author !== DEFAULT_AUTHOR && (
             <span className={styles.author}>
-              [{authorDict[query.author].lastName}]
+              [
+              {authorDict[query.author].firstName &&
+                `${authorDict[query.author].firstName} `}
+              {authorDict[query.author].lastName}]
             </span>
           )}
         </span>
@@ -84,9 +92,7 @@ const ColumnHead = ({
           {display.entries}
           {!query.source && display.sources}
         </div>
-        <div className={styles.authors}>
-          {display.authors}
-        </div>
+        <div className={styles.authors}>{display.authors}</div>
       </div>
     </header>
   );
