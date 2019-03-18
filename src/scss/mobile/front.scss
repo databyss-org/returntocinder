@@ -39,7 +39,8 @@
     }
 
     &.withMotifs .head {
-      height: 35vh;
+      height: 75vh;
+      flex-shrink: 0;
       padding-top: 3vh;
     }
 

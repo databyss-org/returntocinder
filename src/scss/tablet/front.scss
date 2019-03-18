@@ -39,8 +39,9 @@
       transition: height 200ms ease-in-out;
     }
 
-    &.withMotifs .head{
-      height: 35vh;
+    &.withMotifs .head {
+      height: 70vh;
+      flex-shrink: 0;
       padding-top: 3vh;
     }
 
@@ -65,6 +66,21 @@
       height: 56vh;
     }
 
+    .toggles {
+      display: flex;
+      margin-top: 1em;
+      font-size: 1.5em;
+      text-decoration: underline;
+      cursor: pointer;
+      text-transform: uppercase;
+      & > * {
+        margin-right: 1em;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
     .title {
       font-size: 3em;
       line-height: 1em;
@@ -81,7 +97,10 @@
       position: relative;
       max-width: 375px;
 
-      a, a:hover, a:active, a:visited {
+      a,
+      a:hover,
+      a:active,
+      a:visited {
         text-decoration: underline;
         color: rgba(255, 255, 255, 0.45);
         transition: color 50ms ease;
