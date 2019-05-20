@@ -99,7 +99,13 @@ export default {
       dispatch({
         type: 'FETCH_AUTHORS',
       });
-      const authorList = (await axios.get(`${API_URL}/authors`)).data;
+      const authorList = (await axios.get(`${API_URL}/authors`)).data.sort(
+        function(a, b) {
+          return a.lastName
+            .toLowerCase()
+            .localeCompare(b.lastName.toLowerCase());
+        }
+      );
       const authorDict = authorDictFromList(authorList);
 
       return dispatch({
