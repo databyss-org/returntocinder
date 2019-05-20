@@ -69,12 +69,6 @@ class Search extends PureComponent {
     }
   }
 
-  componentDidUpdate() {
-    window.onpopstate = () => {
-      this.onClearInput();
-    };
-  }
-
   setQuery(query) {
     this.props.setQuery({ query, author: DEFAULT_AUTHOR });
   }
