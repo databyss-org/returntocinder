@@ -25,7 +25,10 @@ const biblioToPage = ({ biblio, authors }) => {
         ...lines,
         `<h2>${authors[author].lastName}, ${authors[author].firstName}</h2>`,
         ...byAuthor[author].map(
-          b => `<a id=biblio-${b.id}> ${b.id}</a> ${b.citations.join('<br />')}`
+          b =>
+            `<a href="/source/${b.id}" id="biblio-link">${
+              b.id
+            }</a> ${b.citations.join('<br />')}`
         ),
       ],
       []
