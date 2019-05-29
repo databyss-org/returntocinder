@@ -1,37 +1,36 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import Subnav from './Subnav.jsx';
-import styles from '../app.scss';
-import actions from '../redux/app/actions';
-import withLoader from '../hoc/withLoader';
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import Subnav from './Subnav.jsx'
+import styles from '../app.scss'
+import actions from '../redux/app/actions'
+import withLoader from '../hoc/withLoader'
 
 class Page extends PureComponent {
   constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClick);
+    document.addEventListener('click', this.handleClick)
   }
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('click', this.handleClick)
   }
 
   handleClick(e) {
-    //This handler checks to see whether a link was clicked with an id of biblio-link
-
-    const targetLink = e.target.closest('a');
+    //This handler checks to see whether a biblio link was checked
+    const targetLink = e.target.closest('a')
     targetLink &&
-      e.target.id === 'biblio-link' &&
+      !targetLink.getAttribute('href').match(/^(http|https)/) &&
       (e.preventDefault(),
-      this.props.history.push(targetLink.getAttribute('href')));
+      this.props.history.push(targetLink.getAttribute('href')))
   }
 
   render() {
-    let { subnavPath, content, menu, useHash } = this.props;
+    let { subnavPath, content, menu, useHash } = this.props
     return (
       <div className={styles.about}>
         <div className={styles.container}>
@@ -65,7 +64,7 @@ class Page extends PureComponent {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -92,4 +91,4 @@ export default withRouter(
       showLoader: true,
     })
   )(Page)
-);
+)
