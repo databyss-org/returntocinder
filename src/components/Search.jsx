@@ -1,120 +1,112 @@
 /* eslint-disable arrow-body-style */
-import React, { PureComponent } from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import Autosuggest from 'react-autosuggest';
-import Transition from 'react-transition-group/Transition';
-import cx from 'classnames';
-import latinize from 'latinize';
-import pluralize from 'pluralize';
-import _ from 'lodash';
-import urlencode from 'urlencode';
-import searchActions from '../redux/search/actions';
-import appActions from '../redux/app/actions';
-import theme from '../app.scss';
-import { textify } from '../lib/_helpers';
-import CloseIcon from '../icons/close.svg';
+import React, { PureComponent } from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import Autosuggest from 'react-autosuggest'
+import Transition from 'react-transition-group/Transition'
+import cx from 'classnames'
+import latinize from 'latinize'
+import pluralize from 'pluralize'
+import _ from 'lodash'
+import urlencode from 'urlencode'
+import searchActions from '../redux/search/actions'
+import appActions from '../redux/app/actions'
+import theme from '../app.scss'
+import { textify } from '../lib/_helpers'
+import CloseIcon from '../icons/close.svg'
 
-const { DEFAULT_AUTHOR } = process.env;
+const { DEFAULT_AUTHOR } = process.env
 
 class Search extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       value: '',
       highlightedSuggestion: null,
       searchWords: [],
       suggestions: [],
-    };
+    }
 
-    this.onChange = this.onChange.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onChange = this.onChange.bind(this)
+    this.onFocus = this.onFocus.bind(this)
+    this.onBlur = this.onBlur.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
     this.onSuggestionsFetchRequested = _.debounce(
       this.onSuggestionsFetchRequested.bind(this),
       300,
       { leading: true, trailing: true }
-    );
-    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-    this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this);
-    this.onClearInput = this.onClearInput.bind(this);
-    this.renderInputComponent = this.renderInputComponent.bind(this);
-    this.renderSuggestion = this.renderSuggestion.bind(this);
-    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(
-      this
-    );
-    this.getSuggestions = this.getSuggestions.bind(this);
+    )
+    this.onSuggestionSelected = this.onSuggestionSelected.bind(this)
+    this.onSuggestionHighlighted = this.onSuggestionHighlighted.bind(this)
+    this.onClearInput = this.onClearInput.bind(this)
+    this.renderInputComponent = this.renderInputComponent.bind(this)
+    this.renderSuggestion = this.renderSuggestion.bind(this)
+    this.renderSuggestionsContainer = this.renderSuggestionsContainer.bind(this)
+    this.getSuggestions = this.getSuggestions.bind(this)
   }
   componentDidMount() {
-    const { motif, source } = this.props.match.params;
-    const { doc, sourceList } = this.props.appState;
+    const { motif, source } = this.props.match.params
+    const { doc, sourceList } = this.props.appState
 
     if (motif) {
       this.setState({
         value: textify(doc[motif].name),
-      });
+      })
     }
     if (source) {
       this.setState({
         value: textify(sourceList.find(s => s.id === source).name),
-      });
+      })
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { queryMeta } = this.props.searchState;
+    const { queryMeta } = this.props.searchState
     if (queryMeta.count !== nextProps.searchState.queryMeta.count) {
-      this.onSuggestionsFetchRequested({ value: this.state.value });
+      this.onSuggestionsFetchRequested({ value: this.state.value })
     }
-  }
-
-  componentDidUpdate() {
-    window.onpopstate = () => {
-      this.onClearInput();
-    };
   }
 
   setQuery(query) {
-    this.props.setQuery({ query, author: DEFAULT_AUTHOR });
+    this.props.setQuery({ query, author: DEFAULT_AUTHOR })
   }
   getQuery() {
-    return this.props.searchState.query;
+    return this.props.searchState.query
   }
   getSuggestions(value) {
     if (!value) {
-      return [{ suggestions: [] }];
+      return [{ suggestions: [] }]
     }
-    const { sourceList, authorDict } = this.props.appState;
-    console.log(authorDict);
-    const wordSeparator = new RegExp(/[^a-z0-9'"]/);
+    const { sourceList, authorDict } = this.props.appState
+    console.log(authorDict)
+    const wordSeparator = new RegExp(/[^a-z0-9'"]/)
     const searchWords = value
       .trim()
       .toLowerCase()
-      .split(wordSeparator);
+      .split(wordSeparator)
 
     if (!searchWords.length || searchWords[0] === '') {
-      return [{ suggestions: [] }];
+      return [{ suggestions: [] }]
     }
 
-    this.setState({ searchWords });
+    this.setState({ searchWords })
 
     const matchStems = (words, queries, matchCount = 0) => {
-      let found = false;
+      let found = false
       words.forEach((w, widx) => {
         queries.forEach((q, qidx) => {
           if (w.startsWith(q) && !found) {
             // remove term found from queries and words
             // then recurse on remaining terms/queries
-            const nw = words.slice(0, widx).concat(words.slice(widx + 1));
-            const nq = queries.slice(0, qidx).concat(queries.slice(qidx + 1));
-            matchCount = matchStems(nw, nq, matchCount + 1);
-            found = true;
+            const nw = words.slice(0, widx).concat(words.slice(widx + 1))
+            const nq = queries.slice(0, qidx).concat(queries.slice(qidx + 1))
+            matchCount = matchStems(nw, nq, matchCount + 1)
+            found = true
           }
-        });
-      });
-      return matchCount;
-    };
+        })
+      })
+      return matchCount
+    }
 
     // base matcher
     const baseMatch = m =>
@@ -124,10 +116,10 @@ class Search extends PureComponent {
           .split(wordSeparator),
         searchWords
         // only pass when all query terms are matched
-      ) === searchWords.length;
+      ) === searchWords.length
 
     // filter collection
-    const findMatches = collection => collection.filter(baseMatch);
+    const findMatches = collection => collection.filter(baseMatch)
 
     const findSourceMatches = collection =>
       collection.filter(
@@ -140,7 +132,7 @@ class Search extends PureComponent {
             ],
             searchWords
           ) === searchWords.length
-      );
+      )
 
     // sort matches so that results starting with query are prioritized
     const sortMatches = collection =>
@@ -149,90 +141,90 @@ class Search extends PureComponent {
           a.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
           !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
         ) {
-          return -1;
+          return -1
         }
         if (
           b.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
           !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
         ) {
-          return 1;
+          return 1
         }
-        return 0;
-      });
+        return 0
+      })
 
     const sortBase = (a, b) => {
       if (
         a.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
         !b.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
       ) {
-        return -1;
+        return -1
       }
       if (
         b.name.toLowerCase().startsWith(searchWords[0].toLowerCase()) &&
         !a.name.toLowerCase().startsWith(searchWords[0].toLowerCase())
       ) {
-        return 1;
+        return 1
       }
-      return 0;
-    };
+      return 0
+    }
 
     const sortSourceMatches = collection =>
       collection.sort((a, b) => {
-        const authorA = authorDict[a.authorCode];
-        const authorB = authorDict[b.authorCode];
+        const authorA = authorDict[a.authorCode]
+        const authorB = authorDict[b.authorCode]
         if (
           authorA.firstName.toLowerCase().startsWith(searchWords[0]) &&
           !authorB.firstName.toLowerCase().startsWith(searchWords[0])
         ) {
-          return -1;
+          return -1
         }
         if (
           authorB.firstName.toLowerCase().startsWith(searchWords[0]) &&
           !authorA.firstName.toLowerCase().startsWith(searchWords[0])
         ) {
-          return 1;
+          return 1
         }
         if (
           authorA.lastName.toLowerCase().startsWith(searchWords[0]) &&
           !authorB.lastName.toLowerCase().startsWith(searchWords[0])
         ) {
-          return -1;
+          return -1
         }
         if (
           authorB.lastName.toLowerCase().startsWith(searchWords[0]) &&
           !authorA.lastName.toLowerCase().startsWith(searchWords[0])
         ) {
-          return 1;
+          return 1
         }
-        return sortBase(a, b);
-      });
+        return sortBase(a, b)
+      })
 
-    const trimTo = max => c => c.slice(0, max);
+    const trimTo = max => c => c.slice(0, max)
 
     const compile = ({ collection, match, sort, filter, trim }) => {
-      let res = collection;
+      let res = collection
       if (filter) {
-        res = filter(res);
+        res = filter(res)
       }
       if (match) {
-        res = match(res);
+        res = match(res)
       }
       if (sort) {
-        res = sort(res);
+        res = sort(res)
       }
       if (trim) {
-        res = trim(res);
+        res = trim(res)
       }
       return res.map((r, idx) => {
-        r.idx = idx;
-        return r;
-      });
-    };
+        r.idx = idx
+        return r
+      })
+    }
 
     const compileDefaults = {
       match: findMatches,
       sort: sortMatches,
-    };
+    }
 
     const motifMatches = compile({
       ...compileDefaults,
@@ -246,14 +238,14 @@ class Search extends PureComponent {
           name: m.name.replace(/\(.+?[a-z]+.+?\)/, ''),
         })),
       trim: trimTo(5),
-    });
+    })
 
     const sourceMatches = compile({
       match: findSourceMatches,
       sort: sortSourceMatches,
       collection: sourceList,
       trim: trimTo(5),
-    });
+    })
 
     return [
       {
@@ -280,16 +272,16 @@ class Search extends PureComponent {
             },
           ]
         : []),
-    ];
+    ]
   }
   getSuggestionValue(suggestion) {
-    return suggestion.id;
+    return suggestion.id
   }
   renderSuggestionsContainer({ containerProps, children, query }) {
     const props = {
       ...containerProps,
       className: cx(containerProps.className, this.props.withMaskClassName),
-    };
+    }
     return (
       <div {...props}>
         <div
@@ -301,7 +293,7 @@ class Search extends PureComponent {
         </div>
         {children}
       </div>
-    );
+    )
   }
   renderSuggestion(suggestion) {
     return {
@@ -330,42 +322,42 @@ class Search extends PureComponent {
           </div>
         </div>
       ),
-    }[suggestion.type];
+    }[suggestion.type]
   }
   onChange(event, { newValue, method }) {
     if (newValue === '') {
-      this.onClearInput();
+      this.onClearInput()
     }
     if (newValue && method === 'type') {
       this.setState({
         value: newValue,
-      });
-      this.setQuery(newValue);
+      })
+      this.setQuery(newValue)
     }
   }
   onBlur() {
-    this.inputElement.blur();
+    this.inputElement.blur()
   }
   onFocus() {
-    this.props.toggleSearchIsFocused(this.inputElement);
+    this.props.toggleSearchIsFocused(this.inputElement)
   }
   onSuggestionSelected(event, { suggestion }) {
     if (suggestion.type === 'entry') {
-      this.onSearch(`/search/${urlencode(this.state.value)}`);
+      this.onSearch(`/search/${urlencode(this.state.value)}`)
     } else if (suggestion.type === 'motif') {
-      this.onSearch(`/${suggestion.type}/${suggestion.id}/sources`);
+      this.onSearch(`/${suggestion.type}/${suggestion.id}/sources`)
     } else {
-      this.onSearch(`/${suggestion.type}/${suggestion.id}`);
+      this.onSearch(`/${suggestion.type}/${suggestion.id}`)
     }
   }
   onSuggestionHighlighted({ suggestion }) {
     if (!suggestion) {
-      return;
+      return
     }
 
     this.setState({
       highlightedSuggestion: suggestion,
-    });
+    })
   }
   onSuggestionsFetchRequested({ value, reason }) {
     if (reason === 'input-focused') {
@@ -373,28 +365,28 @@ class Search extends PureComponent {
     }
     this.setState({
       suggestions: this.getSuggestions(value),
-    });
+    })
   }
   onClearInput(andClose) {
     this.setState({
       value: '',
       highlightedSuggestion: null,
-    });
+    })
     if (andClose) {
-      this.props.maskClicked();
+      this.props.maskClicked()
     }
   }
   onSearch(path) {
     this.props.history.push({
       pathname: path,
-    });
-    this.onClearInput();
-    this.props.maskClicked();
-    this.inputElement.blur();
+    })
+    this.onClearInput()
+    this.props.maskClicked()
+    this.inputElement.blur()
   }
   onKeyDown(event) {
     if (event.key === 'Enter' && !this.state.highlightedSuggestion) {
-      this.onSearch(`/search/${urlencode(this.getQuery())}`);
+      this.onSearch(`/search/${urlencode(this.getQuery())}`)
     }
   }
   renderInputComponent(inputProps) {
@@ -409,17 +401,17 @@ class Search extends PureComponent {
       >
         <CloseIcon />
       </button>,
-    ];
+    ]
   }
   renderSectionTitle(section) {
-    return <strong>{section.title}</strong>;
+    return <strong>{section.title}</strong>
   }
   getSectionSuggestions(section) {
-    return section.suggestions;
+    return section.suggestions
   }
   render() {
-    const { suggestions, value } = this.state;
-    const { isVisible } = this.props.appState.search;
+    const { suggestions, value } = this.state
+    const { isVisible } = this.props.appState.search
 
     return (
       <Transition
@@ -460,18 +452,18 @@ class Search extends PureComponent {
                 }}
                 ref={autosuggest => {
                   if (!autosuggest) {
-                    return;
+                    return
                   }
-                  this.autosuggest = autosuggest;
-                  this.inputElement = autosuggest.input;
+                  this.autosuggest = autosuggest
+                  this.inputElement = autosuggest.input
                 }}
                 theme={theme}
               />
             </div>
-          );
+          )
         }}
       </Transition>
-    );
+    )
   }
 }
 
@@ -483,4 +475,4 @@ export default withRouter(
     }),
     { ...appActions, ...searchActions }
   )(Search)
-);
+)
