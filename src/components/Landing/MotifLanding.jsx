@@ -122,11 +122,7 @@ class MotifLanding extends React.Component {
       />
     );
     return (
-      <LandingEntries
-        onMotifLinksChange={this.onMotifLinksChange}
-        showMotifLinks={motifLinksAreActive}
-        onSourcesClick={this.onSourcesClick}
-      >
+      <LandingEntries onSourcesClick={this.onSourcesClick}>
         {source ? (
           <EntriesByLocation
             locations={this.props.motif.entriesByLocation}
