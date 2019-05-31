@@ -80,7 +80,6 @@ class Search extends PureComponent {
       return [{ suggestions: [] }];
     }
     const { sourceList, authorDict } = this.props.appState;
-    console.log(authorDict);
     const wordSeparator = new RegExp(/[^a-z0-9'"]/);
     const searchWords = value
       .trim()
