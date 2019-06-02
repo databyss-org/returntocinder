@@ -1,10 +1,10 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import Subnav from './Subnav.jsx'
-import styles from '../app.scss'
-import actions from '../redux/app/actions'
-import withLoader from '../hoc/withLoader'
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import Subnav from './Subnav.jsx';
+import styles from '../app.scss';
+import actions from '../redux/app/actions';
+import withLoader from '../hoc/withLoader';
 
 const Page = ({ path, subnavPath, content, menu, useHash }) => (
   <div className={styles.about}>
@@ -39,7 +39,7 @@ const Page = ({ path, subnavPath, content, menu, useHash }) => (
       </div>
     </div>
   </div>
-)
+);
 
 export default compose(
   connect(
@@ -61,4 +61,4 @@ export default compose(
     }),
     showLoader: true,
   })
-)(Page)
+)(Page);
