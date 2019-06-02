@@ -42,8 +42,8 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
       <SyncHistory onLocationChanged={() => maskClicked()}>
         <Helmet>
           <title>{META_TITLE}</title>
-          <meta name='description' content={META_DESCRIPTION} />
-          <meta name='keywords' content={META_KEYWORDS} />
+          <meta name="description" content={META_DESCRIPTION} />
+          <meta name="keywords" content={META_KEYWORDS} />
         </Helmet>
         <ScrollToTop>
           <Transition in={app.maskIsVisible} timeout={50}>
@@ -62,18 +62,18 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
                     })}
                   >
                     <Route
-                      path='/(source|search|motif)/:term/:groupBy?/:filterBy?'
+                      path="/(source|search|motif)/:term/:groupBy?/:filterBy?"
                       render={({ match }) => <DocContainer match={match} />}
                     />
                   </div>
                   <Route
-                    path='/about/:page'
+                    path="/about/:page"
                     children={({ match, location }) => (
                       <ModalMenu
                         isActive={match || location.hash.match('about')}
                       >
                         <Route
-                          path='/about/:page'
+                          path="/about/:page"
                           children={({ match, location }) => {
                             let aboutPath;
                             let useHash = false;
@@ -89,7 +89,7 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
                             return (
                               <Page
                                 path={`/about/${aboutPath}`}
-                                subnavPath='/about'
+                                subnavPath="/about"
                                 contentFunc={
                                   aboutPath === 'bibliography' &&
                                   biblioToPage({ biblio, authors })
