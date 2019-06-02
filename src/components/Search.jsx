@@ -68,6 +68,7 @@ class Search extends PureComponent {
       this.onSuggestionsFetchRequested({ value: this.state.value });
     }
   }
+
   setQuery(query) {
     this.props.setQuery({ query, author: DEFAULT_AUTHOR });
   }
