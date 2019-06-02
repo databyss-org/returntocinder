@@ -1,49 +1,49 @@
 /* eslint-disable arrow-body-style */
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import Transition from 'react-transition-group/Transition';
-import cx from 'classnames';
-import { Helmet } from 'react-helmet';
-import withLoader from '../hoc/withLoader';
-import freezeProps from '../hoc/freezeProps';
+import React from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import Transition from 'react-transition-group/Transition'
+import cx from 'classnames'
+import { Helmet } from 'react-helmet'
+import withLoader from '../hoc/withLoader'
+import freezeProps from '../hoc/freezeProps'
 
-import Navbar from './Navbar.jsx';
-import Menu from './Menu.jsx';
-import DocContainer from './DocContainer.jsx';
-import Source from './Source.jsx';
-import DocModal from './DocModal.jsx';
-import ModalMenu from './ModalMenu.jsx';
-import Page from './Page.jsx';
-import { biblioToPage } from '../lib/pages';
-import Front from './Front.jsx';
-import ScrollToTop from './ScrollToTop.jsx';
-import actions from '../redux/app/actions';
-import SyncHistory from './SyncHistory.jsx';
-import { aboutHash } from '../lib/url';
+import Navbar from './Navbar.jsx'
+import Menu from './Menu.jsx'
+import DocContainer from './DocContainer.jsx'
+import Source from './Source.jsx'
+import DocModal from './DocModal.jsx'
+import ModalMenu from './ModalMenu.jsx'
+import Page from './Page.jsx'
+import { biblioToPage } from '../lib/pages'
+import Front from './Front.jsx'
+import ScrollToTop from './ScrollToTop.jsx'
+import actions from '../redux/app/actions'
+import SyncHistory from './SyncHistory.jsx'
+import { aboutHash } from '../lib/url'
 
-import styles from '../app.scss';
+import styles from '../app.scss'
 
 const SourceModal = freezeProps({
   propsToFreeze: props => ({
     sid: props.isActive,
   }),
-})(Source);
+})(Source)
 
 const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
   const {
     META_TITLE,
     META_DESCRIPTION,
     META_KEYWORDS,
-  } = app.config.default_meta;
+  } = app.config.default_meta
   return (
     <Router>
       <SyncHistory onLocationChanged={() => maskClicked()}>
         <Helmet>
           <title>{META_TITLE}</title>
-          <meta name="description" content={META_DESCRIPTION} />
-          <meta name="keywords" content={META_KEYWORDS} />
+          <meta name='description' content={META_DESCRIPTION} />
+          <meta name='keywords' content={META_KEYWORDS} />
         </Helmet>
         <ScrollToTop>
           <Transition in={app.maskIsVisible} timeout={50}>
@@ -62,41 +62,41 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
                     })}
                   >
                     <Route
-                      path="/(source|search|motif)/:term/:groupBy?/:filterBy?"
+                      path='/(source|search|motif)/:term/:groupBy?/:filterBy?'
                       render={({ match }) => <DocContainer match={match} />}
                     />
                   </div>
                   <Route
-                    path="/about/:page"
+                    path='/about/:page'
                     children={({ match, location }) => (
                       <ModalMenu
                         isActive={match || location.hash.match('about')}
                       >
                         <Route
-                          path="/about/:page"
+                          path='/about/:page'
                           children={({ match, location }) => {
-                            let aboutPath;
-                            let useHash = false;
+                            let aboutPath
+                            let useHash = false
                             if (!match && aboutHash(location.hash)) {
                               // get about path from hash
-                              aboutPath = aboutHash(location.hash);
-                              useHash = true;
+                              aboutPath = aboutHash(location.hash)
+                              useHash = true
                             } else if (match) {
-                              aboutPath = match.params.page;
+                              aboutPath = match.params.page
                             } else {
-                              return null;
+                              return null
                             }
                             return (
                               <Page
                                 path={`/about/${aboutPath}`}
-                                subnavPath="/about"
+                                subnavPath='/about'
                                 contentFunc={
                                   aboutPath === 'bibliography' &&
                                   biblioToPage({ biblio, authors })
                                 }
                                 useHash={useHash}
                               />
-                            );
+                            )
                           }}
                         />
                       </ModalMenu>
@@ -112,14 +112,14 @@ const Main = ({ app, maskClicked, location, menu, biblio, authors }) => {
                   <Front />
                   <Menu items={menu} />
                 </div>
-              );
+              )
             }}
           </Transition>
         </ScrollToTop>
       </SyncHistory>
     </Router>
-  );
-};
+  )
+}
 
 export default compose(
   connect(
@@ -145,4 +145,4 @@ export default compose(
     }),
     showLoader: false,
   })
-)(Main);
+)(Main)
