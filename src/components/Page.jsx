@@ -23,13 +23,15 @@ class Page extends PureComponent {
   handleClick(e) {
     //This handler checks to see whether a biblio link was checked
     const targetLink = e.target.closest('a')
-    if (!targetLink.getAttribute('href')) {
-      e.preventDefault()
-    } else {
-      targetLink &&
-        !targetLink.getAttribute('href').match(/^(http|https)/) &&
-        (e.preventDefault(),
-        this.props.history.push(targetLink.getAttribute('href')))
+    if (targetLink) {
+      if (!targetLink.getAttribute('href')) {
+        e.preventDefault()
+      } else {
+        targetLink &&
+          !targetLink.getAttribute('href').match(/^(http|https)/) &&
+          (e.preventDefault(),
+          this.props.history.push(targetLink.getAttribute('href')))
+      }
     }
   }
 
