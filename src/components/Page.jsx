@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import { HashLink as Link } from 'react-router-hash-link'
+
 import Subnav from './Subnav.jsx'
 import styles from '../app.scss'
 import actions from '../redux/app/actions'
@@ -10,13 +12,40 @@ import withLoader from '../hoc/withLoader'
 class Page extends PureComponent {
   constructor(props) {
     super(props)
+    this.state = {
+      hash: '',
+    }
     this.handleClick = this.handleClick.bind(this)
+    this.topRef = React.createRef()
   }
 
   componentDidMount() {
+    if (this.props.history.location.hash) {
+      this.scrollToAnchor()
+    }
+
+    this.backListener = this.props.history.listen(() => {
+      if (
+        this.props.history.action === 'PUSH' ||
+        this.props.history.action === 'POP'
+      ) {
+        const hash = this.props.history.location.hash
+        if (hash) {
+          this.setState({ hash: hash })
+          this.authorNameScroll(hash.slice(1))
+        } else {
+          if (this.props.history.location.pathname === '/about/bibliography') {
+            this.topRef.current.scrollIntoView()
+          }
+        }
+      }
+    })
+
     document.addEventListener('click', this.handleClick)
   }
+
   componentWillUnmount() {
+    this.backListener()
     document.removeEventListener('click', this.handleClick)
   }
 
@@ -27,19 +56,40 @@ class Page extends PureComponent {
       if (!targetLink.getAttribute('href')) {
         e.preventDefault()
       } else {
-        targetLink &&
-          !targetLink.getAttribute('href').match(/^(http|https)/) &&
-          (e.preventDefault(),
-          this.props.history.push(targetLink.getAttribute('href')))
+        this.setState({ hash: '' })
+        if (
+          targetLink &&
+          !targetLink.getAttribute('href').match(/^(http|https)/)
+        ) {
+          e.preventDefault()
+          let url = targetLink.getAttribute('href').split('#')[0]
+          this.props.history.push({ pathname: url })
+        }
       }
     }
   }
 
-  authorNameClick(id) {
+  scrollToAnchor() {
+    let { pathname, hash } = this.props.history.location
+
+    //this.setState({ hash: hash })
+    //this.authorNameScroll(hash.slice(1))
+
+    if (pathname == '/about/bibliography' && hash) {
+      this.setState({ hash: hash })
+      this.authorNameScroll(hash.slice(1))
+    }
+  }
+
+  authorNameScroll(id) {
     let el = document.getElementById(id)
-    el.scrollIntoView({
-      behavior: 'smooth',
-    })
+    if (el) {
+      el.scrollIntoView()
+    }
+  }
+
+  authorNameClick(id) {
+    this.props.history.push({ pathname: '/about/bibliography', hash: id })
   }
 
   render() {
@@ -63,6 +113,7 @@ class Page extends PureComponent {
           </div>
           <header>{content.title}</header>
           <div className={styles.body} id='about'>
+            <div ref={this.topRef} />
             {content.title === 'bibliography' && (
               <div className={styles.authorContainer}>
                 <div className={styles.authorTitle}>

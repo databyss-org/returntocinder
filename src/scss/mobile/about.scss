@@ -15,17 +15,17 @@
     font-size: 1.2em;
     line-height: 1.2em;
     padding: 1.5em 4em 1em 1.2em;
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid #d6d6d6;
   }
 
   .body {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     height: 80vh;
-    padding: 10vh 0 3vh;
+    padding: 5vh 0 3vh;
 
     .title {
-      color: #9B9B9B;
+      color: #9b9b9b;
       font-family: 'DINNextLTPro-MediumCond';
       font-size: 2em;
       padding-bottom: 1.5em;
@@ -34,23 +34,61 @@
     }
 
     p {
-      color: #4A4A4A;
-      font-size: 1.1em;
-      line-height: 1.5em;
+      color: #4a4a4a;
+      font-size: 1em;
+      line-height: 1.8em;
       width: 85%;
       margin: 0 auto 1.5em;
       max-width: 575px;
     }
+    a {
+      font-size: 16px;
+      color: #675d71;
+      font-weight: bold;
+      margin-right: 0.3em;
+      text-decoration: underline solid hsl(270, 9.7%, 68.7%);
+    }
+    .authorContainer {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 1.5em auto;
+      max-width: 600px;
+      padding-left: 28px;
+      padding-right: 28px;
 
+      a {
+        cursor: pointer;
+        margin: 6px;
+      }
+    }
+
+    .authorTitle {
+      width: 100%;
+      h1 {
+        margin-bottom: 1em;
+        padding-bottom: 1em;
+      }
+    }
+
+    .authorContent {
+      width: 40%;
+      text-align: left;
+      height: 35px;
+      display: inline-block;
+      padding: 0px;
+    }
     .footnotes {
       margin: 3em auto;
       padding-top: 1em;
-      border-top: 1px solid rgba(151,151,151,0.38);
+      border-top: 1px solid rgba(151, 151, 151, 0.38);
       width: 85%;
       max-width: 500px;
 
       li {
-        color: #4A4A4A;
+        color: #4a4a4a;
         margin-bottom: 1.5em;
         font-size: 0.9em;
         line-height: 1.2em;
