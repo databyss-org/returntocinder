@@ -48,6 +48,7 @@
       margin-right: 0.3em;
       text-decoration: underline solid hsl(270, 9.7%, 68.7%);
     }
+
     .authorContainer {
       width: 100%;
       display: flex;
@@ -59,9 +60,16 @@
       padding-left: 28px;
       padding-right: 28px;
 
+      .authorListContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+
       a {
         cursor: pointer;
-        margin: 6px;
+        font-size: 15px;
       }
     }
 

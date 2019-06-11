@@ -68,6 +68,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
+
         margin: 1.5em auto;
         max-width: 600px;
         a {
@@ -82,7 +83,12 @@
           padding-bottom: 1em;
         }
       }
-
+      .authorListContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
       .authorContent {
         width: 40%;
         text-align: left;

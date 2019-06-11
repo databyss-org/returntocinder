@@ -15,9 +15,12 @@ class Page extends PureComponent {
     }
     this.handleClick = this.handleClick.bind(this)
     this.topRef = React.createRef()
+    this.columnHeightRef = React.createRef()
   }
 
   componentDidMount() {
+    this.calculateColumnHeight()
+
     if (this.props.history.location.hash) {
       this.scrollToAnchor()
     }
@@ -86,6 +89,13 @@ class Page extends PureComponent {
     this.props.history.push({ pathname: '/about/bibliography', hash: id })
   }
 
+  calculateColumnHeight() {
+    if (this.columnHeightRef.current) {
+      let height = Math.ceil(this.props.appState.authorList.length / 2) * 35
+      this.columnHeightRef.current.style.height = height + 'px'
+    }
+  }
+
   render() {
     let { subnavPath, content, menu, useHash, appState } = this.props
     let { authorList } = appState
@@ -115,7 +125,12 @@ class Page extends PureComponent {
                   <h1>Authors</h1>
                 </div>
                 <br />
-                {authorListHeader}
+                <div
+                  ref={this.columnHeightRef}
+                  className={styles.authorListContainer}
+                >
+                  {authorListHeader}
+                </div>
               </div>
             )}
 
