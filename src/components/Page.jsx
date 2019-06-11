@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { HashLink as Link } from 'react-router-hash-link'
-
 import Subnav from './Subnav.jsx'
 import styles from '../app.scss'
 import actions from '../redux/app/actions'
@@ -71,10 +69,6 @@ class Page extends PureComponent {
 
   scrollToAnchor() {
     let { pathname, hash } = this.props.history.location
-
-    //this.setState({ hash: hash })
-    //this.authorNameScroll(hash.slice(1))
-
     if (pathname == '/about/bibliography' && hash) {
       this.setState({ hash: hash })
       this.authorNameScroll(hash.slice(1))
@@ -98,10 +92,11 @@ class Page extends PureComponent {
     const authorListHeader = authorList.map((a, i) => (
       <a
         className={styles.authorContent}
-        id={i}
+        key={i}
         onClick={() => this.authorNameClick(a.id)}
       >
-        {a.lastName}, {a.firstName}
+        {a.lastName}
+        {a.firstName && `, ${a.firstName}`}
       </a>
     ))
 
