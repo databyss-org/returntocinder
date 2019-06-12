@@ -12,6 +12,7 @@ class Page extends PureComponent {
     super(props)
     this.state = {
       hash: '',
+      authorColumnHeight: '0px',
     }
     this.handleClick = this.handleClick.bind(this)
     this.topRef = React.createRef()
@@ -90,10 +91,8 @@ class Page extends PureComponent {
   }
 
   calculateColumnHeight() {
-    if (this.columnHeightRef.current) {
-      let height = Math.ceil(this.props.appState.authorList.length / 2) * 35
-      this.columnHeightRef.current.style.height = height + 'px'
-    }
+    let height = Math.ceil(this.props.appState.authorList.length / 2) * 35
+    this.setState({ authorColumnHeight: height })
   }
 
   render() {
@@ -127,6 +126,7 @@ class Page extends PureComponent {
                 <br />
                 <div
                   ref={this.columnHeightRef}
+                  style={{ height: this.state.authorColumnHeight }}
                   className={styles.authorListContainer}
                 >
                   {authorListHeader}
