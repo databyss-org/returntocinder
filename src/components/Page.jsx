@@ -11,7 +11,6 @@ class Page extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      hash: '',
       authorColumnHeight: '0px',
     }
     this.handleClick = this.handleClick.bind(this)
@@ -23,9 +22,8 @@ class Page extends PureComponent {
     this.calculateColumnHeight()
 
     if (this.props.history.location.hash) {
-      this.scrollToAnchor()
+      setTimeout(() => this.scrollToAnchor(), 0)
     }
-
     this.backListener = this.props.history.listen(() => {
       if (
         this.props.history.action === 'PUSH' ||
@@ -33,7 +31,6 @@ class Page extends PureComponent {
       ) {
         const hash = this.props.history.location.hash
         if (hash) {
-          this.setState({ hash: hash })
           this.authorNameScroll(hash.slice(1))
         } else {
           if (this.props.history.location.pathname === '/about/bibliography') {
@@ -58,14 +55,15 @@ class Page extends PureComponent {
       if (!targetLink.getAttribute('href')) {
         e.preventDefault()
       } else {
-        this.setState({ hash: '' })
         if (
           targetLink &&
           !targetLink.getAttribute('href').match(/^(http|https)/)
         ) {
           e.preventDefault()
           let url = targetLink.getAttribute('href').split('#')[0]
-          this.props.history.push({ pathname: url })
+          if (url.split('/')[1] === 'source') {
+            this.props.history.push({ pathname: url })
+          }
         }
       }
     }
@@ -74,7 +72,6 @@ class Page extends PureComponent {
   scrollToAnchor() {
     let { pathname, hash } = this.props.history.location
     if (pathname == '/about/bibliography' && hash) {
-      this.setState({ hash: hash })
       this.authorNameScroll(hash.slice(1))
     }
   }
