@@ -53,6 +53,7 @@
         font-weight: bold;
         margin-right: 0.3em;
         text-decoration: underline solid hsl(270, 9.7%, 68.7%);
+        -webkit-text-decoration: underline solid hsl(270, 9.7%, 68.7%);
       }
 
       p {
@@ -94,7 +95,7 @@
         text-align: left;
         height: 35px;
         display: inline-block;
-        padding: 0px;
+        padding: 15px;
       }
       .footnotes {
         margin: 3em auto;
