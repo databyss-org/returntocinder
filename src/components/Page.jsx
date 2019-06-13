@@ -10,27 +10,102 @@ import withLoader from '../hoc/withLoader'
 class Page extends PureComponent {
   constructor(props) {
     super(props)
+    this.state = {
+      authorColumnHeight: '0px',
+    }
     this.handleClick = this.handleClick.bind(this)
+    this.topRef = React.createRef()
+    this.columnHeightRef = React.createRef()
   }
 
   componentDidMount() {
+    this.calculateColumnHeight()
+
+    if (this.props.history.location.hash) {
+      setTimeout(() => this.scrollToAnchor(), 0)
+    }
+    this.backListener = this.props.history.listen(() => {
+      if (
+        this.props.history.action === 'PUSH' ||
+        this.props.history.action === 'POP'
+      ) {
+        const hash = this.props.history.location.hash
+        if (hash) {
+          this.authorNameScroll(hash.slice(1))
+        } else {
+          if (this.props.history.location.pathname === '/about/bibliography') {
+            this.topRef.current.scrollIntoView()
+          }
+        }
+      }
+    })
+
     document.addEventListener('click', this.handleClick)
   }
+
   componentWillUnmount() {
+    this.backListener()
     document.removeEventListener('click', this.handleClick)
   }
 
   handleClick(e) {
     //This handler checks to see whether a biblio link was checked
     const targetLink = e.target.closest('a')
-    targetLink &&
-      !targetLink.getAttribute('href').match(/^(http|https)/) &&
-      (e.preventDefault(),
-      this.props.history.push(targetLink.getAttribute('href')))
+    if (targetLink) {
+      if (!targetLink.getAttribute('href')) {
+        e.preventDefault()
+      } else {
+        if (
+          targetLink &&
+          !targetLink.getAttribute('href').match(/^(http|https)/)
+        ) {
+          e.preventDefault()
+          let url = targetLink.getAttribute('href').split('#')[0]
+          if (url.split('/')[1] === 'source') {
+            this.props.history.push({ pathname: url })
+          }
+        }
+      }
+    }
+  }
+
+  scrollToAnchor() {
+    let { pathname, hash } = this.props.history.location
+    if (pathname == '/about/bibliography' && hash) {
+      this.authorNameScroll(hash.slice(1))
+    }
+  }
+
+  authorNameScroll(id) {
+    let el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView()
+    }
+  }
+
+  authorNameClick(id) {
+    this.props.history.push({ pathname: '/about/bibliography', hash: id })
+  }
+
+  calculateColumnHeight() {
+    let height = Math.ceil(this.props.appState.authorList.length / 2) * 35
+    this.setState({ authorColumnHeight: height })
   }
 
   render() {
-    let { subnavPath, content, menu, useHash } = this.props
+    let { subnavPath, content, menu, useHash, appState } = this.props
+    let { authorList } = appState
+    const authorListHeader = authorList.map((a, i) => (
+      <a
+        className={styles.authorContent}
+        key={i}
+        onClick={() => this.authorNameClick(a.id)}
+      >
+        {a.lastName}
+        {a.firstName && `, ${a.firstName}`}
+      </a>
+    ))
+
     return (
       <div className={styles.about}>
         <div className={styles.container}>
@@ -39,6 +114,23 @@ class Page extends PureComponent {
           </div>
           <header>{content.title}</header>
           <div className={styles.body} id='about'>
+            <div ref={this.topRef} />
+            {content.title === 'bibliography' && (
+              <div className={styles.authorContainer}>
+                <div className={styles.authorTitle}>
+                  <h1>Authors</h1>
+                </div>
+                <br />
+                <div
+                  ref={this.columnHeightRef}
+                  style={{ height: this.state.authorColumnHeight }}
+                  className={styles.authorListContainer}
+                >
+                  {authorListHeader}
+                </div>
+              </div>
+            )}
+
             {content.body.map((para, idx) => (
               <p key={idx} dangerouslySetInnerHTML={{ __html: para }} />
             ))}

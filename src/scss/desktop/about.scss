@@ -14,7 +14,10 @@
       z-index: 100;
       position: relative;
 
-      a, a:visited, a:hover, a:active {
+      a,
+      a:visited,
+      a:hover,
+      a:active {
         text-decoration: none;
         color: inherit;
       }
@@ -23,7 +26,7 @@
         font-size: 2em;
         font-family: 'BaskervilleLT-RegularOldFace', serif;
         letter-spacing: -0.05em;
-        color: #9B9B9B;
+        color: #9b9b9b;
         padding: 1.5em 0 1em;
       }
     }
@@ -39,28 +42,68 @@
       padding: 4.5em 0 3vh;
 
       .title {
-        color: #9B9B9B;
+        color: #9b9b9b;
         font-family: 'DINNextLTPro-MediumCond';
         font-size: 1.7em;
         padding-bottom: 2.5em;
       }
 
+      a {
+        color: #675d71;
+        font-weight: bold;
+        margin-right: 0.3em;
+        text-decoration: underline solid hsl(270, 9.7%, 68.7%);
+      }
+
       p {
-        color: #4A4A4A;
+        color: #4a4a4a;
         font-size: 1.1em;
         line-height: 1.5em;
         margin: 1.5em auto;
         max-width: 600px;
       }
 
+      .authorContainer {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        margin: 1.5em auto;
+        max-width: 600px;
+        a {
+          cursor: pointer;
+        }
+      }
+
+      .authorTitle {
+        width: 100%;
+        h1 {
+          margin-bottom: 1em;
+          padding-bottom: 1em;
+        }
+      }
+      .authorListContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+      .authorContent {
+        width: 40%;
+        text-align: left;
+        height: 35px;
+        display: inline-block;
+        padding: 0px;
+      }
       .footnotes {
         margin: 3em auto;
         padding-top: 1em;
-        border-top: 1px solid rgba(151,151,151,0.38);
+        border-top: 1px solid rgba(151, 151, 151, 0.38);
         max-width: 600px;
 
         li {
-          color: #4A4A4A;
+          color: #4a4a4a;
           margin-bottom: 1.5em;
           font-size: 0.9em;
           line-height: 1.2em;
