@@ -60,13 +60,12 @@ class MotifLanding extends React.Component {
       subtitle:
         meta.LANDING_SUB_HEADING &&
         renderTemplate(meta.LANDING_SUB_HEADING, this.templateTokens),
-      renderCfItem: cf => (
-        <Link
-          href={`/motif/${query.resource}:${cf.id}${showAll ? '' : '/sources'}`}
-        >
-          {cf.lastName}
-        </Link>
-      ),
+
+      onCfListSelect: id => {
+        this.props.history.push(
+          `/motif/${query.resource}:${id}${showAll ? '' : '/sources'}`
+        );
+      },
       contentTitle: this.contentTitle,
     };
   }
