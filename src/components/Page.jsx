@@ -43,6 +43,12 @@ class Page extends PureComponent {
     document.addEventListener('click', this.handleClick)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.path === '/about/bibliography') {
+      this.calculateColumnHeight()
+    }
+  }
+
   componentWillUnmount() {
     this.backListener()
     document.removeEventListener('click', this.handleClick)
@@ -88,7 +94,19 @@ class Page extends PureComponent {
   }
 
   calculateColumnHeight() {
-    let height = Math.ceil(this.props.appState.authorList.length / 2) * 35
+    // calculates the height needed for flexbox to create two columns
+    let margin = 0
+    let offsetHeight = 0
+    if (this.columnHeightRef.current) {
+      const style = window.getComputedStyle(this.columnHeightRef.current)
+      margin = parseInt(style.getPropertyValue('margin').replace('px', ''))
+      offsetHeight = this.columnHeightRef.current
+        ? this.columnHeightRef.current.offsetHeight
+        : 0
+      offsetHeight = offsetHeight + 2 * margin
+    }
+    let height =
+      Math.ceil(this.props.appState.authorList.length / 2) * offsetHeight
     this.setState({ authorColumnHeight: height })
   }
 
@@ -97,6 +115,7 @@ class Page extends PureComponent {
     let { authorList } = appState
     const authorListHeader = authorList.map((a, i) => (
       <a
+        ref={this.columnHeightRef}
         className={styles.authorContent}
         key={i}
         onClick={() => this.authorNameClick(a.id)}
@@ -122,7 +141,6 @@ class Page extends PureComponent {
                 </div>
                 <br />
                 <div
-                  ref={this.columnHeightRef}
                   style={{ height: this.state.authorColumnHeight }}
                   className={styles.authorListContainer}
                 >

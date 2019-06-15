@@ -47,6 +47,7 @@
       font-weight: bold;
       margin-right: 0.3em;
       text-decoration: underline solid hsl(270, 9.7%, 68.7%);
+      -webkit-text-decoration: underline solid hsl(270, 9.7%, 68.7%);
     }
 
     .authorContainer {
@@ -69,7 +70,6 @@
 
       a {
         cursor: pointer;
-        font-size: 15px;
       }
     }
 
@@ -82,11 +82,12 @@
     }
 
     .authorContent {
-      width: 40%;
+      width: 30%;
       text-align: left;
       height: 35px;
       display: inline-block;
       padding: 0px;
+      margin: 10px;
     }
     .footnotes {
       margin: 3em auto;
