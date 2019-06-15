@@ -25,3 +25,6 @@ production.env
 uploads/
 dump/
 .env.swp
+package-lock.json
+
+
