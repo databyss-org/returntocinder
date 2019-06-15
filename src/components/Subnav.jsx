@@ -1,46 +1,45 @@
-import React, { PureComponent } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import styles from '../app.scss';
+import React, { PureComponent } from 'react'
+import { Link, withRouter } from 'react-router-dom'
+import styles from '../app.scss'
 
 class Subnav extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.activeElem = null;
+    this.activeElem = null
   }
   setActive(elem, item, currentPath) {
     if (!elem) {
-      return;
+      return
     }
     if (!currentPath.match(item.pagePath)) {
-      return;
+      return
     }
     if (this.activeElem) {
-      this.activeElem.style.left = `${elem.offsetLeft}px`;
-      this.activeElem.innerHTML = item.title;
+      this.activeElem.style.left = `${elem.offsetLeft}px`
+      this.activeElem.innerHTML = item.title
     }
   }
   render() {
-    const { location, menu, useHash } = this.props;
-
+    const { location, menu, useHash } = this.props
+    let biblio = location.pathname === '/about/bibliography' ? true : false
     const currentPath = useHash
       ? `/${location.hash.replace('#', '')}`
-      : location.pathname;
-
+      : location.pathname
     const link = nextPagePath => {
-      const nextPath = currentPath.replace(/\/about\/.+/, nextPagePath);
+      const nextPath = currentPath.replace(/\/about\/.+/, nextPagePath)
       return {
         pathname: useHash ? location.pathname : nextPath,
-        hash: useHash ? nextPath.substr(1) : location.hash,
-      };
-    };
+        hash: useHash ? nextPath.substr(1) : biblio ? '' : location.hash,
+      }
+    }
 
     return (
       <div className={styles.subnav}>
         <div
           className={styles.active}
           ref={e => {
-            this.activeElem = e;
+            this.activeElem = e
           }}
         />
         <ul>
@@ -53,8 +52,8 @@ class Subnav extends PureComponent {
           ))}
         </ul>
       </div>
-    );
+    )
   }
 }
 
-export default withRouter(Subnav);
+export default withRouter(Subnav)
