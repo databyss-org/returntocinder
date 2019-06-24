@@ -33,14 +33,14 @@ class MotifLanding extends React.Component {
     const { motif, cfList, meta, author, query, source, showAll } = this.props;
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
-      MOTIF_NAME: <Raw html={motif.name} />,
+      MOTIF_NAME: motif.name,
       ENTRY_COUNT: motif.entryCount
         ? `${motif.entryCount} ${pluralize('entry', motif.entryCount)}`
         : '',
       SOURCE_COUNT: motif.sources
         ? `${motif.sources.length} ${pluralize('source', motif.sources.length)}`
         : '',
-      SOURCE_TITLE: <Raw html={source && source.name} />,
+      SOURCE_TITLE: source && source.name,
     };
     this.textOnlyTokens = {
       ...this.templateTokens,
@@ -52,18 +52,20 @@ class MotifLanding extends React.Component {
       this.templateTokens
     );
     this.landingProps = {
+      withToggle: source || showAll,
+      onMotifLinksChange: this.onMotifLinksChange,
+      showMotifLinks: this.props.app.motifLinksAreActive,
       cfList,
       title: renderTemplate(meta.LANDING_HEADING, this.templateTokens),
       subtitle:
         meta.LANDING_SUB_HEADING &&
         renderTemplate(meta.LANDING_SUB_HEADING, this.templateTokens),
-      renderCfItem: cf => (
-        <Link
-          href={`/motif/${query.resource}:${cf.id}${showAll ? '' : '/sources'}`}
-        >
-          {cf.lastName}
-        </Link>
-      ),
+
+      onCfListSelect: id => {
+        this.props.history.push(
+          `/motif/${query.resource}:${id}${showAll ? '' : '/sources'}`
+        );
+      },
       contentTitle: this.contentTitle,
     };
   }
@@ -96,7 +98,11 @@ class MotifLanding extends React.Component {
         renderSource={source => {
           const href = `/motif/${query.resource}/sources/${source.id}`;
           return (
-            <Link href={href} onClick={this.onSourceClick(href)}>
+            <Link
+              href={href}
+              onClick={this.onSourceClick(href)}
+              style={{ color: 'black' }}
+            >
               <Raw
                 html={`${source.name}${
                   source.entryCount ? ` (${source.entryCount})` : null
@@ -119,11 +125,7 @@ class MotifLanding extends React.Component {
       />
     );
     return (
-      <LandingEntries
-        onMotifLinksChange={this.onMotifLinksChange}
-        showMotifLinks={motifLinksAreActive}
-        onSourcesClick={this.onSourcesClick}
-      >
+      <LandingEntries onSourcesClick={this.onSourcesClick}>
         {source ? (
           <EntriesByLocation
             locations={this.props.motif.entriesByLocation}
@@ -148,11 +150,11 @@ class MotifLanding extends React.Component {
         <Helmet>
           <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
           <meta
-            name="description"
+            name='description'
             content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
           />
           <meta
-            name="keywords"
+            name='keywords'
             content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
           />
         </Helmet>
