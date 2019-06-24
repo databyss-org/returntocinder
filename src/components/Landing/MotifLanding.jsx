@@ -98,7 +98,11 @@ class MotifLanding extends React.Component {
         renderSource={source => {
           const href = `/motif/${query.resource}/sources/${source.id}`;
           return (
-            <Link href={href} onClick={this.onSourceClick(href)}>
+            <Link
+              href={href}
+              onClick={this.onSourceClick(href)}
+              style={{ color: 'black' }}
+            >
               <Raw
                 html={`${source.name}${
                   source.entryCount ? ` (${source.entryCount})` : null
