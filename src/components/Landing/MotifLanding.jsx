@@ -1,8 +1,8 @@
-import React from 'react';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import pluralize from 'pluralize';
+import React from 'react'
+import { withRouter } from 'react-router'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import pluralize from 'pluralize'
 import {
   Landing,
   LandingEntries,
@@ -12,25 +12,25 @@ import {
   Entry,
   EntriesByLocation,
   EntriesBySource,
-} from '@databyss-org/ui';
-import renderTemplate from 'react-text-templates';
-import { Helmet } from 'react-helmet';
-import actions from '../../redux/app/actions';
-import { textify } from '../../lib/_helpers';
+} from '@databyss-org/ui'
+import renderTemplate from 'react-text-templates'
+import { Helmet } from 'react-helmet'
+import actions from '../../redux/app/actions'
+import { textify } from '../../lib/_helpers'
 
 class MotifLanding extends React.Component {
   constructor(props) {
-    super(props);
-    this.onSourceClick = this.onSourceClick.bind(this);
-    this.renderEntries = this.renderEntries.bind(this);
-    this.renderSourcesToc = this.renderSourcesToc.bind(this);
-    this.updateTemplates = this.updateTemplates.bind(this);
-    this.onMotifLinksChange = this.onMotifLinksChange.bind(this);
-    this.onAllEntriesClick = this.onAllEntriesClick.bind(this);
-    this.onSourcesClick = this.onSourcesClick.bind(this);
+    super(props)
+    this.onSourceClick = this.onSourceClick.bind(this)
+    this.renderEntries = this.renderEntries.bind(this)
+    this.renderSourcesToc = this.renderSourcesToc.bind(this)
+    this.updateTemplates = this.updateTemplates.bind(this)
+    this.onMotifLinksChange = this.onMotifLinksChange.bind(this)
+    this.onAllEntriesClick = this.onAllEntriesClick.bind(this)
+    this.onSourcesClick = this.onSourcesClick.bind(this)
   }
   updateTemplates() {
-    const { motif, cfList, meta, author, query, source, showAll } = this.props;
+    const { motif, cfList, meta, author, query, source, showAll } = this.props
     this.templateTokens = {
       AUTHOR_NAME: `${author.firstName} ${author.lastName}`,
       MOTIF_NAME: motif.name,
@@ -41,16 +41,17 @@ class MotifLanding extends React.Component {
         ? `${motif.sources.length} ${pluralize('source', motif.sources.length)}`
         : '',
       SOURCE_TITLE: source && source.name,
-    };
+    }
+
     this.textOnlyTokens = {
       ...this.templateTokens,
       MOTIF_NAME: textify(motif.name),
       SOURCE_TITLE: source ? textify(source.name) : '',
-    };
+    }
     this.contentTitle = renderTemplate(
       meta.LANDING_SUMMARY,
       this.templateTokens
-    );
+    )
     this.landingProps = {
       withToggle: source || showAll,
       onMotifLinksChange: this.onMotifLinksChange,
@@ -64,39 +65,39 @@ class MotifLanding extends React.Component {
       onCfListSelect: id => {
         this.props.history.push(
           `/motif/${query.resource}:${id}${showAll ? '' : '/sources'}`
-        );
+        )
       },
       contentTitle: this.contentTitle,
-    };
+    }
   }
   onSourceClick(href) {
-    return () => this.props.history.push(href);
+    return () => this.props.history.push(href)
   }
   onEntrySourceOnClick(source) {
     return () => {
-      this.props.toggleSourceModal(source.id);
-      this.props.history.push(`#source:${source.id}`);
-    };
+      this.props.toggleSourceModal(source.id)
+      this.props.history.push(`#source:${source.id}`)
+    }
   }
   onMotifLinksChange(checked) {
-    this.props.toggleMotifLinks(checked);
+    this.props.toggleMotifLinks(checked)
   }
   onAllEntriesClick() {
-    this.props.history.push(`/motif/${this.props.query.authoredResource}`);
+    this.props.history.push(`/motif/${this.props.query.authoredResource}`)
   }
   onSourcesClick() {
     this.props.history.push(
       `/motif/${this.props.query.authoredResource}/sources`
-    );
+    )
   }
   renderSourcesToc() {
-    const { motif, query } = this.props;
+    const { motif, query } = this.props
     return (
       <LandingSources
         sources={motif.sources}
         onAllEntriesClick={this.onAllEntriesClick}
         renderSource={source => {
-          const href = `/motif/${query.resource}/sources/${source.id}`;
+          const href = `/motif/${query.resource}/sources/${source.id}`
           return (
             <Link
               href={href}
@@ -109,13 +110,14 @@ class MotifLanding extends React.Component {
                 }`}
               />
             </Link>
-          );
+          )
         }}
       />
-    );
+    )
   }
   renderEntries(source) {
-    const { motifLinksAreActive } = this.props.app;
+    const { motifLinksAreActive } = this.props.app
+
     const renderEntry = entry => (
       <Entry
         sourceHref={`/source/${source ? source.id : entry.source.id}`}
@@ -123,7 +125,7 @@ class MotifLanding extends React.Component {
         {...entry}
         content={motifLinksAreActive ? entry.linkedContent : entry.content}
       />
-    );
+    )
     return (
       <LandingEntries onSourcesClick={this.onSourcesClick}>
         {source ? (
@@ -139,12 +141,12 @@ class MotifLanding extends React.Component {
           />
         )}
       </LandingEntries>
-    );
+    )
   }
   render() {
-    const { source, showAll, meta } = this.props;
-    const { META_TITLE, META_DESCRIPTION, META_KEYWORDS } = meta;
-    this.updateTemplates();
+    const { source, showAll, meta } = this.props
+    const { META_TITLE, META_DESCRIPTION, META_KEYWORDS } = meta
+    this.updateTemplates()
     return (
       <Landing {...this.landingProps}>
         <Helmet>
@@ -162,7 +164,7 @@ class MotifLanding extends React.Component {
           ? this.renderEntries(source)
           : this.renderSourcesToc()}
       </Landing>
-    );
+    )
   }
 }
 
@@ -172,4 +174,4 @@ export default compose(
     actions
   ),
   withRouter
-)(MotifLanding);
+)(MotifLanding)
