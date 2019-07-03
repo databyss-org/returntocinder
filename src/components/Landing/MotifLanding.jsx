@@ -13,6 +13,7 @@ import {
   EntriesByLocation,
   EntriesBySource,
 } from '@databyss-org/ui'
+import { isMobile } from '@databyss-org/ui/lib/mediaQuery'
 import renderTemplate from 'react-text-templates'
 import { Helmet } from 'react-helmet'
 import actions from '../../redux/app/actions'
@@ -59,6 +60,7 @@ class MotifLanding extends React.Component {
       cfList,
       title: renderTemplate(meta.LANDING_HEADING, this.templateTokens),
       subtitle:
+        !isMobile() &&
         meta.LANDING_SUB_HEADING &&
         renderTemplate(meta.LANDING_SUB_HEADING, this.templateTokens),
 

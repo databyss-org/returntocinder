@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import { Landing, Entry, EntriesBySource } from '@databyss-org/ui'
 import renderTemplate from 'react-text-templates'
 import { Helmet } from 'react-helmet'
+import { textify } from '../../lib/_helpers'
 import actions from '../../redux/app/actions'
 
 class SourceLanding extends React.Component {
@@ -34,11 +35,16 @@ class SourceLanding extends React.Component {
       ENTRY_COUNT: stats.entryCount,
     }
 
+    this.textOnlyTokens = {
+      ...this.templateTokens,
+      AUTHOR_NAME: textify(this.templateTokens.AUTHOR_NAME),
+      SOURCE_TILE: textify(this.templateTokens.SOURCE_TITLE),
+    }
+
     let metaInfo = {
       title: '{SOURCE_TITLE}',
       subtitle: '{AUTHOR_NAME}',
-      contentTitle:
-        'Databyss includes {ENTRY_COUNT} entries from {AUTHOR_NAME}\'s "{SOURCE_TITLE}"',
+      contentTitle: app.config.source_meta.META_DESCRIPTION,
     }
 
     this.landingProps = {
@@ -60,16 +66,6 @@ class SourceLanding extends React.Component {
     const { entriesBySource } = this.props.app
 
     const { source, term, isLinked } = this.props.query
-
-    const renderEntry = entry => {
-      return (
-        <Entry
-          content={entry.content}
-          source={entry}
-          location={entry.location}
-        />
-      )
-    }
 
     if (source) {
       this._rows = [term]
@@ -112,10 +108,15 @@ class SourceLanding extends React.Component {
 
     this.updateTemplates()
 
+    const {
+      META_TITLE,
+      META_DESCRIPTION,
+      META_KEYWORDS,
+    } = this.props.app.config.source_meta
+
     return (
       <Landing {...this.landingProps}>
         <Helmet>
-          {/*
           <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
           <meta
             name='description'
@@ -125,7 +126,6 @@ class SourceLanding extends React.Component {
             name='keywords'
             content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
           />
-          */}
         </Helmet>
 
         {entryRender}
