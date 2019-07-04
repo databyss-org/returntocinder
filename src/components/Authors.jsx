@@ -13,7 +13,7 @@ const Authors = ({ history, authorList }) => {
   }
 
   return (
-    <div style={{ display: '-webkit-box' }}>
+    <div className={styles.authorsContainer}>
       <ul className={styles.frontAuthors}>
         {splitList[0] &&
           splitList[0].map(author => (
