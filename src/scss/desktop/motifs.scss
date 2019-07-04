@@ -18,7 +18,8 @@
 }
 
 .frontAuthors {
-  display: flex;
+  width: 50%;
+  display: table;
   flex-wrap: wrap;
   position: relative;
   overflow: hidden;
