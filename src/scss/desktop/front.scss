@@ -14,6 +14,10 @@
     height: 100vh;
   }
 
+  .authorsBody {
+    //  column-count: 2;
+  }
+
   .container {
     position: absolute;
     left: 0;
@@ -77,6 +81,7 @@
       position: relative;
       top: 5vh;
       height: 80vh;
+      // column-count: 2;
     }
 
     .title {

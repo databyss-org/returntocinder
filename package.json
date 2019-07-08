@@ -34,7 +34,7 @@
     "dump": "babel-node src/scripts/dumpDb.js"
   },
   "dependencies": {
-    "@databyss-org/ui": "^1.0.8",
+    "@databyss-org/ui": "^1.0.10",
     "axios": "^0.17.1",
     "body-parser": "^1.18.2",
     "busboy-body-parser": "^0.3.2",
