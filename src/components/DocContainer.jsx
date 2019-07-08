@@ -1,52 +1,53 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { matchPath, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
-import Transition from 'react-transition-group/Transition';
-import cx from 'classnames';
-import qs from 'qs';
-import { ThemeProvider } from '@databyss-org/ui';
-import Doc from './Doc.jsx';
-import DocHead from './DocHead.jsx';
-import Disambiguate from './Disambiguate.jsx';
-import appActions from '../redux/app/actions';
-import searchActions from '../redux/search/actions';
-import withLoader from '../hoc/withLoader';
-import freezeProps from '../hoc/freezeProps';
-import { parseTerm } from '../lib/url';
-import styles from '../app.scss';
-import MotifLanding from './Landing/MotifLanding.jsx';
-import theme from '../theme';
+import React from 'react'
+import { connect } from 'react-redux'
+import { matchPath, withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import Transition from 'react-transition-group/Transition'
+import cx from 'classnames'
+import qs from 'qs'
+import { ThemeProvider } from '@databyss-org/ui'
+import Doc from './Doc.jsx'
+import Disambiguate from './Disambiguate.jsx'
+import appActions from '../redux/app/actions'
+import searchActions from '../redux/search/actions'
+import withLoader from '../hoc/withLoader'
+import freezeProps from '../hoc/freezeProps'
+import { parseTerm } from '../lib/url'
+import styles from '../app.scss'
+import MotifLanding from './Landing/MotifLanding.jsx'
+import SourceLanding from './Landing/SourceLanding.jsx'
 
-const { DEFAULT_AUTHOR } = process.env;
+import theme from '../theme'
+
+const { DEFAULT_AUTHOR } = process.env
 
 const getAsideTerm = location => {
-  const asidePath = '/(motif|source|search)/(.*)/motif::term';
-  const match = matchPath(location.pathname, asidePath);
+  const asidePath = '/(motif|source|search)/(.*)/motif::term'
+  const match = matchPath(location.pathname, asidePath)
   if (match) {
-    return match.params.term;
+    return match.params.term
   }
-  return null;
-};
+  return null
+}
 
-let mainElement = null;
+let mainElement = null
 
 const getQuery = ({ location, match, app }) => {
-  let { term } = match.params;
-  const { groupBy, filterBy } = match.params;
-  let author = DEFAULT_AUTHOR;
-  let resource = term;
+  let { term } = match.params
+  const { groupBy, filterBy } = match.params
+  let author = DEFAULT_AUTHOR
+  let resource = term
 
   // handle author selector in the term
   //  ex: /motif/absolute:KA
   if (location.search) {
-    location.query = qs.parse(location.search.replace('?', ''));
+    location.query = qs.parse(location.search.replace('?', ''))
   }
 
-  const asideTerm = getAsideTerm(location);
-  let aside;
+  const asideTerm = getAsideTerm(location)
+  let aside
   if (asideTerm) {
-    aside = parseTerm(asideTerm);
+    aside = parseTerm(asideTerm)
   }
 
   // parse author or set default
@@ -54,21 +55,21 @@ const getQuery = ({ location, match, app }) => {
     case 'search':
     case 'motif': {
       if (filterBy && filterBy !== 'about') {
-        ({ author } = app.biblio[filterBy]);
-        term = `${resource}:${author}:${filterBy}`;
+        ;({ author } = app.biblio[filterBy])
+        term = `${resource}:${author}:${filterBy}`
       } else {
-        ({ author, resource, term } = parseTerm(term));
+        ;({ author, resource, term } = parseTerm(term))
         if (groupBy) {
-          term = `${term}:sources`;
+          term = `${term}:sources`
         }
       }
-      break;
+      break
     }
     case 'source': {
       if (term.match(/\./)) {
-        [author, resource] = term.split('.');
+        ;[author, resource] = term.split('.')
       }
-      break;
+      break
     }
   }
 
@@ -85,43 +86,43 @@ const getQuery = ({ location, match, app }) => {
     isLinked: app.motifLinksAreActive,
     groupBy,
     filterBy,
-  };
-};
+  }
+}
 
 const onClick = ({ history, e, showDisambiguate }) => {
-  let { target } = e;
+  let { target } = e
   if (target.tagName.toLowerCase() === 'em') {
-    target = target.parentNode;
+    target = target.parentNode
   }
   if (
     target.tagName.toLowerCase() === 'a' &&
     target.pathname.match(/disambiguate\//)
   ) {
-    e.preventDefault();
+    e.preventDefault()
     const position = {
       top:
         target.getBoundingClientRect().top -
         mainElement.getBoundingClientRect().top +
         mainElement.scrollTop +
         15,
-    };
+    }
     showDisambiguate({
       midList: target.search.match(/mids=(.+)&?/)[1].split(','),
       position,
       target,
       className: styles.disambiguateLink,
-    });
-    return;
+    })
+    return
   }
   if (
     target.tagName.toLowerCase() === 'a' &&
     target.pathname.match(/motif\//)
   ) {
     // redirect motif link clicks
-    e.preventDefault();
-    history.push(target.pathname);
+    e.preventDefault()
+    history.push(target.pathname)
   }
-};
+}
 
 const DocContainer = ({
   search,
@@ -132,7 +133,6 @@ const DocContainer = ({
   motif,
   app,
 }) => (
-  // console.log('MATCH', match);
   <ThemeProvider theme={theme}>
     <Transition in={Boolean(query.aside)} timeout={300}>
       {state => (
@@ -140,19 +140,18 @@ const DocContainer = ({
           onClick={e => onClick({ e, history, showDisambiguate })}
           className={cx(styles.docContainer, {
             [styles.withAside]: query.aside,
-            [styles.landing]: query.motif,
+            [styles.landing]: query.motif || query.source,
           })}
         >
-          {!query.motif && <DocHead transitionState={state} query={query} />}
           <div
             className={cx(styles.doc, styles[state], {
               [styles.show]: true,
-              [styles.landing]: query.motif,
+              [styles.landing]: query.motif || query.source,
             })}
           >
             <main
               ref={elem => {
-                mainElement = elem;
+                mainElement = elem
               }}
             >
               {query.motif ? (
@@ -183,8 +182,15 @@ const DocContainer = ({
                   showAll={!query.groupBy}
                 />
               ) : (
-                <Doc
+                <SourceLanding
+                  transitionState={state}
                   query={query}
+                  motif={motif}
+                  meta={
+                    query.filterBy
+                      ? app.config.source_motif_meta
+                      : app.config.motif_meta
+                  }
                   path={['main']}
                   ready={state === 'entered'}
                 />
@@ -209,7 +215,7 @@ const DocContainer = ({
       )}
     </Transition>
   </ThemeProvider>
-);
+)
 
 export default compose(
   connect(
@@ -219,7 +225,7 @@ export default compose(
   withRouter,
   withLoader({
     propsToLoad: props => {
-      const query = getQuery(props);
+      const query = getQuery(props)
       return {
         query,
         ...(query.motif
@@ -242,10 +248,10 @@ export default compose(
               results: props.search.results[query.term],
             }
           : {}),
-      };
+      }
     },
     loaderActions: props => {
-      const query = getQuery(props);
+      const query = getQuery(props)
       return {
         ...(query.motif
           ? {
@@ -281,7 +287,7 @@ export default compose(
                 }),
             }
           : {}),
-      };
+      }
     },
   }),
   freezeProps({
@@ -289,4 +295,4 @@ export default compose(
       query: !props.isLoading,
     }),
   })
-)(DocContainer);
+)(DocContainer)
