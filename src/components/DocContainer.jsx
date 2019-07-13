@@ -140,7 +140,8 @@ const DocContainer = ({
           onClick={e => onClick({ e, history, showDisambiguate })}
           className={cx(styles.docContainer, {
             [styles.withAside]: query.aside,
-            [styles.landing]: query.motif || query.source,
+            [styles.landing]: query.motif || query.source || query.search,
+            [styles.searchContainer]: query.search,
           })}
         >
           <div
@@ -154,7 +155,7 @@ const DocContainer = ({
                 mainElement = elem
               }}
             >
-              {query.motif ? (
+              {query.motif && (
                 <MotifLanding
                   motif={motif}
                   cfList={
@@ -181,7 +182,8 @@ const DocContainer = ({
                   source={query.filterBy && app.biblio[query.filterBy]}
                   showAll={!query.groupBy}
                 />
-              ) : (
+              )}
+              {query.source && (
                 <SourceLanding
                   transitionState={state}
                   query={query}
@@ -191,6 +193,13 @@ const DocContainer = ({
                       ? app.config.source_motif_meta
                       : app.config.motif_meta
                   }
+                  path={['main']}
+                  ready={state === 'entered'}
+                />
+              )}
+              {query.search && (
+                <Doc
+                  query={query}
                   path={['main']}
                   ready={state === 'entered'}
                 />
