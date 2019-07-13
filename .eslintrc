@@ -22,7 +22,7 @@
       "error",
       {
         "printWidth": 80, // Easy to read
-        "semi": true, // Legacy
+        "semi": false, // Legacy
         "singleQuote": true, // Easy to read
         "trailingComma": "es5" // Helps simplify diffs
       }
