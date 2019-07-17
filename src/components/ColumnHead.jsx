@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import pluralize from 'pluralize';
-import urlencode from 'urlencode';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import pluralize from 'pluralize'
+import urlencode from 'urlencode'
 
-const { DEFAULT_AUTHOR } = process.env;
+const { DEFAULT_AUTHOR } = process.env
 
 const ColumnHead = ({
   doc,
@@ -34,11 +34,11 @@ const ColumnHead = ({
       sourceCount: resultsMeta.sourceList.length,
       authors: resultsMeta.cfauthors,
     }),
-  }[query.type](query.term, query.resource);
+  }[query.type](query.term, query.resource)
 
   // add default author if viewing supplement motif
   if (query.motif && query.author && query.author !== DEFAULT_AUTHOR) {
-    stats.authors = (stats.authors || []).concat(DEFAULT_AUTHOR);
+    stats.authors = (stats.authors || []).concat(DEFAULT_AUTHOR)
   }
 
   const display = {
@@ -70,8 +70,9 @@ const ColumnHead = ({
           ]
         </React.Fragment>
       ) : null,
-  };
+  }
 
+  console.log(stats)
   return (
     <header>
       <div className={styles.titleAndAuthor}>
@@ -95,7 +96,7 @@ const ColumnHead = ({
         <div className={styles.authors}>{display.authors}</div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default ColumnHead;
+export default ColumnHead
