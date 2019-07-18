@@ -7,8 +7,6 @@ import cx from 'classnames'
 import qs from 'qs'
 import { ThemeProvider } from '@databyss-org/ui'
 import Doc from './Doc.jsx'
-import DocHead from './DocHead.jsx'
-
 import Disambiguate from './Disambiguate.jsx'
 import appActions from '../redux/app/actions'
 import searchActions from '../redux/search/actions'
@@ -147,8 +145,6 @@ const DocContainer = ({
             [styles.searchContainer]: query.search,
           })}
         >
-          {/*query.search && <DocHead transitionState={state} query={query} />*/}
-
           <div
             className={cx(styles.doc, styles[state], {
               [styles.show]: true,

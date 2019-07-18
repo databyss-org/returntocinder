@@ -2,12 +2,23 @@ import React, { PureComponent } from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import shallowequal from 'shallowequal'
-import { Landing, TocList, Link, BackButton } from '@databyss-org/ui'
+import {
+  Landing,
+  TocList,
+  Link,
+  BackButton,
+  ForwardButton,
+  ContentNav,
+} from '@databyss-org/ui'
 import urlencode from 'urlencode'
 import _ from 'lodash'
+import { Helmet } from 'react-helmet'
 import appActions from '../../redux/app/actions'
 import searchActions from '../../redux/search/actions'
 import EntriesBySource from './../EntriesBySource.jsx'
+import LoadingIcon from '../../icons/loading.svg'
+import styles from '../../app.scss'
+
 import renderTemplate from 'react-text-templates'
 
 const { DEFAULT_AUTHOR } = process.env
@@ -20,6 +31,8 @@ class SearchLanding extends PureComponent {
     this._updateRows(this.props)
     this.motifLinksActive = props.appState.motifLinksAreActive
     this.resultsMeta = {}
+    // this.showAll = false
+    this.state = { showAll: false }
     this.lastScroll = {
       query: null,
       hash: null,
@@ -159,7 +172,6 @@ class SearchLanding extends PureComponent {
     })
 
     this._allRowComponent = ({ index, key }) => {
-      console.log(index.author)
       return (
         <EntriesBySource
           sid={index.author}
@@ -202,19 +214,53 @@ class SearchLanding extends PureComponent {
     const cfList = resultsMeta[term].cfauthors.map(
       a => props.appState.authorDict[a]
     )
+    const allAuthors = [
+      Object.keys(this.props.searchState.resultsMeta)[0].split(':')[1],
+      ...this.props.searchState.resultsMeta[
+        Object.keys(this.props.searchState.resultsMeta)[0]
+      ].cfauthors,
+    ]
+      .map(a => {
+        return `${this.props.appState.authorDict[a].firstName} ${
+          this.props.appState.authorDict[a].lastName
+        }`
+      })
+      .join(' ')
+
+    let allSources = Object.keys(this.props.searchState.resultsMeta)
+      .map(a => {
+        return this.props.searchState.resultsMeta[a].sourceList
+      })
+      .reduce((acc, val) => {
+        return [...acc, ...val]
+      })
+
+    allSources = this.props.appState.sourceList
+      .filter(s => allSources.indexOf(s.id) > -1)
+      .map(s => s.name)
+      .join(' ')
 
     this.templateTokens = {
       AUTHOR_NAME: authorName,
-      ENTRIES_COUNT: entriesCount,
+      ENTRIES_COUNT: props.match.params.term.includes(':')
+        ? resultsMeta[term].count
+        : entriesCount,
       ENTRIES: entriesCount > 1 ? 'entries' : 'entry',
       QUERY: resource,
       SOURCES_COUNT: resultsMeta[term].sourceList.length,
       MULTIPLE_SOURCES: resultsMeta[term].sourceList.length > 1 ? 's' : ' ',
       AUTHOR_COUNT: authorCount,
       MULTIPLE_AUTHORS: authorCount > 0 ? 's' : '',
-      //ADD AUTHOR ENTRY COUNT
+      ALL_AUTHORS_NAMES: allAuthors,
+      ENTRY_COUNT: 'EEENNNNTRY',
+      ALL_SOURCES: allSources,
     }
 
+    const hasResults = !_.isEmpty(
+      this.props.searchState.results[
+        Object.keys(this.props.searchState.results)[0]
+      ]
+    )
     this.landingProps = props.match.params.term.includes(':')
       ? {
           showMotifLinks: this.motifLinksActive,
@@ -253,10 +299,12 @@ class SearchLanding extends PureComponent {
             this.templateTokens
           ),
           subtitle: '',
-          contentTitle: renderTemplate(
-            config.search_meta.LANDING_SUMMARY,
-            this.templateTokens
-          ),
+          contentTitle: hasResults
+            ? renderTemplate(
+                config.search_meta.LANDING_SUMMARY,
+                this.templateTokens
+              )
+            : 'no results',
         }
   }
 
@@ -265,7 +313,19 @@ class SearchLanding extends PureComponent {
     this.props.history.push(url)
   }
 
+  showAllClick() {
+    this.setState({
+      showAll: !this.state.showAll,
+    })
+  }
+
   render() {
+    const hasResults = !_.isEmpty(
+      this.props.searchState.results[
+        Object.keys(this.props.searchState.results)[0]
+      ]
+    )
+
     this._updateRows(this.props)
     const allRows = this._allEntries.map((a, i) =>
       this._allRowComponent({ index: a, key: i })
@@ -282,7 +342,7 @@ class SearchLanding extends PureComponent {
     }))
 
     allAuthors.sort((a, b) => b.count - a.count)
-    allAuthors = allAuthors.map(a => a.author)
+    allAuthors = allAuthors.filter(a => a.count > 0).map(a => a.author)
 
     const authorsRow = allAuthors.map((a, i) => {
       const authorInfo = this.props.appState.authorDict[
@@ -305,40 +365,118 @@ class SearchLanding extends PureComponent {
         </Link>
       )
     })
-
     return (
       <Landing {...this.landingProps}>
-        {/*
-    <Helmet>
-     
-      <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
-      <meta
-        name='description'
-        content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
-      />
-      <meta
-        name='keywords'
-        content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
-      />
-    </Helmet>
-*/}
-
         {!this.props.match.params.term.includes(':') ? (
-          <TocList>{authorsRow}</TocList>
-        ) : (
-          <div>
-            <BackButton
-              label='All Authors'
-              onClick={() =>
-                this.props.history.push(
-                  `/search/${this.props.searchState.query}`
-                )
-              }
+          <Helmet>
+            <title>
+              {renderTemplate(
+                this.props.appState.config.search_meta.META_TITLE,
+                this.templateTokens
+              )}
+            </title>
+
+            <meta
+              name='description'
+              content={renderTemplate(
+                this.props.appState.config.search_meta.META_DESCRIPTION,
+                this.templateTokens
+              )}
             />
 
-            {rows}
-          </div>
+            <meta
+              name='keywords'
+              content={renderTemplate(
+                this.props.appState.config.search_meta.META_KEYWORDS,
+                this.templateTokens
+              )}
+            />
+          </Helmet>
+        ) : (
+          <Helmet>
+            <title>
+              {renderTemplate(
+                this.props.appState.config.search_author_meta.META_TITLE,
+                this.templateTokens
+              )}
+            </title>
+
+            <meta
+              name='description'
+              content={renderTemplate(
+                this.props.appState.config.search_author_meta.META_DESCRIPTION,
+                this.templateTokens
+              )}
+            />
+
+            <meta
+              name='keywords'
+              content={renderTemplate(
+                this.props.appState.config.search_author_meta.META_KEYWORDS,
+                this.templateTokens
+              )}
+            />
+          </Helmet>
         )}
+
+        {hasResults &&
+          (!this.props.match.params.term.includes(':') || this.state.showAll ? (
+            !this.state.showAll ? (
+              <TocList>
+                <ContentNav
+                  right={
+                    <ForwardButton
+                      ariaLabel='all entries'
+                      label='Show all'
+                      onClick={() => {
+                        this.showAllClick()
+                      }}
+                    />
+                  }
+                />
+                {authorsRow}
+
+                {this.props.searchState.isSourcesLoading && (
+                  <div className={styles.loader}>
+                    <LoadingIcon />
+                    <p>loading</p>
+                  </div>
+                )}
+              </TocList>
+            ) : (
+              <div>
+                <ContentNav
+                  left={
+                    <BackButton
+                      label='All Authors'
+                      onClick={() => {
+                        this.showAllClick()
+                      }}
+                    />
+                  }
+                />
+
+                {allRows}
+              </div>
+            )
+          ) : (
+            <div>
+              <ContentNav
+                left={
+                  <BackButton
+                    label='All Authors'
+                    onClick={() =>
+                      this.props.history.push(
+                        `/search/${this.props.searchState.query}`
+                      )
+                    }
+                  />
+                }
+              />
+
+              {rows}
+            </div>
+          ))}
       </Landing>
     )
   }

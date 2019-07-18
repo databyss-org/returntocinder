@@ -54,7 +54,6 @@ class MotifLanding extends React.Component {
       this.templateTokens
     )
 
-    console.log(cfList)
     this.landingProps = {
       withToggle: source || showAll,
       onMotifLinksChange: this.onMotifLinksChange,
