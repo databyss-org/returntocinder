@@ -16,6 +16,7 @@ import { parseTerm } from '../lib/url'
 import styles from '../app.scss'
 import MotifLanding from './Landing/MotifLanding.jsx'
 import SourceLanding from './Landing/SourceLanding.jsx'
+import SearchLanding from './Landing/SearchLanding.jsx'
 
 import theme from '../theme'
 
@@ -198,8 +199,9 @@ const DocContainer = ({
                 />
               )}
               {query.search && (
-                <Doc
+                <SearchLanding
                   query={query}
+                  transitionState={state}
                   path={['main']}
                   ready={state === 'entered'}
                 />
