@@ -214,19 +214,27 @@ class SearchLanding extends PureComponent {
     const cfList = resultsMeta[term].cfauthors.map(
       a => props.appState.authorDict[a]
     )
-    const allAuthors = [
-      Object.keys(this.props.searchState.resultsMeta)[0].split(':')[1],
-      ...this.props.searchState.resultsMeta[
-        Object.keys(this.props.searchState.resultsMeta)[0]
-      ].cfauthors,
-    ]
-      .map(a => {
-        return `${this.props.appState.authorDict[a].firstName} ${
-          this.props.appState.authorDict[a].lastName
-        }`
-      })
-      .join(' ')
 
+    // for meta keywords
+    const allAuthors =
+      this.props.searchState.resultsMeta[
+        Object.keys(this.props.searchState.resultsMeta)[0]
+      ].count > 0
+        ? [Object.keys(this.props.searchState.resultsMeta)[0].split(':')[1]]
+        : []
+            .concat(
+              this.props.searchState.resultsMeta[
+                Object.keys(this.props.searchState.resultsMeta)[0]
+              ].cfauthors
+            )
+            .map(a => {
+              return `${this.props.appState.authorDict[a].firstName} ${
+                this.props.appState.authorDict[a].lastName
+              }`
+            })
+            .join(' ')
+
+    // for meta keywords
     let allSources = Object.keys(this.props.searchState.resultsMeta)
       .map(a => {
         return this.props.searchState.resultsMeta[a].sourceList
@@ -256,11 +264,18 @@ class SearchLanding extends PureComponent {
       ALL_SOURCES: allSources,
     }
 
-    const hasResults = !_.isEmpty(
-      this.props.searchState.results[
-        Object.keys(this.props.searchState.results)[0]
-      ]
-    )
+    this.hasResults =
+      !_.isEmpty(
+        this.props.searchState.results[
+          Object.keys(this.props.searchState.results)[0]
+        ]
+      ) ||
+      !_.isEmpty(
+        this.props.searchState.results[
+          Object.keys(this.props.searchState.results)[1]
+        ]
+      )
+
     this.landingProps = props.match.params.term.includes(':')
       ? {
           showMotifLinks: this.motifLinksActive,
@@ -299,7 +314,7 @@ class SearchLanding extends PureComponent {
             this.templateTokens
           ),
           subtitle: '',
-          contentTitle: hasResults
+          contentTitle: this.hasResults
             ? renderTemplate(
                 config.search_meta.LANDING_SUMMARY,
                 this.templateTokens
@@ -320,12 +335,6 @@ class SearchLanding extends PureComponent {
   }
 
   render() {
-    const hasResults = !_.isEmpty(
-      this.props.searchState.results[
-        Object.keys(this.props.searchState.results)[0]
-      ]
-    )
-
     this._updateRows(this.props)
     const allRows = this._allEntries.map((a, i) =>
       this._allRowComponent({ index: a, key: i })
@@ -419,7 +428,7 @@ class SearchLanding extends PureComponent {
           </Helmet>
         )}
 
-        {hasResults &&
+        {this.hasResults &&
           (!this.props.match.params.term.includes(':') || this.state.showAll ? (
             !this.state.showAll ? (
               <TocList>
