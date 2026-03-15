@@ -27,4 +27,5 @@ dump/
 .env.swp
 package-lock.json
 
-
+# BUILD
+public/data
