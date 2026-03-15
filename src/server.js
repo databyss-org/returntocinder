@@ -19,6 +19,7 @@ dotenv.config();
 const app = express();
 
 app.set('port', process.env.PORT || 8080);
+app.set('host', '0.0.0.0');
 
 const middleware = [
   userAgent.express(),
@@ -82,6 +83,6 @@ app.get('/!about/:page', (req, res) => {
 
 app.get('/*', getClientApp);
 
-sockets(app).listen(app.get('port'), () => {
-  console.log('server started on port', app.get('port'));
+sockets(app).listen(app.get('port'), app.get('host'), () => {
+  console.log(`server started on http://${app.get('host')}:${app.get('port')}`);
 });
