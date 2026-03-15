@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_URL } = process.env;
+const { DB_HOST, DB_NAME, DB_USER, DB_PASSWORD, DATABASE_URL } = process.env;
 export const url =
-  DB_URL ||
+  DATABASE_URL ||
   `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?authSource=admin`;
 
 // Log connection config at startup (mask password)
 const maskedUrl = url.replace(/:[^:@]+@/, ':****@');
-console.log(`[mongo] env: DB_URL=${!!DB_URL}, DB_HOST=${!!DB_HOST}, DB_USER=${!!DB_USER}, DB_PASSWORD=${!!DB_PASSWORD}, DB_NAME=${DB_NAME}`);
+console.log(`[mongo] env: DATABASE_URL=${!!DATABASE_URL}, DB_HOST=${!!DB_HOST}, DB_USER=${!!DB_USER}, DB_PASSWORD=${!!DB_PASSWORD}, DB_NAME=${DB_NAME}`);
 console.log(`[mongo] connecting to: ${maskedUrl}`);
 
 let db = null;
