@@ -9,6 +9,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import api from './server/api';
 import sockets from './server/sockets';
+import { connect as dbConnect } from './lib/data/mongo';
 import upload from './server/upload';
 import sitemap from './server/sitemap';
 import { renderMetaTemplate } from './lib/template';
@@ -85,4 +86,7 @@ app.get('/*', getClientApp);
 
 sockets(app).listen(app.get('port'), app.get('host'), () => {
   console.log(`server started on http://${app.get('host')}:${app.get('port')}`);
+  dbConnect()
+    .then(() => console.log('[server] db connection verified at startup'))
+    .catch(err => console.error('[server] db connection failed at startup:', err));
 });
