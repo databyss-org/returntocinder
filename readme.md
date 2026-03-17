@@ -2,20 +2,21 @@
 
 A searchable, browseable index of the works of Jacques Derrida and other authors. Part of the [Databyss](https://databyss.org) project.
 
-## Tech Stack
-
-- **Frontend**: React 16, Redux, React Router, JSS
-- **Backend**: Node.js, Express
-- **Database**: MongoDB
-- **Build**: Webpack 4, Babel 6, Dart Sass
-
-## Prerequisites
-
-- Node.js v16 (v18+ not supported due to native dependency constraints)
-- MongoDB (local) or a MongoDB Atlas / DigitalOcean managed database
-- nvm recommended: `nvm use 16`
-
 ## Local Development
+
+### Prerequisites
+
+#### Node.js v16 
+v18+ not supported due to native dependency constraints.
+
+Recommended installation:
+- [install NVM](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
+- run `nvm use 16`
+
+#### MongoDB >=6
+
+- [Installation on Linux](https://www.mongodb.com/docs/v7.0/administration/install-on-linux/)
+- [Installation on MacOS using Homebrew](https://www.mongodb.com/docs/v7.0/tutorial/install-mongodb-on-os-x/#installing-mongodb-7.0-edition-edition)
 
 ### 1. Install dependencies
 
@@ -40,10 +41,14 @@ For a remote MongoDB connection, set `DATABASE_URL` to a full connection string 
 ### 3. Start MongoDB locally
 
 ```sh
-npm run mongo-local
+mongod &
 ```
 
-Or start MongoDB via Homebrew: `brew services start mongodb-community`
+Or, if you're on MacOS and installed via Homebrew:
+
+```sh
+brew services start mongodb-community`
+```
 
 ### 4. Restore a database dump (first time)
 
