@@ -29,3 +29,6 @@ package-lock.json
 
 # BUILD
 public/data
+
+# LOCAL DATA
+data

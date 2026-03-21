@@ -55,6 +55,7 @@ async function getClientApp(req, res) {
         PRODUCTION: (process.env.NODE_ENV === 'production').toString(),
       },
     });
+    res.set('Cache-Control', 'no-cache');
     return res.send(rendered);
   } catch (err) {
     console.error(err);
@@ -65,8 +66,11 @@ async function getClientApp(req, res) {
 app.get('/', getClientApp);
 app.use(...middleware);
 
-// API
-app.use('/api', cors(), bodyParser.json(), api);
+// API - cached for one week
+app.use('/api', cors(), bodyParser.json(), (req, res, next) => {
+  res.set('Cache-Control', 'public, max-age=604800');
+  next();
+}, api);
 
 // UPLOADS
 app.use('/upload', cors(), upload);
