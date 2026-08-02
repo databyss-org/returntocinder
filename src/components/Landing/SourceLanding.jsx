@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Landing, Entry, EntriesBySource } from '@databyss-org/ui'
+import { Landing, Entry, EntriesBySource } from '../../databyss-ui'
 import renderTemplate from 'react-text-templates'
 import { Helmet } from 'react-helmet'
 import { textify } from '../../lib/_helpers'
@@ -21,7 +21,7 @@ class SourceLanding extends React.Component {
     } = this.props
 
     const stats = {
-      source: term => ({
+      source: (term) => ({
         name: app.biblio[term].title,
         entryCount: app.entriesBySource[term].length,
       }),
@@ -76,7 +76,7 @@ class SourceLanding extends React.Component {
       const entries = {
         title: sourceEntries[0].source.name,
         display: sourceEntries[0].source.display,
-        locations: sourceEntries.map(e => {
+        locations: sourceEntries.map((e) => {
           return {
             raw: e.locations.raw,
             entries: [
@@ -91,7 +91,7 @@ class SourceLanding extends React.Component {
       return (
         <EntriesBySource
           sources={[entries]}
-          renderEntry={entry => (
+          renderEntry={(entry) => (
             <Entry
               onSourceClick={() => {
                 this.props.history.push(`#source:${term}`)
@@ -122,11 +122,11 @@ class SourceLanding extends React.Component {
         <Helmet>
           <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
           <meta
-            name='description'
+            name="description"
             content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
           />
           <meta
-            name='keywords'
+            name="keywords"
             content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
           />
         </Helmet>
@@ -138,9 +138,6 @@ class SourceLanding extends React.Component {
 }
 
 export default compose(
-  connect(
-    state => state,
-    actions
-  ),
-  withRouter
+  connect((state) => state, actions),
+  withRouter,
 )(SourceLanding)
