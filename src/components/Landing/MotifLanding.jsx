@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import pluralize from 'pluralize'
 import {
+  Landing,
   LandingEntries,
   LandingSources,
   Link,

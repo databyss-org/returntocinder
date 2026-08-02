@@ -20,7 +20,7 @@ class Control extends React.Component {
     clearTimeout(this.decayTimer)
     this.decayTimer = setTimeout(
       () => this.setState({ touchDecayActive: false }),
-      this.props.theme.touchDecayDuration,
+      this.props.theme.touchDecayDuration
     )
   }
 
@@ -53,7 +53,7 @@ class Control extends React.Component {
         {label && <div className={classes.label}>{label}</div>}
         {React.Children.map(
           children,
-          (child) => child && React.cloneElement(child, { disabled }),
+          child => child && React.cloneElement(child, { disabled })
         )}
       </Tag>
     )

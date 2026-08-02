@@ -1,5 +1,12 @@
 /* styles and theming */
-export { theme, macros, colors, ThemeProvider } from './shared-styles'
+export {
+  theme,
+  profileThemes,
+  muiTheme,
+  macros,
+  colors,
+  ThemeProvider,
+} from './shared-styles'
 
 /* components */
 export { default as Button } from './components/Button/Button'
@@ -10,7 +17,11 @@ export { default as Control } from './components/Control/Control'
 export { default as SwitchControl } from './components/Control/SwitchControl'
 export { default as ToggleControl } from './components/Control/ToggleControl'
 
-export { default as EntriesByLocation } from './components/Entry/EntriesByLocation'
+export { default as CfMobileModal } from './components/Modal/CfMobileModal'
+
+export {
+  default as EntriesByLocation,
+} from './components/Entry/EntriesByLocation'
 export { default as EntriesBySource } from './components/Entry/EntriesBySource'
 export { default as Entry } from './components/Entry/Entry'
 export { default as EntrySource } from './components/Entry/EntrySource'
@@ -19,7 +30,9 @@ export { default as ContentHeading } from './components/Heading/ContentHeading'
 export { default as PageHeading } from './components/Heading/PageHeading'
 export { default as PageSubHeading } from './components/Heading/PageSubHeading'
 
-export { default as CommaSeparatedList } from './components/List/CommaSeparatedList'
+export {
+  default as CommaSeparatedList,
+} from './components/List/CommaSeparatedList'
 export { default as TocList } from './components/List/TocList'
 
 export { default as ContentNav } from './components/Navigation/ContentNav'
