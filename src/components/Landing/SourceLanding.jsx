@@ -46,7 +46,7 @@ class SourceLanding extends React.Component {
       subtitle: '{AUTHOR_NAME}',
       contentTitle:
         stats.entryCount === 1
-          ? 'Databyss includes 1 entry from {AUTHOR_NAME}’s “{SOURCE_TITLE}“'
+          ? 'Found 1 entry from {AUTHOR_NAME}’s “{SOURCE_TITLE}“'
           : app.config.source_meta.META_DESCRIPTION,
     }
 

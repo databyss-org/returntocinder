@@ -38,11 +38,9 @@ class Front extends React.Component {
       >
         <div className={cx(styles.container, styles.withMotifs)}>
           <div className={styles.head}>
-            <div className={styles.title}>{app.pages['/'].title}</div>
+            <h1 className={styles.title}>{app.pages['/'].title}</h1>
             <p>
               <span dangerouslySetInnerHTML={{ __html: app.pages['/'].body }} />
-              &nbsp;
-              <Link to="/about/frontis">&hellip;</Link>
             </p>
           </div>
           <div
@@ -60,7 +58,7 @@ class Front extends React.Component {
                     : this.showMotifs
                 }
               >
-                {this.state.show === 'Motifs' ? 'Authors ❯❯' : '❮❮ Motifs'}
+                {this.state.show === 'Motifs' ? 'Authors ››' : '‹‹ Motifs'}
               </a>
             </div>
             <div className={styles.bodyViewport}>

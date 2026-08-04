@@ -1,34 +1,38 @@
 .front {
   position: fixed;
   left: 0;
-  top: 0;
-  background-image: url('/stone.jpg');
-  background-size: cover;
+  top: 9vh;
+  background: url('/stone.jpg') center / cover fixed no-repeat;
   width: 100%;
-  height: 9vh;
+  height: 0;
   transition: height 300ms ease;
   z-index: 5;
-  overflow: hidden;
+  overflow-y: auto;
 
   &.showFull {
-    height: 100vh;
+    height: 91vh;
   }
 
   .container {
     position: absolute;
     left: 0;
-    top: 9vh;
+    top: 0;
     display: flex;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     font-size: 0.8em;
-    height: 91vh;
+    min-height: 91vh;
+    height: auto;
     color: rgba(255, 255, 255, 0.65);
     @include maxAndCenter();
 
     .head {
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      height: 91vh;
       justify-content: center;
       display: flex;
       flex-direction: column;
@@ -73,9 +77,7 @@
       width: 46%;
       transition: opacity 100ms ease;
       align-self: flex-start;
-      position: relative;
-      top: 5vh;
-      height: 80vh;
+      height: auto;
       display: flex;
       flex-direction: column;
 
@@ -88,11 +90,16 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        margin-bottom: 1em;
+        margin-bottom: 2em;
+        margin-left: 1em;
+        margin-top: 2em;
+        padding-bottom: 0.2em;
+        border-bottom: 1px solid  rgba(151,151,151,0.38);
       }
 
       .columnTitle {
-        font-size: 2em;
+        font-size: 1.5em;
+        text-transform: uppercase;
         text-align: left;
         font-family: 'BaskervilleLT-RegularOldFace', serif;
       }
@@ -101,7 +108,7 @@
       .columnToggleLink:hover,
       .columnToggleLink:active,
       .columnToggleLink:visited {
-        text-decoration: underline;
+        text-decoration: none;
         color: rgba(255, 255, 255, 0.45);
         transition: color 50ms ease;
         cursor: pointer;
@@ -114,42 +121,38 @@
       }
 
       .bodyViewport {
-        overflow: hidden;
-        flex: 1;
-        min-height: 0;
+        overflow-x: clip;
       }
 
       .bodyTrack {
         display: flex;
         width: 200%;
-        height: 100%;
+        height: auto;
         transition: transform 260ms ease;
       }
 
       .bodyPane {
         width: 50%;
         flex-shrink: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        overflow: visible;
       }
     }
 
-    .title {
+    h1.title {
       font-size: 3em;
       line-height: 1em;
       font-family: 'BaskervilleLT-RegularOldFace', serif;
       letter-spacing: -0.05em;
-      margin-bottom: 0.3em;
+      margin-bottom: 0.8em;
     }
 
     p {
       font-size: 1.3em;
       max-width: 750px;
       text-align: justify;
-      line-height: 1.4em;
+      line-height: 1.2em;
       position: relative;
-      max-width: 375px;
+      max-width: 300px;
 
       a,
       a:hover,
@@ -162,6 +165,12 @@
       }
       a:hover {
         color: rgba(255, 255, 255, 0.65);
+      }
+
+      h2 {
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-weight: normal;
       }
     }
   }

@@ -14,8 +14,7 @@
   }
 
   .barContainer {
-    background: url('/stone.jpg');
-    background-size: cover;
+    background: url('/stone.jpg') center / cover fixed no-repeat;
     width: 100%;
   }
 

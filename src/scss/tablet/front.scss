@@ -1,11 +1,10 @@
 .front {
   position: fixed;
   left: 0;
-  top: 0;
-  background-image: url('/stone.jpg');
-  background-size: 120%;
+  top: 9vh;
+  background: url('/stone.jpg') center / cover fixed no-repeat;
   width: 100%;
-  height: 9vh;
+  height: 0;
   transition: height 300ms ease;
   z-index: 5;
   overflow: hidden;
@@ -13,34 +12,34 @@
   -webkit-overflow-scrolling: touch;
 
   &.showFull {
-    height: 100vh;
+    height: 91vh;
   }
 
   .container {
     position: absolute;
     left: 0;
-    top: 12vh;
+    top: 3vh;
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
     font-size: 0.8em;
-    height: 85vh;
+    min-height: 88vh;
+    height: auto;
     color: rgba(255, 255, 255, 0.65);
-    overflow-y: scroll;
 
     .head {
-      height: 91vh;
+      height: auto;
       justify-content: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
       transition: height 200ms ease-in-out;
+      min-height: 50vh;
     }
 
     &.withMotifs .head {
-      height: 70vh;
       flex-shrink: 0;
       padding-top: 3vh;
     }
@@ -48,7 +47,7 @@
     .body {
       justify-content: flex-end;
       opacity: 0;
-      height: 0vh;
+      height: auto;
       width: 65%;
       margin-left: 5%;
       transition: opacity 100ms ease;
@@ -68,15 +67,20 @@
       }
 
       .columnHead {
-        width: 100%;
+        width: 85%;
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        margin-bottom: 0.75em;
+        margin-bottom: 2em;
+        margin-left: 2em;
+        margin-top: 2em;
+        padding-bottom: 0.2em;
+        border-bottom: 1px solid  rgba(151,151,151,0.38);
       }
 
       .columnTitle {
-        font-size: 1.8em;
+        font-size: 1.5em;
+        text-transform: uppercase;
         text-align: left;
         font-family: 'BaskervilleLT-RegularOldFace', serif;
       }
@@ -85,7 +89,7 @@
       .columnToggleLink:hover,
       .columnToggleLink:active,
       .columnToggleLink:visited {
-        text-decoration: underline;
+        text-decoration: none;
         color: rgba(255, 255, 255, 0.45);
         transition: color 50ms ease;
         cursor: pointer;
@@ -98,29 +102,25 @@
       }
 
       .bodyViewport {
-        overflow: hidden;
-        flex: 1;
-        min-height: 0;
+        overflow-x: clip;
       }
 
       .bodyTrack {
         display: flex;
         width: 200%;
-        height: 100%;
+        height: auto;
         transition: transform 260ms ease;
       }
 
       .bodyPane {
         width: 50%;
         flex-shrink: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        overflow: visible;
       }
     }
 
     &.withMotifs .body {
-      height: 56vh;
+      height: auto;
     }
 
     .toggles {

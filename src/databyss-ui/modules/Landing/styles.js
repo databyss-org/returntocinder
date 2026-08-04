@@ -16,6 +16,8 @@ const style = (theme = defaultTheme) => ({
   landing: {
     display: 'flex',
     flexDirection: 'column',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   notSticky: {
     position: 'fixed',
