@@ -101,7 +101,7 @@ The server listens on `PORT` (default `8080`) and `0.0.0.0` (localhost).
 
 ### DigitalOcean App Platform
 
-Use the standard build command on App Platform. The `build` script now writes a fresh `.deploy-token` file on every deploy, and the server reads that file at runtime.
+Use the standard build command on App Platform. The server generates a fresh cache-busting token when it starts, so each deploy gets a new value even if App Platform reuses the build output.
 
 Example app spec entry:
 
@@ -111,9 +111,7 @@ services:
     build_command: npm run build
 ```
 
-Do not use `${_self.COMMIT_HASH}` for this case. That only changes when the commit changes, while the build-generated token changes on every deploy.
-
-The relevant runtime value is the generated `.deploy-token` file, not an App Platform env var.
+Do not use `${_self.COMMIT_HASH}` for this case. That only changes when the commit changes, while the server-start token changes on every deploy.
 
 ## Data Management Scripts
 

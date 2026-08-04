@@ -8,10 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "heroku-postbuild": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --config webpack/webpack.app.js --progress && webpack -p --config webpack/webpack.admin.js --progress",
-    "write:deploy-token": "node scripts/writeDeployToken.js",
-    "build-server": "babel src -d build --plugins transform-runtime",
-    "build": "npm run write:deploy-token && npm run build-server && npm run heroku-postbuild",
+    "build-server": "babel src -d build --plugins transform-runtime && babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --config webpack/webpack.app.js --progress && webpack -p --config webpack/webpack.admin.js --progress",
+    "build": "npm run build-server",
     "start": "node build/server.js",
     "build:admin": "babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --config webpack/webpack.admin.js --progress",
     "start:admin": "pm2 start pm2.config.js",

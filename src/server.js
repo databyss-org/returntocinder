@@ -2,7 +2,7 @@
 
 import express from 'express'
 import compression from 'compression'
-import fs from 'fs'
+import crypto from 'crypto'
 import path from 'path'
 import bodyParser from 'body-parser'
 import userAgent from 'express-useragent'
@@ -19,14 +19,7 @@ import { renderMetaTemplate } from './lib/template'
 dotenv.config()
 
 const app = express()
-const deployTokenPath = path.join(__dirname, '..', '.deploy-token')
-const deployToken = (() => {
-  try {
-    return fs.readFileSync(deployTokenPath, 'utf8').trim()
-  } catch (err) {
-    return process.env.DEPLOY_TOKEN || String(Date.now())
-  }
-})()
+const deployToken = crypto.randomBytes(16).toString('hex')
 
 app.set('port', process.env.PORT || 8080)
 app.set('host', '0.0.0.0')
