@@ -36,7 +36,8 @@
       align-items: center;
       width: 100%;
       transition: height 200ms ease-in-out;
-      min-height: 50vh;
+      min-height: 65vh;
+      margin-bottom: 3em;
     }
 
     &.withMotifs .head {
@@ -138,12 +139,12 @@
       }
     }
 
-    .title {
+    h1.title {
       font-size: 3em;
       line-height: 1em;
-      margin-bottom: 0.3em;
       font-family: 'BaskervilleLT-RegularOldFace', serif;
       letter-spacing: -0.05em;
+      margin-bottom: 0.8em;
     }
 
     p {
@@ -164,6 +165,12 @@
       }
       a:hover {
         color: rgba(255, 255, 255, 0.65);
+      }
+
+      h2 {
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-weight: normal;
       }
     }
   }

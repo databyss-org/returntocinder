@@ -18,6 +18,13 @@ import { renderMetaTemplate } from './lib/template';
 dotenv.config();
 
 const app = express();
+const deployToken =
+  process.env.DEPLOY_TOKEN ||
+  process.env.HEROKU_SLUG_COMMIT ||
+  process.env.GITHUB_SHA ||
+  process.env.RENDER_GIT_COMMIT ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  String(Date.now());
 
 app.set('port', process.env.PORT || 8080);
 app.set('host', '0.0.0.0');
@@ -53,6 +60,7 @@ async function getClientApp(req, res) {
       requestPath: req.path,
       extraDict: {
         PRODUCTION: (process.env.NODE_ENV === 'production').toString(),
+        DEPLOY_TOKEN: deployToken,
       },
     });
     res.set('Cache-Control', 'no-cache');
