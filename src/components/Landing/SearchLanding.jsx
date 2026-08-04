@@ -9,7 +9,7 @@ import {
   BackButton,
   ForwardButton,
   ContentNav,
-} from '@databyss-org/ui'
+} from '../../databyss-ui'
 import urlencode from 'urlencode'
 import _ from 'lodash'
 import { Helmet } from 'react-helmet'
@@ -71,8 +71,8 @@ class SearchLanding extends PureComponent {
     }
     // COMPARES SEARCH RESULTS AND UPDATES CACHE
     const currentAuthorList = Object.keys(nextProps.searchState.resultsMeta)
-      .filter(a => a.split(':')[0] === nextProps.searchState.query)
-      .map(a => a.split(':')[1])
+      .filter((a) => a.split(':')[0] === nextProps.searchState.query)
+      .map((a) => a.split(':')[1])
 
     const objectSource = Object.keys(nextProps.searchState.resultsMeta)[0]
     const [queryID, authorID] = objectSource.split(':')
@@ -165,9 +165,9 @@ class SearchLanding extends PureComponent {
     const authorCount = Object.keys(resultsMeta).length
 
     this._allEntries = []
-    Object.keys(results).map(r => {
-      Object.keys(results[r]).map(s =>
-        this._allEntries.push({ author: s, entries: [...results[r][s]] })
+    Object.keys(results).map((r) => {
+      Object.keys(results[r]).map((s) =>
+        this._allEntries.push({ author: s, entries: [...results[r][s]] }),
       )
     })
 
@@ -212,7 +212,7 @@ class SearchLanding extends PureComponent {
       : ''
 
     const cfList = resultsMeta[term].cfauthors.map(
-      a => props.appState.authorDict[a]
+      (a) => props.appState.authorDict[a],
     )
 
     // for meta keywords
@@ -225,18 +225,16 @@ class SearchLanding extends PureComponent {
             .concat(
               this.props.searchState.resultsMeta[
                 Object.keys(this.props.searchState.resultsMeta)[0]
-              ].cfauthors
+              ].cfauthors,
             )
-            .map(a => {
-              return `${this.props.appState.authorDict[a].firstName} ${
-                this.props.appState.authorDict[a].lastName
-              }`
+            .map((a) => {
+              return `${this.props.appState.authorDict[a].firstName} ${this.props.appState.authorDict[a].lastName}`
             })
             .join(' ')
 
     // for meta keywords
     let allSources = Object.keys(this.props.searchState.resultsMeta)
-      .map(a => {
+      .map((a) => {
         return this.props.searchState.resultsMeta[a].sourceList
       })
       .reduce((acc, val) => {
@@ -244,8 +242,8 @@ class SearchLanding extends PureComponent {
       })
 
     allSources = this.props.appState.sourceList
-      .filter(s => allSources.indexOf(s.id) > -1)
-      .map(s => s.name)
+      .filter((s) => allSources.indexOf(s.id) > -1)
+      .map((s) => s.name)
       .join(' ')
 
     this.templateTokens = {
@@ -268,12 +266,12 @@ class SearchLanding extends PureComponent {
       !_.isEmpty(
         this.props.searchState.results[
           Object.keys(this.props.searchState.results)[0]
-        ]
+        ],
       ) ||
       !_.isEmpty(
         this.props.searchState.results[
           Object.keys(this.props.searchState.results)[1]
-        ]
+        ],
       )
 
     this.landingProps = props.match.params.term.includes(':')
@@ -281,24 +279,24 @@ class SearchLanding extends PureComponent {
           showMotifLinks: this.motifLinksActive,
           withToggle: true,
           cfList,
-          onCfListSelect: id => {
+          onCfListSelect: (id) => {
             props.history.push(`/search/${props.searchState.query}:${id}`)
           },
           onMotifLinksChange: () =>
             this.props.toggleMotifLinks(
-              !this.props.appState.motifLinksAreActive
+              !this.props.appState.motifLinksAreActive,
             ),
           title: renderTemplate(
             config.search_author_meta.LANDING_HEADING,
-            this.templateTokens
+            this.templateTokens,
           ),
           subtitle: renderTemplate(
             config.search_author_meta.LANDING_SUB_HEADING,
-            this.templateTokens
+            this.templateTokens,
           ),
           contentTitle: renderTemplate(
             config.search_author_meta.LANDING_SUMMARY,
-            this.templateTokens
+            this.templateTokens,
           ),
         }
       : {
@@ -307,17 +305,17 @@ class SearchLanding extends PureComponent {
           withToggle: false,
           onMotifLinksChange: () =>
             this.props.toggleMotifLinks(
-              !this.props.appState.motifLinksAreActive
+              !this.props.appState.motifLinksAreActive,
             ),
           title: renderTemplate(
             config.search_meta.LANDING_HEADING,
-            this.templateTokens
+            this.templateTokens,
           ),
           subtitle: '',
           contentTitle: this.hasResults
             ? renderTemplate(
                 config.search_meta.LANDING_SUMMARY,
-                this.templateTokens
+                this.templateTokens,
               )
             : 'no results',
         }
@@ -337,21 +335,21 @@ class SearchLanding extends PureComponent {
   render() {
     this._updateRows(this.props)
     const allRows = this._allEntries.map((a, i) =>
-      this._allRowComponent({ index: a, key: i })
+      this._allRowComponent({ index: a, key: i }),
     )
 
     const rows = this._rows.map((key, index) =>
-      this._rowComponent({ index, key, style: {} })
+      this._rowComponent({ index, key, style: {} }),
     )
 
     let allAuthors = Object.keys(this.props.searchState.resultsMeta)
-    allAuthors = allAuthors.map(a => ({
+    allAuthors = allAuthors.map((a) => ({
       author: a,
       count: this.props.searchState.resultsMeta[a].count,
     }))
 
     allAuthors.sort((a, b) => b.count - a.count)
-    allAuthors = allAuthors.filter(a => a.count > 0).map(a => a.author)
+    allAuthors = allAuthors.filter((a) => a.count > 0).map((a) => a.author)
 
     const authorsRow = allAuthors.map((a, i) => {
       const authorInfo = this.props.appState.authorDict[
@@ -368,9 +366,7 @@ class SearchLanding extends PureComponent {
             })
           }
         >
-          {`${authorInfo.firstName} ${authorInfo.lastName} (${
-            this.props.searchState.resultsMeta[a].count
-          })`}
+          {`${authorInfo.firstName} ${authorInfo.lastName} (${this.props.searchState.resultsMeta[a].count})`}
         </Link>
       )
     })
@@ -381,23 +377,23 @@ class SearchLanding extends PureComponent {
             <title>
               {renderTemplate(
                 this.props.appState.config.search_meta.META_TITLE,
-                this.templateTokens
+                this.templateTokens,
               )}
             </title>
 
             <meta
-              name='description'
+              name="description"
               content={renderTemplate(
                 this.props.appState.config.search_meta.META_DESCRIPTION,
-                this.templateTokens
+                this.templateTokens,
               )}
             />
 
             <meta
-              name='keywords'
+              name="keywords"
               content={renderTemplate(
                 this.props.appState.config.search_meta.META_KEYWORDS,
-                this.templateTokens
+                this.templateTokens,
               )}
             />
           </Helmet>
@@ -406,23 +402,23 @@ class SearchLanding extends PureComponent {
             <title>
               {renderTemplate(
                 this.props.appState.config.search_author_meta.META_TITLE,
-                this.templateTokens
+                this.templateTokens,
               )}
             </title>
 
             <meta
-              name='description'
+              name="description"
               content={renderTemplate(
                 this.props.appState.config.search_author_meta.META_DESCRIPTION,
-                this.templateTokens
+                this.templateTokens,
               )}
             />
 
             <meta
-              name='keywords'
+              name="keywords"
               content={renderTemplate(
                 this.props.appState.config.search_author_meta.META_KEYWORDS,
-                this.templateTokens
+                this.templateTokens,
               )}
             />
           </Helmet>
@@ -435,8 +431,8 @@ class SearchLanding extends PureComponent {
                 <ContentNav
                   right={
                     <ForwardButton
-                      ariaLabel='all entries'
-                      label='Show all'
+                      ariaLabel="all entries"
+                      label="Show all"
                       onClick={() => {
                         this.showAllClick()
                       }}
@@ -457,7 +453,7 @@ class SearchLanding extends PureComponent {
                 <ContentNav
                   left={
                     <BackButton
-                      label='All Authors'
+                      label="All Authors"
                       onClick={() => {
                         this.showAllClick()
                       }}
@@ -473,10 +469,10 @@ class SearchLanding extends PureComponent {
               <ContentNav
                 left={
                   <BackButton
-                    label='All Authors'
+                    label="All Authors"
                     onClick={() =>
                       this.props.history.push(
-                        `/search/${this.props.searchState.query}`
+                        `/search/${this.props.searchState.query}`,
                       )
                     }
                   />
@@ -493,10 +489,10 @@ class SearchLanding extends PureComponent {
 
 export default withRouter(
   connect(
-    state => ({
+    (state) => ({
       appState: state.app,
       searchState: state.search,
     }),
-    { ...appActions, ...searchActions }
-  )(SearchLanding)
+    { ...appActions, ...searchActions },
+  )(SearchLanding),
 )

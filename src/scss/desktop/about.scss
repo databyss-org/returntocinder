@@ -7,8 +7,6 @@
 
   .container {
     width: 100%;
-    @include maxAndCenter();
-    padding: 0 1em;
 
     .head {
       z-index: 100;

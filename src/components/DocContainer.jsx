@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import Transition from 'react-transition-group/Transition'
 import cx from 'classnames'
 import qs from 'qs'
-import { ThemeProvider } from '@databyss-org/ui'
+import { ThemeProvider } from '../databyss-ui'
 import Doc from './Doc.jsx'
 import Disambiguate from './Disambiguate.jsx'
 import appActions from '../redux/app/actions'
@@ -22,7 +22,7 @@ import theme from '../theme'
 
 const { DEFAULT_AUTHOR } = process.env
 
-const getAsideTerm = location => {
+const getAsideTerm = (location) => {
   const asidePath = '/(motif|source|search)/(.*)/motif::term'
   const match = matchPath(location.pathname, asidePath)
   if (match) {
@@ -136,9 +136,9 @@ const DocContainer = ({
 }) => (
   <ThemeProvider theme={theme}>
     <Transition in={Boolean(query.aside)} timeout={300}>
-      {state => (
+      {(state) => (
         <div
-          onClick={e => onClick({ e, history, showDisambiguate })}
+          onClick={(e) => onClick({ e, history, showDisambiguate })}
           className={cx(styles.docContainer, {
             [styles.withAside]: query.aside,
             [styles.landing]: query.motif || query.source || query.search,
@@ -152,7 +152,7 @@ const DocContainer = ({
             })}
           >
             <main
-              ref={elem => {
+              ref={(elem) => {
                 mainElement = elem
               }}
             >
@@ -162,14 +162,14 @@ const DocContainer = ({
                   cfList={
                     motif.cfauthors
                       ? motif.cfauthors
-                          .filter(id => id !== DEFAULT_AUTHOR)
+                          .filter((id) => id !== DEFAULT_AUTHOR)
                           .concat(DEFAULT_AUTHOR)
                           .reduce(
                             (list, id) =>
                               query.author === id
                                 ? list
                                 : list.concat(app.authorDict[id]),
-                            []
+                            [],
                           )
                       : null
                   }
@@ -229,13 +229,10 @@ const DocContainer = ({
 )
 
 export default compose(
-  connect(
-    state => state,
-    { ...appActions, ...searchActions }
-  ),
+  connect((state) => state, { ...appActions, ...searchActions }),
   withRouter,
   withLoader({
-    propsToLoad: props => {
+    propsToLoad: (props) => {
       const query = getQuery(props)
       return {
         query,
@@ -261,7 +258,7 @@ export default compose(
           : {}),
       }
     },
-    loaderActions: props => {
+    loaderActions: (props) => {
       const query = getQuery(props)
       return {
         ...(query.motif
@@ -302,8 +299,8 @@ export default compose(
     },
   }),
   freezeProps({
-    propsToFreeze: props => ({
+    propsToFreeze: (props) => ({
       query: !props.isLoading,
     }),
-  })
+  }),
 )(DocContainer)

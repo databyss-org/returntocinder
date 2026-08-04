@@ -12,8 +12,8 @@ import {
   Entry,
   EntriesByLocation,
   EntriesBySource,
-} from '@databyss-org/ui'
-import { isMobile } from '@databyss-org/ui/lib/mediaQuery'
+} from '../../databyss-ui'
+import { isMobile } from '../../databyss-ui/lib/mediaQuery'
 import renderTemplate from 'react-text-templates'
 import { Helmet } from 'react-helmet'
 import actions from '../../redux/app/actions'
@@ -51,7 +51,7 @@ class MotifLanding extends React.Component {
     }
     this.contentTitle = renderTemplate(
       meta.LANDING_SUMMARY,
-      this.templateTokens
+      this.templateTokens,
     )
 
     this.landingProps = {
@@ -65,9 +65,9 @@ class MotifLanding extends React.Component {
         meta.LANDING_SUB_HEADING &&
         renderTemplate(meta.LANDING_SUB_HEADING, this.templateTokens),
 
-      onCfListSelect: id => {
+      onCfListSelect: (id) => {
         this.props.history.push(
-          `/motif/${query.resource}:${id}${showAll ? '' : '/sources'}`
+          `/motif/${query.resource}:${id}${showAll ? '' : '/sources'}`,
         )
       },
       contentTitle: this.contentTitle,
@@ -90,7 +90,7 @@ class MotifLanding extends React.Component {
   }
   onSourcesClick() {
     this.props.history.push(
-      `/motif/${this.props.query.authoredResource}/sources`
+      `/motif/${this.props.query.authoredResource}/sources`,
     )
   }
   renderSourcesToc() {
@@ -99,7 +99,7 @@ class MotifLanding extends React.Component {
       <LandingSources
         sources={motif.sources}
         onAllEntriesClick={this.onAllEntriesClick}
-        renderSource={source => {
+        renderSource={(source) => {
           const href = `/motif/${query.resource}/sources/${source.id}`
           return (
             <Link
@@ -121,7 +121,7 @@ class MotifLanding extends React.Component {
   renderEntries(source) {
     const { motifLinksAreActive } = this.props.app
 
-    const renderEntry = entry => (
+    const renderEntry = (entry) => (
       <Entry
         sourceHref={`/source/${source ? source.id : entry.source.id}`}
         onSourceClick={this.onEntrySourceOnClick(source || entry.source)}
@@ -155,11 +155,11 @@ class MotifLanding extends React.Component {
         <Helmet>
           <title>{renderTemplate(META_TITLE, this.textOnlyTokens)}</title>
           <meta
-            name='description'
+            name="description"
             content={renderTemplate(META_DESCRIPTION, this.textOnlyTokens)}
           />
           <meta
-            name='keywords'
+            name="keywords"
             content={renderTemplate(META_KEYWORDS, this.textOnlyTokens)}
           />
         </Helmet>
@@ -172,9 +172,6 @@ class MotifLanding extends React.Component {
 }
 
 export default compose(
-  connect(
-    state => state,
-    actions
-  ),
-  withRouter
+  connect((state) => state, actions),
+  withRouter,
 )(MotifLanding)

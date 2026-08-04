@@ -15,3 +15,33 @@
     text-decoration: none;
   }
 }
+
+.authorsContainer {
+  display: -webkit-box;
+}
+
+.frontAuthors {
+  width: 50%;
+  display: table;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+
+  li {
+    font-size: 1.3em;
+    padding: 0.4em 1.5em;
+    cursor: pointer;
+
+    a,
+    a:hover,
+    a:visited,
+    a:active {
+      color: inherit;
+      font-size: 0.8em;
+    }
+    &.sublist {
+      width: 100%;
+      padding: 0.4em 1em;
+    }
+  }
+}

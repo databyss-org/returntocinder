@@ -32,38 +32,49 @@ class Front extends React.Component {
       <div
         className={cx(styles.front, {
           [styles.showFull]: Boolean(
-            matchPath(location.pathname, { path: '/', exact: true })
+            matchPath(location.pathname, { path: '/', exact: true }),
           ),
         })}
       >
         <div className={cx(styles.container, styles.withMotifs)}>
           <div className={styles.head}>
-            <div className={styles.title}>{app.pages['/'].title}</div>
+            <h1 className={styles.title}>{app.pages['/'].title}</h1>
             <p>
               <span dangerouslySetInnerHTML={{ __html: app.pages['/'].body }} />
-              &nbsp;
-              <Link to='/about/frontis'>&hellip;</Link>
             </p>
-            <div className={styles.toggles}>
-              <a onClick={this.showMotifs}>Motifs</a>
-              <a onClick={this.showAuthors}>Authors</a>
-            </div>
           </div>
           <div
             className={cx(styles.body, styles.show, {
-              [styles.authorsBody]: this.state.show !== 'Motifs',
+              [styles.showAuthors]: this.state.show !== 'Motifs',
             })}
           >
-            {this.state.show === 'Motifs' ? <Motifs /> : <Authors />}
+            <div className={styles.columnHead}>
+              <div className={styles.columnTitle}>{this.state.show}</div>
+              <a
+                className={styles.columnToggleLink}
+                onClick={
+                  this.state.show === 'Motifs'
+                    ? this.showAuthors
+                    : this.showMotifs
+                }
+              >
+                {this.state.show === 'Motifs' ? 'Authors ››' : '‹‹ Motifs'}
+              </a>
+            </div>
+            <div className={styles.bodyViewport}>
+              <div className={styles.bodyTrack}>
+                <div className={styles.bodyPane}>
+                  <Motifs />
+                </div>
+                <div className={styles.bodyPane}>
+                  <Authors />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     )
   }
 }
-export default withRouter(
-  connect(
-    state => state,
-    actions
-  )(Front)
-)
+export default withRouter(connect((state) => state, actions)(Front))

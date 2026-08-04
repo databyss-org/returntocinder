@@ -1,11 +1,11 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { EntrySource } from '@databyss-org/ui';
-import actions from '../redux/app/actions';
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { EntrySource } from '../databyss-ui'
+import actions from '../redux/app/actions'
 
-import Entries from './Entries.jsx';
+import Entries from './Entries.jsx'
 
 const EntriesBySource = ({
   sid,
@@ -34,8 +34,8 @@ const EntriesBySource = ({
           <EntrySource
             href={`/source/${sid}`}
             onClick={() => {
-              history.push(`#source:${sid}`);
-              toggleSourceModal(sid);
+              history.push(`#source:${sid}`)
+              toggleSourceModal(sid)
             }}
           >
             {sid}
@@ -45,12 +45,9 @@ const EntriesBySource = ({
       showMotifNav={showMotifNav}
     />
   </section>
-);
+)
 
 export default compose(
-  connect(
-    state => state,
-    actions
-  ),
-  withRouter
-)(EntriesBySource);
+  connect((state) => state, actions),
+  withRouter,
+)(EntriesBySource)

@@ -4,7 +4,6 @@
   position: relative;
   opacity: 0;
   transition: opacity 150ms ease;
-  @include maxAndCenter();
   width: 100%;
   z-index: 10;
   overflow: hidden;
@@ -43,7 +42,6 @@
   }
 
   main {
-    max-width: 750px;
     padding-top: 2em;
     overflow: scroll;
     padding-right: 2em;

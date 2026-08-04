@@ -1,4 +1,4 @@
-import { theme as baseTheme } from '@databyss-org/ui';
+import { theme as baseTheme } from './databyss-ui'
 
 export default {
   ...baseTheme,
@@ -9,4 +9,4 @@ export default {
   fontSizeS: '0.9em',
   contentWidth: '550px',
   mediumGrey: '#666461',
-};
+}
