@@ -5,6 +5,7 @@ import {
   motifDictFromList,
   authorDictFromList,
 } from '../../lib/indexers'
+import { withDeployToken } from '../../lib/apiCacheBust'
 
 const { API_URL } = process.env
 const { DEFAULT_AUTHOR } = process.env
@@ -18,7 +19,7 @@ export default {
           sid,
         },
       })
-      const entries = (await axios.get(`${API_URL}/sources/${sid}`)).data
+      const entries = (await axios.get(withDeployToken(`${API_URL}/sources/${sid}`))).data
       return dispatch({
         type: 'RECEIVE_SOURCE_ENTRIES',
         payload: {
@@ -43,9 +44,11 @@ export default {
         csid = showAll ? '_all' : ''
       }
       const motif = (await axios.get(
-        [API_URL, 'motifs', mid, ...(csid ? [csid] : [])]
-          .join('/')
-          .concat(`?author=${author}`)
+        withDeployToken(
+          [API_URL, 'motifs', mid, ...(csid ? [csid] : [])]
+            .join('/')
+            .concat(`?author=${author}`)
+        )
       )).data
       return dispatch({
         type: 'RECEIVE_MOTIF',
@@ -64,7 +67,7 @@ export default {
       dispatch({
         type: 'FETCH_BIBLIO',
       })
-      const sources = (await axios.get(`${API_URL}/sources`)).data
+      const sources = (await axios.get(withDeployToken(`${API_URL}/sources`))).data
       const sourceList = sourceListFromSources(sources)
       const biblio = biblioFromSources(sources)
 
@@ -82,7 +85,7 @@ export default {
       dispatch({
         type: 'FETCH_MOTIFS',
       })
-      const motifList = (await axios.get(`${API_URL}/motifs`)).data
+      const motifList = (await axios.get(withDeployToken(`${API_URL}/motifs`))).data
       const motifDict = motifDictFromList(motifList)
 
       return dispatch({
@@ -99,7 +102,7 @@ export default {
       dispatch({
         type: 'FETCH_AUTHORS',
       })
-      const authorList = (await axios.get(`${API_URL}/authors`)).data.sort(
+      const authorList = (await axios.get(withDeployToken(`${API_URL}/authors`))).data.sort(
         function(a, b) {
           return a.lastName
             .toLowerCase()
@@ -126,7 +129,7 @@ export default {
         },
       })
       const content = (await axios.get(
-        `${API_URL}/pages/${path.replace(/\//g, '%2f')}`
+        withDeployToken(`${API_URL}/pages/${path.replace(/\//g, '%2f')}`)
       )).data
 
       return dispatch({
@@ -147,7 +150,7 @@ export default {
         },
       })
       const menu = (await axios.get(
-        `${API_URL}/menus/${path.replace(/\//g, '%2f')}`
+        withDeployToken(`${API_URL}/menus/${path.replace(/\//g, '%2f')}`)
       )).data
 
       return dispatch({
@@ -164,7 +167,7 @@ export default {
       dispatch({
         type: 'FETCH_CONFIG',
       })
-      const config = (await axios.get(`${API_URL}/config`)).data
+      const config = (await axios.get(withDeployToken(`${API_URL}/config`))).data
 
       return dispatch({
         type: 'RECEIVE_CONFIG',

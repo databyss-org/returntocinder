@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { withDeployToken } from '../../lib/apiCacheBust'
 
 let queryIdx = 0
 
@@ -15,7 +16,7 @@ export default {
           author,
         },
       })
-      const results = await axios.get(`${API_URL}/search`, {
+      const results = await axios.get(withDeployToken(`${API_URL}/search`), {
         params: {
           query: query || getState().search.query,
           groupBy: 'source',
@@ -41,7 +42,7 @@ export default {
       })
       const asyncDispatch = list => {
         const promises = list.map(async a => {
-          const results = await axios.get(`${API_URL}/search`, {
+          const results = await axios.get(withDeployToken(`${API_URL}/search`), {
             params: {
               query: query || getState().search.query,
               groupBy: 'source',
@@ -75,7 +76,7 @@ export default {
         type: 'SET_QUERY',
         payload: { query, id: queryIdx, author: DEFAULT_AUTHOR },
       })
-      const results = await axios.get(`${API_URL}/search`, {
+      const results = await axios.get(withDeployToken(`${API_URL}/search`), {
         params: { query, id: queryIdx, author: DEFAULT_AUTHOR },
       })
       if (results.data.id < queryIdx) {
