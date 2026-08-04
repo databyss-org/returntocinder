@@ -99,6 +99,22 @@ The server listens on `PORT` (default `8080`) and `0.0.0.0` (localhost).
 | `PORT` | HTTP port (default `8080`) |
 | `API_ADMIN_TOKEN` | If set, serves the admin UI instead of the public app |
 
+### DigitalOcean App Platform
+
+Use the standard build command on App Platform. The `build` script now writes a fresh `.deploy-token` file on every deploy, and the server reads that file at runtime.
+
+Example app spec entry:
+
+```yaml
+services:
+  - name: web
+    build_command: npm run build
+```
+
+Do not use `${_self.COMMIT_HASH}` for this case. That only changes when the commit changes, while the build-generated token changes on every deploy.
+
+The relevant runtime value is the generated `.deploy-token` file, not an App Platform env var.
+
 ## Data Management Scripts
 
 All scripts are run with `npm run <script>` and require the env vars above.

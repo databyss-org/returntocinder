@@ -26,6 +26,7 @@ uploads/
 dump/
 .env.swp
 package-lock.json
+.deploy-token
 
 # BUILD
 public/data
