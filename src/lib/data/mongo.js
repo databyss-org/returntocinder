@@ -122,6 +122,18 @@ export const update = (entity, query, doc) =>
     });
   });
 
+export const remove = (entity, query, justOne = true) =>
+  new Promise(async (resolve, reject) => {
+    const db = await connect();
+    const collection = db.collection(entity);
+    collection.remove(query, { justOne }, (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(true);
+    });
+  });
+
 export const createIndex = (entity, field, isFulltext) =>
   new Promise(async (resolve, reject) => {
     console.log(

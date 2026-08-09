@@ -3,7 +3,7 @@
 import express from 'express';
 import DumpDbToBeta from '../scripts/dumpDbToBeta';
 import { searchEntries } from '../lib/search';
-import { list as listEntries } from '../lib/data/entries';
+import { list as listEntries, removeBySource } from '../lib/data/entries';
 import {
   list as listMotifs,
   bySource as motifsBySource,
@@ -11,8 +11,18 @@ import {
 import {
   list as listSources,
   byMotif as sourcesByMotif,
+  add as addSource,
+  get as getSource,
+  update as updateSource,
+  remove as removeSource,
 } from '../lib/data/sources';
-import { list as listAuthors } from '../lib/data/authors';
+import {
+  list as listAuthors,
+  add as addAuthor,
+  get as getAuthor,
+  update as updateAuthor,
+  remove as removeAuthor,
+} from '../lib/data/authors';
 import { list as listConfig } from '../lib/data/config';
 import { get as getPage } from '../lib/data/pages';
 import { get as getMenu } from '../lib/data/menus';
@@ -26,6 +36,28 @@ import {
 } from './adminAuth';
 
 const router = express.Router();
+
+const normalizeSourcePayload = (payload = {}) => {
+  const source = {
+    id: (payload.id || '').trim(),
+    title: payload.title || payload.name || '',
+    author: (payload.author || '').trim(),
+    citations: Array.isArray(payload.citations)
+      ? payload.citations.map(c => `${c}`.trim()).filter(Boolean)
+      : `${payload.citations || ''}`
+          .split(/\r?\n/)
+          .map(c => c.trim())
+          .filter(Boolean),
+  };
+  source.name = source.title;
+  return source;
+};
+
+const normalizeAuthorPayload = (payload = {}) => ({
+  id: (payload.id || '').trim(),
+  firstName: (payload.firstName || '').trim(),
+  lastName: (payload.lastName || '').trim(),
+});
 
 router.post('/admin/login', (req, res) => {
   if (!isAdminAuthConfigured()) {
@@ -216,6 +248,86 @@ router.post('/admin/dumptobeta', requireAdminToken, (req, res) => {
     res.write(msg);
   });
   dump.run();
+});
+
+router.get('/admin/sources', requireAdminToken, async (req, res) => {
+  const sources = await listSources();
+  const sorted = sources.sort((a, b) => (a.id < b.id ? -1 : 1));
+  return res.status(200).json(sorted);
+});
+
+router.post('/admin/sources', requireAdminToken, async (req, res) => {
+  const source = normalizeSourcePayload(req.body);
+  if (!source.id || !source.title) {
+    return res.status(400).json({ error: 'id and title are required' });
+  }
+
+  try {
+    await getSource(source.id);
+    return res.status(409).json({ error: 'source already exists' });
+  } catch (err) {
+    await addSource(source);
+    return res.status(201).json(source);
+  }
+});
+
+router.put('/admin/sources/:sid', requireAdminToken, async (req, res) => {
+  const source = normalizeSourcePayload({ ...req.body, id: req.params.sid });
+  if (!source.title) {
+    return res.status(400).json({ error: 'title is required' });
+  }
+
+  await updateSource(req.params.sid, source);
+  return res.status(200).json(source);
+});
+
+router.delete('/admin/sources/:sid', requireAdminToken, async (req, res) => {
+  await removeBySource(req.params.sid);
+  await removeSource(req.params.sid);
+  return res.status(204).end();
+});
+
+router.get('/admin/authors', requireAdminToken, async (req, res) => {
+  const authors = await listAuthors();
+  const sorted = authors.sort((a, b) => {
+    const lastA = (a.lastName || '').toLowerCase();
+    const lastB = (b.lastName || '').toLowerCase();
+    if (lastA === lastB) {
+      return (a.firstName || '').toLowerCase() > (b.firstName || '').toLowerCase() ? 1 : -1;
+    }
+    return lastA > lastB ? 1 : -1;
+  });
+  return res.status(200).json(sorted);
+});
+
+router.post('/admin/authors', requireAdminToken, async (req, res) => {
+  const author = normalizeAuthorPayload(req.body);
+  if (!author.id || !author.lastName) {
+    return res.status(400).json({ error: 'id and lastName are required' });
+  }
+
+  try {
+    await getAuthor(author.id);
+    return res.status(409).json({ error: 'author already exists' });
+  } catch (err) {
+    await addAuthor(author);
+    return res.status(201).json(author);
+  }
+});
+
+router.put('/admin/authors/:aid', requireAdminToken, async (req, res) => {
+  const author = normalizeAuthorPayload({ ...req.body, id: req.params.aid });
+  if (!author.lastName) {
+    return res.status(400).json({ error: 'lastName is required' });
+  }
+
+  await updateAuthor(req.params.aid, author);
+  return res.status(200).json(author);
+});
+
+router.delete('/admin/authors/:aid', requireAdminToken, async (req, res) => {
+  await removeAuthor(req.params.aid);
+  return res.status(204).end();
 });
 
 export default router;

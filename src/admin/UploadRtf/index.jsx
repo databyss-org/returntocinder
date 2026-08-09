@@ -93,7 +93,30 @@ class UploadRtf extends React.Component {
   }
   render() {
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', height: '80vh' }}>
+      <React.Fragment>
+      <div
+            style={{
+              marginBottom: '14px',
+              padding: '12px',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              background: '#fafafa',
+              fontSize: '14px',
+              lineHeight: 1.5
+            }}
+          >
+            <strong>Supplement file format</strong>
+            <div>1. First line: <code>AUTHOR_CODE,LastName,FirstName</code></div>
+            <div>2. Then one bold heading line (section title).</div>
+            <div>3. Each entry line: <code>SOURCE_CODE pp. LOCATION Entry text...</code></div>
+            <div>
+              Use valid source codes from your bibliography.<br />
+              <a href="/supplement-template.rtf" download>
+                Download RTF template
+              </a>
+            </div>
+          </div>
+      <div style={{ display: 'flex', flexDirection: 'row', height: '50vh' }}>
         <div style={{ flexBasis: '50%', marginRight: '50px' }}>
           <Dropzone
             accept="text/rtf"
@@ -121,6 +144,7 @@ class UploadRtf extends React.Component {
           <LogView lines={this.state.output} />
         </div>
       </div>
+    </React.Fragment>
     );
   }
 }

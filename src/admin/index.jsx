@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import UploadRtf from './UploadRtf';
 import DbActions from './DbActions';
+import SourcesCrud from './SourcesCrud';
+import AuthorsCrud from './AuthorsCrud';
 
 const { API_URL } = process.env;
 const ADMIN_TOKEN_KEY = 'r2c.admin.token';
@@ -168,6 +170,12 @@ class App extends React.Component {
               <NavItem>
                 <Link to="/admin/db">Database Actions</Link>
               </NavItem>
+              <NavItem>
+                <Link to="/admin/sources">Sources</Link>
+              </NavItem>
+              <NavItem>
+                <Link to="/admin/authors">Authors</Link>
+              </NavItem>
               <NavItem onClick={this.onLogout}>Logout</NavItem>
             </Nav>
           </Navbar>
@@ -186,6 +194,24 @@ class App extends React.Component {
               path="/admin/db"
               render={(props) => (
                 <DbActions
+                  {...props}
+                  adminToken={this.state.token}
+                />
+              )}
+            />
+            <Route
+              path="/admin/sources"
+              render={(props) => (
+                <SourcesCrud
+                  {...props}
+                  adminToken={this.state.token}
+                />
+              )}
+            />
+            <Route
+              path="/admin/authors"
+              render={(props) => (
+                <AuthorsCrud
                   {...props}
                   adminToken={this.state.token}
                 />
