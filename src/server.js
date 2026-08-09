@@ -11,15 +11,17 @@ import dotenv from 'dotenv'
 import api from './server/api'
 import sockets from './server/sockets'
 import { connect as dbConnect } from './lib/data/mongo'
-import upload from './server/upload'
+import createUploadRouter from './server/upload'
 import sitemap from './server/sitemap'
 import { renderMetaTemplate } from './lib/template'
+import { requireAdminToken } from './server/adminAuth'
 // import motif from './server/motif';
 
 dotenv.config()
 
 const app = express()
 const deployToken = crypto.randomBytes(16).toString('hex')
+const upload = createUploadRouter(requireAdminToken)
 
 app.set('port', process.env.PORT || 8080)
 app.set('host', '0.0.0.0')
@@ -38,13 +40,12 @@ async function getClientApp(req, res) {
     )
   }
 
-  const { API_ADMIN_TOKEN } = process.env
-
   if (req.path.match(/\/source:(.*)?/)) {
     return res.redirect(301, req.originalUrl.replace(/\/source:(.*)?/g, ''))
   }
 
-  const indexFilename = API_ADMIN_TOKEN ? 'admin' : 'index'
+  const isAdminRoute = /^\/admin(\/.*)?$/.test(req.path)
+  const indexFilename = isAdminRoute ? 'admin' : 'index'
   const templatePath = path.join(
     __dirname.replace('/build', '').replace('/src', ''),
     `/public/${indexFilename}.html`,
@@ -75,7 +76,11 @@ app.use(
   cors(),
   bodyParser.json(),
   (req, res, next) => {
-    res.set('Cache-Control', 'public, max-age=604800')
+    if (req.path.match(/^\/admin\//) || req.method !== 'GET') {
+      res.set('Cache-Control', 'no-store')
+    } else {
+      res.set('Cache-Control', 'public, max-age=604800')
+    }
     next()
   },
   api,

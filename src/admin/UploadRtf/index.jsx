@@ -5,7 +5,6 @@ import io from 'socket.io-client';
 import LogView from '../LogView';
 
 const { UPLOAD_URL } = process.env;
-const { API_ADMIN_TOKEN } = process.env;
 
 class UploadRtf extends React.Component {
   constructor(props) {
@@ -16,13 +15,10 @@ class UploadRtf extends React.Component {
       running: false,
       needSnapshot: true
     };
+    this.uploadUrl = `${UPLOAD_URL || '/upload'}/supplement`;
     this.socket = io({
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            Authorization: API_ADMIN_TOKEN
-          }
-        }
+      query: {
+        adminToken: props.adminToken
       }
     });
     this.socket.on('stdout', msg => {
@@ -60,7 +56,11 @@ class UploadRtf extends React.Component {
       });
       // UPLOAD THE FILE
       try {
-        const res = await axios.post(`${UPLOAD_URL}/supplement`, data);
+        const res = await axios.post(this.uploadUrl, data, {
+          headers: {
+            Authorization: `Bearer ${this.props.adminToken}`
+          }
+        });
         this.setState({
           output: this.state.output.concat(`Uploaded ${f.name}`),
           filename: res.data.filename
@@ -87,6 +87,9 @@ class UploadRtf extends React.Component {
         output: this.state.output.concat('Unexpected upload error')
       });
     }
+  }
+  componentWillUnmount() {
+    this.socket.close();
   }
   render() {
     return (

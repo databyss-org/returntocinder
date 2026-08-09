@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
 import express from 'express';
+import DumpDbToBeta from '../scripts/dumpDbToBeta';
 import { searchEntries } from '../lib/search';
 import { list as listEntries } from '../lib/data/entries';
 import {
@@ -16,8 +17,32 @@ import { list as listConfig } from '../lib/data/config';
 import { get as getPage } from '../lib/data/pages';
 import { get as getMenu } from '../lib/data/menus';
 import { motifDictFromList, entriesByLocation } from '../lib/indexers';
+import {
+  createAdminToken,
+  getAdminTokenTtlMs,
+  isAdminAuthConfigured,
+  requireAdminToken,
+  validateAdminPassword,
+} from './adminAuth';
 
 const router = express.Router();
+
+router.post('/admin/login', (req, res) => {
+  if (!isAdminAuthConfigured()) {
+    return res.status(503).json({ error: 'admin auth not configured' });
+  }
+
+  const { password } = req.body || {};
+  if (!validateAdminPassword(password)) {
+    return res.status(401).json({ error: 'invalid credentials' });
+  }
+
+  const expiresAt = Date.now() + getAdminTokenTtlMs();
+  return res.status(200).json({
+    token: createAdminToken(),
+    expiresAt,
+  });
+});
 
 router.get('/search', async (req, res) => {
   const { query, groupBy, withMeta, id, author } = req.query;
@@ -172,12 +197,7 @@ router.get('/motifs', async (req, res) => {
   return res.status(200).json(motifs);
 });
 
-router.post('/admin/dumptobeta', (req, res) => {
-  const { API_ADMIN_TOKEN } = process.env;
-  if (req.get('Authorization') !== API_ADMIN_TOKEN) {
-    req.status(403).end();
-    return;
-  }
+router.post('/admin/dumptobeta', requireAdminToken, (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/plain',
     'Content-Disposition': 'attachment; filename="stream.txt"',

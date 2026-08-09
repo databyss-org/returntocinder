@@ -3,15 +3,21 @@ const common = require('./webpack.common.js')
 
 module.exports = {
   ...common,
-  entry: ['babel-polyfill', './src/index.jsx'],
+  entry: {
+    bundle: ['babel-polyfill', './src/index.jsx'],
+    'bundle.admin': ['babel-polyfill', './src/admin/index.jsx'],
+  },
   output: {
     path: path.resolve(__dirname, '../public'),
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
   devServer: {
     host: '0.0.0.0',
     historyApiFallback: {
-      index: 'index.html',
+      rewrites: [
+        { from: /^\/admin(?:\/.*)?$/, to: '/admin.html' },
+        { from: /./, to: '/index.html' },
+      ],
     },
   },
 }

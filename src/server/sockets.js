@@ -6,8 +6,19 @@ import { dumpToBeta,
   restoreDatabase,
   importSupplement
 } from '../lib/admin';
+import {
+  isAdminAuthConfigured,
+  verifyAdminToken,
+} from './adminAuth';
 
-const { API_ADMIN_TOKEN } = process.env;
+function getSocketToken(socket) {
+  if (socket.handshake && socket.handshake.query && socket.handshake.query.adminToken) {
+    return socket.handshake.query.adminToken;
+  }
+  return socket.request && socket.request.headers
+    ? socket.request.headers.authorization
+    : '';
+}
 
 const sockets = (app) => {
   const http = Server(app);
@@ -17,9 +28,18 @@ const sockets = (app) => {
     console.log('Socket.io connection');
 
     socket.on('admin', (action, arg2) => {
-      if (socket.request.headers.authorization !== API_ADMIN_TOKEN) {
-        throw new Error('Not authorized');
+      if (!isAdminAuthConfigured()) {
+        socket.emit('stderr', 'Admin auth is not configured.');
+        socket.emit('end', false);
+        return;
       }
+
+      if (!verifyAdminToken(getSocketToken(socket))) {
+        socket.emit('stderr', 'Not authorized.');
+        socket.emit('end', false);
+        return;
+      }
+
       switch (action) {
         case 'dumptobeta': {
           dumpToBeta(socket);
@@ -40,6 +60,10 @@ const sockets = (app) => {
         case 'importsupplement': {
           importSupplement(socket, arg2);
           break;
+        }
+        default: {
+          socket.emit('stderr', `Unknown admin action: ${action}`);
+          socket.emit('end', false);
         }
       }
     });

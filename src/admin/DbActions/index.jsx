@@ -4,7 +4,6 @@ import { Button, Panel, Well } from 'react-bootstrap';
 import LogView from '../LogView';
 
 const { DB_CLUSTER_URI_BETA } = process.env;
-const { API_ADMIN_TOKEN } = process.env;
 
 class DbActions extends React.Component {
   constructor(props) {
@@ -15,12 +14,8 @@ class DbActions extends React.Component {
       backups: []
     };
     this.socket = io({
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            Authorization: API_ADMIN_TOKEN
-          }
-        }
+      query: {
+        adminToken: props.adminToken
       }
     });
     this.socket.on('stdout', msg => {
@@ -56,6 +51,9 @@ class DbActions extends React.Component {
   }
   componentDidMount() {
     this.updateSnapshotMeta();
+  }
+  componentWillUnmount() {
+    this.socket.close();
   }
   render() {
     return (

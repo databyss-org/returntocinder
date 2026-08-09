@@ -35,13 +35,23 @@ DB_NAME=databyss
 PORT=3030
 API_URL=http://localhost:3030/api
 DEFAULT_AUTHOR=DD
+ADMIN_PASSWORD_HASH=<sha256-hex-of-admin-password>
+ADMIN_TOKEN_SECRET=<long-random-secret>
 ```
 
 For a remote MongoDB connection, set `DATABASE_URL` to a full connection string (e.g. `mongodb+srv://...`).
 
+Generate `ADMIN_PASSWORD_HASH` with:
+
+```sh
+npm run admin:hash-password -- "your-admin-password"
+```
+
+This command updates (or adds) `ADMIN_PASSWORD_HASH` in `.env`.
+
 ### 3. Start MongoDB locally
 
-If you want MongoDB started for you during local development, use `npm run dev-server`. This command will create and use a project-local data directory automatically when `DATABASE_URL` points at a local MongoDB instance.
+If you want MongoDB started for you during local development, use `npm run dev:server`. This command will create and use a project-local data directory automatically when `DATABASE_URL` points at a local MongoDB instance.
 
 If you want to run MongoDB yourself, or if you're on MacOS and installed via Homebrew:
 
@@ -57,10 +67,10 @@ mongorestore --uri "mongodb://localhost:27017" --db databyss /path/to/dump
 
 ### 5. Run the development server
 
-First start Express API server:
+First start Express API and MongoDB servers:
 
 ```sh
-npm run dev-server
+npm run dev:server
 ```
 
 Then starts the Webpack dev server with hot reload (frontend):
@@ -96,7 +106,8 @@ The server listens on `PORT` (default `8080`) and `0.0.0.0` (localhost).
 | `DATABASE_URL` | Full MongoDB connection string |
 | `DB_NAME` | Database name to select after connecting |
 | `PORT` | HTTP port (default `8080`) |
-| `API_ADMIN_TOKEN` | If set, serves the admin UI instead of the public app |
+| `ADMIN_PASSWORD_HASH` | SHA-256 hash of the admin login password |
+| `ADMIN_TOKEN_SECRET` | Secret used to sign 24-hour admin tokens |
 
 ### DigitalOcean App Platform
 
@@ -139,7 +150,13 @@ All scripts are run with `npm run <script>` and require the env vars above.
 
 ## Admin
 
-The admin interface is available when `API_ADMIN_TOKEN` is set. Build with:
+The admin interface is available at `/admin`.
+
+- Visit `http://localhost:8080/admin`
+- Sign in with the admin password (validated by `POST /api/admin/login`)
+- The backend returns a signed token that expires after 24 hours
+
+Build with:
 
 ```sh
 npm run build:admin
