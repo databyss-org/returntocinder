@@ -33,3 +33,5 @@ public/data
 
 # LOCAL DATA
 data
+.mongo-data/
+dump/

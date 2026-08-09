@@ -6,12 +6,13 @@ A searchable, browseable index of the works of Jacques Derrida and other authors
 
 ### Prerequisites
 
-#### Node.js v16 
+#### Node.js v18
 v18+ not supported due to native dependency constraints.
 
 Recommended installation:
-- [install NVM](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
-- run `nvm use 16`
+- if needed, [install NVM](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
+- if needed, run `nvm install lts/hydrogen`
+- run `nvm use lts/hydrogen`
 
 #### MongoDB >=6
 
@@ -40,14 +41,12 @@ For a remote MongoDB connection, set `DATABASE_URL` to a full connection string 
 
 ### 3. Start MongoDB locally
 
-```sh
-mongod &
-```
+If you want MongoDB started for you during local development, use `npm run dev-server`. This command will create and use a project-local data directory automatically when `DATABASE_URL` points at a local MongoDB instance.
 
-Or, if you're on MacOS and installed via Homebrew:
+If you want to run MongoDB yourself, or if you're on MacOS and installed via Homebrew:
 
 ```sh
-brew services start mongodb-community`
+brew services start mongodb-community
 ```
 
 ### 4. Restore a database dump (first time)

@@ -15,7 +15,7 @@
     "start:admin": "pm2 start pm2.config.js",
     "dev": "NODE_ENV=development webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0 --mode=development --config webpack/webpack.app.js",
     "dev:admin": "webpack --watch --mode=development --config webpack/webpack.admin.js",
-    "dev-server": "nodemon src/server.js --exec babel-node",
+    "dev-server": "node scripts/start.js nodemon src/server.js --exec babel-node",
     "supplement": "babel-node src/scripts/supplementToDb.js",
     "dump": "babel-node src/scripts/dumpDb.js"
   },
@@ -81,7 +81,7 @@
     "reset-css": "^2.2.1",
     "roman-numerals": "^0.3.2",
     "rtf-parser": "^1.1.0",
-    "sass": "^1.69.0",
+    "sass": "1.99.0",
     "sass-loader": "^10.4.1",
     "shallowequal": "^1.0.2",
     "socket.io": "^2.1.1",
@@ -136,7 +136,11 @@
   "engines": {
     "node": "18.x"
   },
+  "resolutions": {
+    "brace-expansion": "1.1.12"
+  },
   "overrides": {
+    "brace-expansion": "1.1.12",
     "@databyss-org/ui": {
       "react": "^16.2.0",
       "react-dom": "^16.2.0"
