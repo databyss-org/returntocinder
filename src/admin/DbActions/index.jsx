@@ -3,7 +3,12 @@ import io from 'socket.io-client';
 import { Button, Panel, Well } from 'react-bootstrap';
 import LogView from '../LogView';
 
+const { API_URL } = process.env;
 const { DB_CLUSTER_URI_BETA } = process.env;
+
+function getApiBaseUrl() {
+  return (API_URL || '/api').replace(/\/api\/?$/, '');
+}
 
 class DbActions extends React.Component {
   constructor(props) {
@@ -13,7 +18,7 @@ class DbActions extends React.Component {
       output: [],
       backups: []
     };
-    this.socket = io({
+    this.socket = io(getApiBaseUrl(), {
       query: {
         adminToken: props.adminToken
       }

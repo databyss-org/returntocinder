@@ -1,12 +1,15 @@
+import fs from 'fs';
 import multer from 'multer';
 import express from 'express';
 
-const { UPLOADS_PATH } = process.env;
-
 export default (requireAdminToken) => {
   const router = express.Router();
+  const uploadPath = process.env.UPLOADS_PATH || './uploads';
+
+  fs.mkdirSync(uploadPath, { recursive: true });
+
   const upload = multer({
-    dest: UPLOADS_PATH,
+    dest: uploadPath,
   });
 
   router.post('/supplement', requireAdminToken, upload.single('file'), (req, res) => {

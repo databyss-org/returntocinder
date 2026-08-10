@@ -17,8 +17,12 @@ class ServerProcess extends EventEmitter {
       child.stderr.on('data', (data) => {
         this.stdErr(data);
       });
-      child.on('close', (data) => {
-        resolve();
+      child.on('close', (code) => {
+        if (code === 0) {
+          resolve();
+          return;
+        }
+        reject(new Error(`Command failed with exit code ${code}: ${cmd}`));
       });
       child.on('error', (data) => {
         reject(data);

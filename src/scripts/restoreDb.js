@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
 import ServerProcess from '../lib/ServerProcess';
 
+const DEFAULT_DUMP_PATH = './dump';
+
+function quote(value) {
+  return `"${value}"`;
+}
+
 class RestoreDb extends ServerProcess {
   constructor(args) {
     super(args);
@@ -8,14 +14,15 @@ class RestoreDb extends ServerProcess {
   }
   async run() {
     const {
-      DB_CLUSTER_URI_LIVE,
-      DB_USER,
-      DB_PASSWORD,
+      DATABASE_URL,
+      DB_NAME,
       DB_DUMP_PATH,
     } = process.env;
 
-    const restoreCmd =
-      `mongorestore --host ${DB_CLUSTER_URI_LIVE} --ssl --username ${DB_USER} --password ${DB_PASSWORD} --authenticationDatabase admin --drop ${DB_DUMP_PATH}`;
+    const dumpPath = DB_DUMP_PATH || DEFAULT_DUMP_PATH;
+    const restoreTarget = `${dumpPath}/${DB_NAME}`;
+
+    const restoreCmd = `mongorestore --uri ${quote(DATABASE_URL)} --db ${DB_NAME} --drop ${quote(restoreTarget)}`;
 
     try {
       this.emit('stdout', 'RESTORING DATA...');
@@ -30,15 +37,15 @@ class RestoreDb extends ServerProcess {
 export default RestoreDb;
 
 if (require.main === module) {
-  const dump = new DumpDb();
-  dump.on('end', (success) => {
+  const restore = new RestoreDb();
+  restore.on('end', (success) => {
     process.exit();
   });
-  dump.on('stdout', (msg) => {
+  restore.on('stdout', (msg) => {
     console.log(msg);
   });
-  dump.on('stderr', (msg) => {
+  restore.on('stderr', (msg) => {
     console.error(msg);
   });
-  dump.run();
+  restore.run();
 }

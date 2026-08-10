@@ -122,6 +122,18 @@ export const update = (entity, query, doc) =>
     });
   });
 
+export const updateMany = (entity, query, updateDoc) =>
+  new Promise(async (resolve, reject) => {
+    const db = await connect();
+    const collection = db.collection(entity);
+    collection.update(query, updateDoc, { multi: true }, (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(true);
+    });
+  });
+
 export const remove = (entity, query, justOne = true) =>
   new Promise(async (resolve, reject) => {
     const db = await connect();

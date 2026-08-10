@@ -7,6 +7,8 @@ import SupplementToDb from '../scripts/supplementToDb';
 const { DB_DUMP_PATH } = process.env;
 const { DB_NAME } = process.env;
 
+const dumpPath = DB_DUMP_PATH || './dump';
+
 function emitProcessEvents(proc, socket) {
   proc.on('end', (success) => {
     console.log('END', success);
@@ -47,7 +49,7 @@ export function importSupplement(socket, filename) {
 }
 
 export function getSnapshotMeta(cb) {
-  fs.stat(`${DB_DUMP_PATH}/${DB_NAME}`, (err, stats) => {
+  fs.stat(`${dumpPath}/${DB_NAME}`, (err, stats) => {
     if (err) {
       console.error(err);
       return;

@@ -34,6 +34,7 @@ DATABASE_URL=mongodb://localhost:27017
 DB_NAME=databyss
 PORT=3030
 API_URL=http://localhost:3030/api
+UPLOADS_PATH=./uploads
 DEFAULT_AUTHOR=DD
 ADMIN_PASSWORD_HASH=<sha256-hex-of-admin-password>
 ADMIN_TOKEN_SECRET=<long-random-secret>
@@ -106,6 +107,7 @@ The server listens on `PORT` (default `8080`) and `0.0.0.0` (localhost).
 | `DATABASE_URL` | Full MongoDB connection string |
 | `DB_NAME` | Database name to select after connecting |
 | `PORT` | HTTP port (default `8080`) |
+| `UPLOADS_PATH` | Local directory for uploaded supplement RTF files |
 | `ADMIN_PASSWORD_HASH` | SHA-256 hash of the admin login password |
 | `ADMIN_TOKEN_SECRET` | Secret used to sign 24-hour admin tokens |
 

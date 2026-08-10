@@ -4,7 +4,12 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import LogView from '../LogView';
 
+const { API_URL } = process.env;
 const { UPLOAD_URL } = process.env;
+
+function getApiBaseUrl() {
+  return (API_URL || '/api').replace(/\/api\/?$/, '');
+}
 
 class UploadRtf extends React.Component {
   constructor(props) {
@@ -15,8 +20,9 @@ class UploadRtf extends React.Component {
       running: false,
       needSnapshot: true
     };
-    this.uploadUrl = `${UPLOAD_URL || '/upload'}/supplement`;
-    this.socket = io({
+    const apiBaseUrl = getApiBaseUrl();
+    this.uploadUrl = `${UPLOAD_URL || `${apiBaseUrl}/upload`}/supplement`;
+    this.socket = io(apiBaseUrl, {
       query: {
         adminToken: props.adminToken
       }
@@ -107,7 +113,7 @@ class UploadRtf extends React.Component {
           >
             <strong>Supplement file format</strong>
             <div>1. First line: <code>AUTHOR_CODE,LastName,FirstName</code></div>
-            <div>2. Then one bold heading line (section title).</div>
+            <div>2. Then one bold heading line (section title). This is required, but the text is ignored.</div>
             <div>3. Each entry line: <code>SOURCE_CODE pp. LOCATION Entry text...</code></div>
             <div>
               Use valid source codes from your bibliography.<br />

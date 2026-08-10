@@ -3,7 +3,14 @@
 import express from 'express';
 import DumpDbToBeta from '../scripts/dumpDbToBeta';
 import { searchEntries } from '../lib/search';
-import { list as listEntries, removeBySource } from '../lib/data/entries';
+import {
+  add as addEntry,
+  list as listEntries,
+  remove as removeEntry,
+  update as updateEntry,
+  removeBySource,
+  updateSourceName,
+} from '../lib/data/entries';
 import {
   list as listMotifs,
   bySource as motifsBySource,
@@ -26,7 +33,14 @@ import {
 import { list as listConfig } from '../lib/data/config';
 import { get as getPage } from '../lib/data/pages';
 import { get as getMenu } from '../lib/data/menus';
-import { motifDictFromList, entriesByLocation } from '../lib/indexers';
+import {
+  motifDictFromList,
+  motifDictFromMotifs,
+  makeStemDict,
+  linkMotifsInEntry,
+  entriesByLocation,
+} from '../lib/indexers';
+import { addAuthorToMotif, parseLocations } from '../scripts/docToJson';
 import {
   createAdminToken,
   getAdminTokenTtlMs,
@@ -58,6 +72,82 @@ const normalizeAuthorPayload = (payload = {}) => ({
   firstName: (payload.firstName || '').trim(),
   lastName: (payload.lastName || '').trim(),
 });
+
+const normalizeEntryPayload = (payload = {}) => ({
+  sourceId: (payload.sourceId || '').trim(),
+  content: `${payload.content || ''}`.trim(),
+  locationRaw: `${payload.locationRaw || (payload.locations && payload.locations.raw) || ''}`.trim(),
+  starred: !!payload.starred,
+  id: (payload.id || '').trim(),
+  authorCode: (payload.authorCode || '').trim(),
+});
+
+function badRequest(message) {
+  const err = new Error(message);
+  err.statusCode = 400;
+  return err;
+}
+
+async function processEntryPayload(payload, fallbackId = '') {
+  if (!payload.sourceId) {
+    throw badRequest('sourceId is required');
+  }
+  if (!payload.content) {
+    throw badRequest('content is required');
+  }
+  if (!payload.locationRaw) {
+    throw badRequest('locationRaw is required');
+  }
+
+  let source;
+  try {
+    source = await getSource(payload.sourceId);
+  } catch (err) {
+    throw badRequest('source not found');
+  }
+
+  const motifList = await listMotifs();
+  const motifDict = motifDictFromMotifs(motifDictFromList(motifList));
+  const stemDoc = makeStemDict(motifDict);
+  const { entry: linkedContent, motifs } = linkMotifsInEntry({
+    content: payload.content,
+    stemDoc,
+  });
+
+  const entry = {
+    id: payload.id || fallbackId || `${(source.author || 'ADM').toUpperCase()}${Date.now()}`,
+    content: payload.content,
+    linkedContent,
+    starred: payload.starred,
+    source: {
+      id: source.id,
+      display: source.id,
+      name: source.title || source.name,
+      author: payload.authorCode || source.author || '',
+    },
+    motif: motifs,
+    locations: {
+      raw: payload.locationRaw,
+    },
+  };
+
+  try {
+    parseLocations(entry);
+  } catch (err) {
+    throw badRequest(`invalid location format: ${payload.locationRaw}`);
+  }
+
+  if (entry.source.author) {
+    for (const motif of entry.motif) {
+      await addAuthorToMotif({
+        mid: motif.id,
+        authorCode: entry.source.author,
+      });
+    }
+  }
+
+  return entry;
+}
 
 router.post('/admin/login', (req, res) => {
   if (!isAdminAuthConfigured()) {
@@ -278,6 +368,7 @@ router.put('/admin/sources/:sid', requireAdminToken, async (req, res) => {
   }
 
   await updateSource(req.params.sid, source);
+  await updateSourceName(req.params.sid, source.title);
   return res.status(200).json(source);
 });
 
@@ -285,6 +376,67 @@ router.delete('/admin/sources/:sid', requireAdminToken, async (req, res) => {
   await removeBySource(req.params.sid);
   await removeSource(req.params.sid);
   return res.status(204).end();
+});
+
+router.delete('/admin/entries/:eid', requireAdminToken, async (req, res) => {
+  await removeEntry(req.params.eid);
+  return res.status(204).end();
+});
+
+router.post('/admin/entries', requireAdminToken, async (req, res) => {
+  try {
+    const payload = normalizeEntryPayload(req.body);
+    const entry = await processEntryPayload(payload);
+    const result = await addEntry(entry);
+    const insertedId =
+      (result && result.insertedId)
+      || (result && result.insertedIds && result.insertedIds[0])
+      || (result && result.ops && result.ops[0] && result.ops[0]._id)
+      || null;
+
+    return res.status(201).json({
+      ...entry,
+      _id: insertedId ? `${insertedId}` : undefined,
+    });
+  } catch (err) {
+    const statusCode = err.statusCode || 500;
+    return res.status(statusCode).json({ error: err.message || 'could not create entry' });
+  }
+});
+
+router.put('/admin/entries/:eid', requireAdminToken, async (req, res) => {
+  try {
+    const payload = normalizeEntryPayload(req.body);
+    const entry = await processEntryPayload(payload, payload.id);
+    await updateEntry(req.params.eid, entry);
+    return res.status(200).json({
+      ...entry,
+      _id: req.params.eid,
+    });
+  } catch (err) {
+    const statusCode = err.statusCode || 500;
+    return res.status(statusCode).json({ error: err.message || 'could not update entry' });
+  }
+});
+
+router.get('/admin/entries', requireAdminToken, async (req, res) => {
+  const { sourceId } = req.query;
+  if (!sourceId) {
+    return res.status(400).json({ error: 'sourceId is required' });
+  }
+
+  const entries = await listEntries({ sourceId });
+  const sorted = entries.sort((a, b) => {
+    const sourceA = (a.source && a.source.id) || '';
+    const sourceB = (b.source && b.source.id) || '';
+    if (sourceA === sourceB) {
+      const lowA = a.locations && a.locations.low ? a.locations.low : 0;
+      const lowB = b.locations && b.locations.low ? b.locations.low : 0;
+      return lowA - lowB;
+    }
+    return sourceA > sourceB ? 1 : -1;
+  });
+  return res.status(200).json(sorted);
 });
 
 router.get('/admin/authors', requireAdminToken, async (req, res) => {

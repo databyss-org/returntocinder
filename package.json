@@ -11,7 +11,7 @@
     "build": "babel src -d build --plugins transform-runtime && babel src -d build --ignore *.jsx --plugins transform-runtime && webpack -p --config webpack/webpack.app.js --progress",
     "start": "node build/server.js",
     "dev": "NODE_ENV=development webpack-dev-server --content-base public --open --inline --hot --host 0.0.0.0 --mode=development --config webpack/webpack.app.js",
-    "dev:server": "node scripts/start.js nodemon src/server.js --exec babel-node",
+    "dev:server": "node scripts/killPort.js 3030 && node scripts/start.js nodemon --watch src src/server.js --exec babel-node",
     "admin:hash-password": "node scripts/hashAdminPassword.js",
     "supplement": "babel-node src/scripts/supplementToDb.js",
     "dump": "babel-node src/scripts/dumpDb.js"

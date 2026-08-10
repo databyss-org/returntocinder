@@ -76,7 +76,8 @@ app.use(
   cors(),
   bodyParser.json(),
   (req, res, next) => {
-    if (req.path.match(/^\/admin\//) || req.method !== 'GET') {
+    const isDevelopment = process.env.NODE_ENV !== 'production'
+    if (isDevelopment || req.path.match(/^\/admin\//) || req.method !== 'GET') {
       res.set('Cache-Control', 'no-store')
     } else {
       res.set('Cache-Control', 'public, max-age=604800')

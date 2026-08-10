@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, FormControl, FormGroup, ControlLabel, Panel, Table, Modal } from 'react-bootstrap';
+import { Button, FormControl, FormGroup, ControlLabel, Panel, Table, Modal, Tabs, Tab } from 'react-bootstrap';
 
 const { API_URL } = process.env;
 
@@ -28,6 +28,7 @@ class SourcesCrud extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeTab: 'sources',
       loading: true,
       saving: false,
       deletingId: null,
@@ -51,6 +52,7 @@ class SourcesCrud extends React.Component {
     this.confirmDelete = this.confirmDelete.bind(this);
     this.onCancelEdit = this.onCancelEdit.bind(this);
     this.onSourceSearchChange = this.onSourceSearchChange.bind(this);
+    this.onTabSelect = this.onTabSelect.bind(this);
     this.loadSources = this.loadSources.bind(this);
   }
 
@@ -88,6 +90,7 @@ class SourcesCrud extends React.Component {
 
   onEdit(source) {
     this.setState({
+      activeTab: 'form',
       editingId: source.id,
       form: {
         id: source.id,
@@ -101,10 +104,15 @@ class SourcesCrud extends React.Component {
 
   onCancelEdit() {
     this.setState({
+      activeTab: 'sources',
       editingId: null,
       form: { ...defaultForm },
       error: '',
     });
+  }
+
+  onTabSelect(activeTab) {
+    this.setState({ activeTab });
   }
 
   onSourceSearchChange(evt) {
@@ -134,6 +142,7 @@ class SourcesCrud extends React.Component {
       });
       await this.loadSources();
       this.setState({
+        activeTab: 'sources',
         saving: false,
         form: { ...defaultForm },
       });
@@ -160,6 +169,7 @@ class SourcesCrud extends React.Component {
       );
       await this.loadSources();
       this.setState({
+        activeTab: 'sources',
         saving: false,
         editingId: null,
         form: { ...defaultForm },
@@ -213,67 +223,62 @@ class SourcesCrud extends React.Component {
     const isEditing = !!this.state.editingId;
 
     return (
-      <Panel>
-        <Panel.Heading>{isEditing ? `Edit Source ${this.state.editingId}` : 'Add Source'}</Panel.Heading>
-        <Panel.Body>
-          <form onSubmit={isEditing ? this.onUpdate : this.onCreate}>
-            <FormGroup>
-              <ControlLabel>Source ID</ControlLabel>
-              <FormControl
-                name="id"
-                type="text"
-                value={this.state.form.id}
-                onChange={this.onChange}
-                placeholder="BSi"
-                required
-                disabled={isEditing}
-              />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Title</ControlLabel>
-              <FormControl
-                name="title"
-                type="text"
-                value={this.state.form.title}
-                onChange={this.onChange}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Author Code</ControlLabel>
-              <FormControl
-                name="author"
-                type="text"
-                value={this.state.form.author}
-                onChange={this.onChange}
-                placeholder="DD"
-              />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Citations (one citation per line)</ControlLabel>
-              <FormControl
-                name="citations"
-                componentClass="textarea"
-                rows={4}
-                value={this.state.form.citations}
-                onChange={this.onChange}
-              />
-            </FormGroup>
-            <Button type="submit" bsStyle="primary" disabled={this.state.saving}>
-              {this.state.saving ? 'Saving...' : isEditing ? 'Update Source' : 'Create Source'}
-            </Button>
-            {isEditing && (
-              <Button
-                style={{ marginLeft: 10 }}
-                onClick={this.onCancelEdit}
-                disabled={this.state.saving}
-              >
-                Cancel
-              </Button>
-            )}
-          </form>
-        </Panel.Body>
-      </Panel>
+      <form onSubmit={isEditing ? this.onUpdate : this.onCreate}>
+        <FormGroup>
+          <ControlLabel>Source ID</ControlLabel>
+          <FormControl
+            name="id"
+            type="text"
+            value={this.state.form.id}
+            onChange={this.onChange}
+            placeholder="BSi"
+            required
+            disabled={isEditing}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Title</ControlLabel>
+          <FormControl
+            name="title"
+            type="text"
+            value={this.state.form.title}
+            onChange={this.onChange}
+            required
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Author Code</ControlLabel>
+          <FormControl
+            name="author"
+            type="text"
+            value={this.state.form.author}
+            onChange={this.onChange}
+            placeholder="DD"
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Citations (one citation per line)</ControlLabel>
+          <FormControl
+            name="citations"
+            componentClass="textarea"
+            rows={4}
+            value={this.state.form.citations}
+            onChange={this.onChange}
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="primary" disabled={this.state.saving}>
+          {this.state.saving ? 'Saving...' : isEditing ? 'Update Source' : 'Create Source'}
+        </Button>
+        {isEditing && (
+          <Button
+            style={{ marginLeft: 10 }}
+            onClick={this.onCancelEdit}
+            disabled={this.state.saving}
+          >
+            Cancel
+          </Button>
+        )}
+      </form>
     );
   }
 
@@ -340,28 +345,42 @@ class SourcesCrud extends React.Component {
     const canConfirmDelete =
       this.state.deleteTargetId &&
       this.state.deleteConfirmInput === this.state.deleteTargetId;
+    const formTabTitle = this.state.editingId ? 'Edit Source' : 'Add Source';
 
     return (
       <div>
         {this.state.error && (
           <div style={{ color: '#a22', marginBottom: 12 }}>{this.state.error}</div>
         )}
-        {this.renderForm()}
-        <Panel>
-          <Panel.Heading>Existing Sources</Panel.Heading>
-          <Panel.Body>
-            <FormGroup>
-              <ControlLabel>Search Sources (ID or title)</ControlLabel>
-              <FormControl
-                type="text"
-                value={this.state.sourceSearch}
-                onChange={this.onSourceSearchChange}
-                placeholder="e.g. BSi or grammatology"
-              />
-            </FormGroup>
-            {this.renderSources()}
-          </Panel.Body>
-        </Panel>
+        <Tabs
+          id="sources-crud-tabs"
+          activeKey={this.state.activeTab}
+          onSelect={this.onTabSelect}
+        >
+          <Tab eventKey="sources" title="Sources">
+            <Panel style={{ marginTop: 12 }}>
+              <Panel.Body>
+                <FormGroup>
+                  <ControlLabel>Search Sources (ID or title)</ControlLabel>
+                  <FormControl
+                    type="text"
+                    value={this.state.sourceSearch}
+                    onChange={this.onSourceSearchChange}
+                    placeholder="e.g. BSi or grammatology"
+                  />
+                </FormGroup>
+                {this.renderSources()}
+              </Panel.Body>
+            </Panel>
+          </Tab>
+          <Tab eventKey="form" title={formTabTitle}>
+            <Panel style={{ marginTop: 12 }}>
+              <Panel.Body>
+                {this.renderForm()}
+              </Panel.Body>
+            </Panel>
+          </Tab>
+        </Tabs>
 
         <Modal show={this.state.showDeleteModal} onHide={this.onCloseDeleteModal}>
           <Modal.Header closeButton>

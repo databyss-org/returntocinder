@@ -1,6 +1,12 @@
 import dotenv from 'dotenv';
 import ServerProcess from '../lib/ServerProcess';
 
+const DEFAULT_DUMP_PATH = './dump';
+
+function quote(value) {
+  return `"${value}"`;
+}
+
 class DumpDb extends ServerProcess {
   constructor(args) {
     super(args);
@@ -8,16 +14,15 @@ class DumpDb extends ServerProcess {
   }
   async run() {
     const {
-      DB_CLUSTER_URI_LIVE,
-      DB_USER,
-      DB_PASSWORD,
+      DATABASE_URL,
       DB_NAME,
       DB_DUMP_PATH,
     } = process.env;
 
-    const cleanCmd = `rm -rf ${DB_DUMP_PATH}`;
-    const dumpCmd =
-      `mongodump --host ${DB_CLUSTER_URI_LIVE} --ssl --username ${DB_USER} --password ${DB_PASSWORD} --authenticationDatabase admin --db ${DB_NAME} --out ${DB_DUMP_PATH}`;
+    const dumpPath = DB_DUMP_PATH || DEFAULT_DUMP_PATH;
+
+    const cleanCmd = `rm -rf ${quote(dumpPath)}`;
+    const dumpCmd = `mongodump --uri ${quote(DATABASE_URL)} --db ${DB_NAME} --out ${quote(dumpPath)}`;
 
     try {
       this.emit('stdout', 'CLEANING PREVIOUS DUMP...');

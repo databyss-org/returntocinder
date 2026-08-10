@@ -7,11 +7,10 @@ import rtfToJson from './rtfToJson';
 import { motifDictFromMotifs, biblioFromSources } from '../lib/indexers';
 import { addAuthorToMotif } from './docToJson';
 
-const { UPLOADS_PATH } = process.env;
-
 class SupplementToDb extends ServerProcess {
   async run(filename) {
-    const rtfPath = `${UPLOADS_PATH}/${filename}`;
+    const uploadPath = process.env.UPLOADS_PATH || './uploads';
+    const rtfPath = `${uploadPath}/${filename}`;
     const motifDict = motifDictFromMotifs(await listMotifs());
     const biblio = biblioFromSources(await listSources());
     try {

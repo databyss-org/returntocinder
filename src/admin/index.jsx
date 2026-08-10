@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import UploadRtf from './UploadRtf';
 import DbActions from './DbActions';
+import EntriesCrud from './EntriesCrud';
 import SourcesCrud from './SourcesCrud';
 import AuthorsCrud from './AuthorsCrud';
 
@@ -110,7 +111,7 @@ class App extends React.Component {
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
           }}
         >
-          <h2 style={{ marginTop: 0, marginBottom: 16 }}>Databyss Admin</h2>
+          <h2 style={{ marginTop: 0, marginBottom: 16 }}>Admin</h2>
           <label htmlFor="adminPassword" style={{ display: 'block', marginBottom: 8 }}>
             Password
           </label>
@@ -161,7 +162,7 @@ class App extends React.Component {
         <div>
           <Navbar>
             <Navbar.Header>
-              <Navbar.Brand>Databyss Admin</Navbar.Brand>
+              <Navbar.Brand>Admin</Navbar.Brand>
             </Navbar.Header>
             <Nav>
               <NavItem>
@@ -169,6 +170,9 @@ class App extends React.Component {
               </NavItem>
               <NavItem>
                 <Link to="/admin/db">Database Actions</Link>
+              </NavItem>
+              <NavItem>
+                <Link to="/admin/entries">Entries</Link>
               </NavItem>
               <NavItem>
                 <Link to="/admin/sources">Sources</Link>
@@ -194,6 +198,15 @@ class App extends React.Component {
               path="/admin/db"
               render={(props) => (
                 <DbActions
+                  {...props}
+                  adminToken={this.state.token}
+                />
+              )}
+            />
+            <Route
+              path="/admin/entries"
+              render={(props) => (
+                <EntriesCrud
                   {...props}
                   adminToken={this.state.token}
                 />

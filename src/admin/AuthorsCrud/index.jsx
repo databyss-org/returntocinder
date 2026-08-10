@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, FormControl, FormGroup, ControlLabel, Panel, Table, Modal } from 'react-bootstrap';
+import { Button, FormControl, FormGroup, ControlLabel, Panel, Table, Modal, Tabs, Tab } from 'react-bootstrap';
 
 const { API_URL } = process.env;
 
@@ -20,6 +20,7 @@ class AuthorsCrud extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeTab: 'authors',
       loading: true,
       saving: false,
       deletingId: null,
@@ -43,6 +44,7 @@ class AuthorsCrud extends React.Component {
     this.confirmDelete = this.confirmDelete.bind(this);
     this.onCancelEdit = this.onCancelEdit.bind(this);
     this.onAuthorSearchChange = this.onAuthorSearchChange.bind(this);
+    this.onTabSelect = this.onTabSelect.bind(this);
     this.loadAuthors = this.loadAuthors.bind(this);
   }
 
@@ -80,6 +82,7 @@ class AuthorsCrud extends React.Component {
 
   onEdit(author) {
     this.setState({
+      activeTab: 'form',
       editingId: author.id,
       form: {
         id: author.id,
@@ -92,10 +95,15 @@ class AuthorsCrud extends React.Component {
 
   onCancelEdit() {
     this.setState({
+      activeTab: 'authors',
       editingId: null,
       form: { ...defaultForm },
       error: '',
     });
+  }
+
+  onTabSelect(activeTab) {
+    this.setState({ activeTab });
   }
 
   onAuthorSearchChange(evt) {
@@ -125,6 +133,7 @@ class AuthorsCrud extends React.Component {
       });
       await this.loadAuthors();
       this.setState({
+        activeTab: 'authors',
         saving: false,
         form: { ...defaultForm },
       });
@@ -151,6 +160,7 @@ class AuthorsCrud extends React.Component {
       );
       await this.loadAuthors();
       this.setState({
+        activeTab: 'authors',
         saving: false,
         editingId: null,
         form: { ...defaultForm },
@@ -204,56 +214,51 @@ class AuthorsCrud extends React.Component {
     const isEditing = !!this.state.editingId;
 
     return (
-      <Panel>
-        <Panel.Heading>{isEditing ? `Edit Author ${this.state.editingId}` : 'Add Author'}</Panel.Heading>
-        <Panel.Body>
-          <form onSubmit={isEditing ? this.onUpdate : this.onCreate}>
-            <FormGroup>
-              <ControlLabel>Author ID</ControlLabel>
-              <FormControl
-                name="id"
-                type="text"
-                value={this.state.form.id}
-                onChange={this.onChange}
-                placeholder="DD"
-                required
-                disabled={isEditing}
-              />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>First Name</ControlLabel>
-              <FormControl
-                name="firstName"
-                type="text"
-                value={this.state.form.firstName}
-                onChange={this.onChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Last Name</ControlLabel>
-              <FormControl
-                name="lastName"
-                type="text"
-                value={this.state.form.lastName}
-                onChange={this.onChange}
-                required
-              />
-            </FormGroup>
-            <Button type="submit" bsStyle="primary" disabled={this.state.saving}>
-              {this.state.saving ? 'Saving...' : isEditing ? 'Update Author' : 'Create Author'}
-            </Button>
-            {isEditing && (
-              <Button
-                style={{ marginLeft: 10 }}
-                onClick={this.onCancelEdit}
-                disabled={this.state.saving}
-              >
-                Cancel
-              </Button>
-            )}
-          </form>
-        </Panel.Body>
-      </Panel>
+      <form onSubmit={isEditing ? this.onUpdate : this.onCreate}>
+        <FormGroup>
+          <ControlLabel>Author ID</ControlLabel>
+          <FormControl
+            name="id"
+            type="text"
+            value={this.state.form.id}
+            onChange={this.onChange}
+            placeholder="DD"
+            required
+            disabled={isEditing}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>First Name</ControlLabel>
+          <FormControl
+            name="firstName"
+            type="text"
+            value={this.state.form.firstName}
+            onChange={this.onChange}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Last Name</ControlLabel>
+          <FormControl
+            name="lastName"
+            type="text"
+            value={this.state.form.lastName}
+            onChange={this.onChange}
+            required
+          />
+        </FormGroup>
+        <Button type="submit" bsStyle="primary" disabled={this.state.saving}>
+          {this.state.saving ? 'Saving...' : isEditing ? 'Update Author' : 'Create Author'}
+        </Button>
+        {isEditing && (
+          <Button
+            style={{ marginLeft: 10 }}
+            onClick={this.onCancelEdit}
+            disabled={this.state.saving}
+          >
+            Cancel
+          </Button>
+        )}
+      </form>
     );
   }
 
@@ -319,28 +324,42 @@ class AuthorsCrud extends React.Component {
     const canConfirmDelete =
       this.state.deleteTargetId &&
       this.state.deleteConfirmInput === this.state.deleteTargetId;
+    const formTabTitle = this.state.editingId ? 'Edit Author' : 'Add Author';
 
     return (
       <div>
         {this.state.error && (
           <div style={{ color: '#a22', marginBottom: 12 }}>{this.state.error}</div>
         )}
-        {this.renderForm()}
-        <Panel>
-          <Panel.Heading>Existing Authors</Panel.Heading>
-          <Panel.Body>
-            <FormGroup>
-              <ControlLabel>Search Authors (ID, first name, or last name)</ControlLabel>
-              <FormControl
-                type="text"
-                value={this.state.authorSearch}
-                onChange={this.onAuthorSearchChange}
-                placeholder="e.g. DD or derrida"
-              />
-            </FormGroup>
-            {this.renderAuthors()}
-          </Panel.Body>
-        </Panel>
+        <Tabs
+          id="authors-crud-tabs"
+          activeKey={this.state.activeTab}
+          onSelect={this.onTabSelect}
+        >
+          <Tab eventKey="authors" title="Authors">
+            <Panel style={{ marginTop: 12 }}>
+              <Panel.Body>
+                <FormGroup>
+                  <ControlLabel>Search Authors (ID, first name, or last name)</ControlLabel>
+                  <FormControl
+                    type="text"
+                    value={this.state.authorSearch}
+                    onChange={this.onAuthorSearchChange}
+                    placeholder="e.g. DD or derrida"
+                  />
+                </FormGroup>
+                {this.renderAuthors()}
+              </Panel.Body>
+            </Panel>
+          </Tab>
+          <Tab eventKey="form" title={formTabTitle}>
+            <Panel style={{ marginTop: 12 }}>
+              <Panel.Body>
+                {this.renderForm()}
+              </Panel.Body>
+            </Panel>
+          </Tab>
+        </Tabs>
 
         <Modal show={this.state.showDeleteModal} onHide={this.onCloseDeleteModal}>
           <Modal.Header closeButton>
