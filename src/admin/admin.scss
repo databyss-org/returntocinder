@@ -1,0 +1,212 @@
+:global(body.admin-dark) {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.admin-shell) {
+  background-color: #121212;
+  color: #f0f0f0;
+  min-height: 100vh;
+}
+
+:global(body.admin-dark) :global(.navbar),
+:global(body.admin-dark) :global(.navbar-inverse) {
+  background-color: #1a1a1a;
+  border-color: #333;
+}
+
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-brand),
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-text) {
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a:hover,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a:focus {
+  color: #fff;
+  background-color: #2a2a2a;
+}
+
+:global(body.admin-dark) :global(.panel) {
+  background-color: #1e1e1e;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.panel-heading),
+:global(body.admin-dark) :global(.panel-footer) {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.panel-body) {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.form-control),
+:global(body.admin-dark) input:global(.form-control),
+:global(body.admin-dark) textarea:global(.form-control),
+:global(body.admin-dark) select:global(.form-control),
+:global(body.admin-dark) :global(.input-group-addon),
+:global(body.admin-dark) :global(.input-group-btn) :global(.btn) {
+  background-color: #2a2a2a !important;
+  border-color: #555 !important;
+  color: #f0f0f0 !important;
+}
+
+:global(body.admin-dark) :global(.form-control)::placeholder,
+:global(body.admin-dark) input:global(.form-control)::placeholder,
+:global(body.admin-dark) textarea:global(.form-control)::placeholder {
+  color: #999;
+}
+
+:global(body.admin-dark) :global(.form-control):focus,
+:global(body.admin-dark) input:global(.form-control):focus,
+:global(body.admin-dark) textarea:global(.form-control):focus,
+:global(body.admin-dark) select:global(.form-control):focus {
+  border-color: #7aa2ff !important;
+  box-shadow: 0 0 0 1px rgba(122, 162, 255, 0.25);
+}
+
+:global(body.admin-dark) :global(.form-control)[disabled],
+:global(body.admin-dark) :global(.form-control)[readonly],
+:global(body.admin-dark) :global(.form-control)[disabled]:focus,
+:global(body.admin-dark) :global(.form-control)[readonly]:focus {
+  background-color: #222 !important;
+  color: #aaa !important;
+}
+
+:global(body.admin-dark) :global(.btn),
+:global(body.admin-dark) :global(.btn-default),
+:global(body.admin-dark) :global(.btn-default):focus,
+:global(body.admin-dark) :global(.btn-default):active,
+:global(body.admin-dark) :global(.btn-default).active,
+:global(body.admin-dark) :global(.open) > :global(.dropdown-toggle).btn-default {
+  background-color: #2a2a2a;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.btn-default):hover,
+:global(body.admin-dark) :global(.btn):hover {
+  background-color: #353535;
+  border-color: #666;
+  color: #fff;
+}
+
+:global(body.admin-dark) :global(.btn-primary) {
+  background-color: #4d7cff;
+  border-color: #4d7cff;
+}
+
+:global(body.admin-dark) :global(.btn-danger) {
+  background-color: #b33939;
+  border-color: #b33939;
+}
+
+:global(body.admin-dark) :global(.control-label),
+:global(body.admin-dark) label,
+:global(body.admin-dark) :global(.help-block),
+:global(body.admin-dark) :global(.checkbox),
+:global(body.admin-dark) :global(.radio) {
+  color: #d7d7d7;
+}
+
+:global(body.admin-dark) :global(.table) {
+  color: #eaeaea;
+  background-color: #1e1e1e;
+}
+
+:global(body.admin-dark) :global(.table) > thead > tr > th,
+:global(body.admin-dark) :global(.table) > tbody > tr > td {
+  border-color: #444;
+}
+
+:global(body.admin-dark) :global(.table-striped) > tbody > tr:nth-of-type(odd) {
+  background-color: #242424;
+}
+
+:global(body.admin-dark) :global(.table-hover) > tbody > tr:hover {
+  background-color: #303030;
+}
+
+:global(body.admin-dark) :global(.nav-tabs) {
+  border-bottom-color: #444;
+}
+
+:global(body.admin-dark) :global(.nav-tabs) > li > a {
+  color: #ddd;
+  background-color: #1a1a1a;
+  border-color: #444;
+}
+
+:global(body.admin-dark) :global(.nav-tabs) > li > a:hover,
+:global(body.admin-dark) :global(.nav-tabs) > li > a:focus {
+  color: #fff;
+  background-color: #2a2a2a;
+  border-color: #555;
+}
+
+:global(body.admin-dark) :global(.nav-tabs) > li.active > a,
+:global(body.admin-dark) :global(.nav-tabs) > li.active > a:hover,
+:global(body.admin-dark) :global(.nav-tabs) > li.active > a:focus {
+  color: #fff;
+  background-color: #2a2a2a;
+  border-color: #555 #555 transparent;
+}
+
+:global(body.admin-dark) :global(.nav) > li.disabled > a,
+:global(body.admin-dark) :global(.nav) > li.disabled > a:hover,
+:global(body.admin-dark) :global(.nav) > li.disabled > a:focus {
+  color: #777;
+  background-color: #1a1a1a;
+}
+
+:global(body.admin-dark) :global(.modal-backdrop).in {
+  opacity: 0.72;
+}
+
+:global(body.admin-dark) :global(.modal-content) {
+  background-color: #1f1f1f;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.modal-header),
+:global(body.admin-dark) :global(.modal-footer) {
+  border-color: #444;
+}
+
+:global(body.admin-dark) :global(.modal-title),
+:global(body.admin-dark) :global(.modal-body) {
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.close) {
+  color: #fff;
+  text-shadow: none;
+  opacity: 0.8;
+}
+
+:global(body.admin-dark) :global(.dropdown-menu) {
+  background-color: #1e1e1e;
+  border-color: #444;
+}
+
+:global(body.admin-dark) :global(.dropdown-menu) > li > a {
+  color: #f0f0f0;
+}
+
+:global(body.admin-dark) :global(.dropdown-menu) > li > a:hover,
+:global(body.admin-dark) :global(.dropdown-menu) > li > a:focus {
+  color: #fff;
+  background-color: #2a2a2a;
+}
+
+:global(body.admin-dark) :global(.well) {
+  background-color: #242424;
+  border-color: #444;
+  color: #eee;
+}

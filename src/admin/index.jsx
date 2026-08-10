@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import 'reset-css/reset.css';
+import './admin.scss';
 import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
@@ -13,6 +14,7 @@ import AuthorsCrud from './AuthorsCrud';
 const { API_URL } = process.env;
 const ADMIN_TOKEN_KEY = 'r2c.admin.token';
 const ADMIN_TOKEN_EXP_KEY = 'r2c.admin.tokenExp';
+const ADMIN_DARK_MODE_KEY = 'r2c.admin.darkMode';
 
 function loadSession() {
   const token = localStorage.getItem(ADMIN_TOKEN_KEY);
@@ -33,6 +35,18 @@ function clearSession() {
   localStorage.removeItem(ADMIN_TOKEN_EXP_KEY);
 }
 
+function loadDarkMode() {
+  const saved = localStorage.getItem(ADMIN_DARK_MODE_KEY);
+  if (saved === null) {
+    return true;
+  }
+  return saved === '1';
+}
+
+function saveDarkMode(enabled) {
+  localStorage.setItem(ADMIN_DARK_MODE_KEY, enabled ? '1' : '0');
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -42,11 +56,43 @@ class App extends React.Component {
       loading: false,
       error: '',
       token: session ? session.token : null,
-      expiresAt: session ? session.expiresAt : 0
+      expiresAt: session ? session.expiresAt : 0,
+      darkMode: loadDarkMode()
     };
     this.onPasswordChanged = this.onPasswordChanged.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.onToggleDarkMode = this.onToggleDarkMode.bind(this);
+    this.syncBodyDarkMode = this.syncBodyDarkMode.bind(this);
+  }
+
+  componentDidMount() {
+    this.syncBodyDarkMode(this.state.darkMode);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.darkMode !== this.state.darkMode) {
+      this.syncBodyDarkMode(this.state.darkMode);
+    }
+  }
+
+  componentWillUnmount() {
+    this.syncBodyDarkMode(false);
+  }
+
+  syncBodyDarkMode(enabled) {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    document.body.classList.toggle('admin-dark', enabled);
+  }
+
+  onToggleDarkMode() {
+    this.setState((state) => {
+      const darkMode = !state.darkMode;
+      saveDarkMode(darkMode);
+      return { darkMode };
+    });
   }
 
   onPasswordChanged(evt) {
@@ -90,6 +136,8 @@ class App extends React.Component {
   }
 
   renderLogin() {
+    const darkMode = this.state.darkMode;
+
     return (
       <div
         style={{
@@ -97,15 +145,16 @@ class App extends React.Component {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#f7f7f7'
+          backgroundColor: darkMode ? '#121212' : '#f7f7f7',
+          color: darkMode ? '#f0f0f0' : '#111'
         }}
       >
         <form
           onSubmit={this.onLogin}
           style={{
             width: 360,
-            backgroundColor: '#fff',
-            border: '1px solid #ddd',
+            backgroundColor: darkMode ? '#1f1f1f' : '#fff',
+            border: darkMode ? '1px solid #444' : '1px solid #ddd',
             borderRadius: 4,
             padding: 24,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
@@ -123,7 +172,9 @@ class App extends React.Component {
             style={{
               width: '100%',
               padding: '10px 12px',
-              border: '1px solid #ccc',
+              border: darkMode ? '1px solid #555' : '1px solid #ccc',
+              backgroundColor: darkMode ? '#2a2a2a' : '#fff',
+              color: darkMode ? '#f0f0f0' : '#111',
               borderRadius: 4,
               marginBottom: 12
             }}
@@ -133,9 +184,25 @@ class App extends React.Component {
             <div style={{ color: '#a22', marginBottom: 12 }}>{this.state.error}</div>
           )}
           <button
+            onClick={this.onToggleDarkMode}
+            type="button"
+            style={{
+              width: '100%',
+              marginTop: 8,
+              padding: '8px 12px',
+              borderRadius: 4,
+              border: darkMode ? '1px solid #666' : '1px solid #aaa',
+              backgroundColor: darkMode ? '#2a2a2a' : '#fff',
+              color: darkMode ? '#f0f0f0' : '#111'
+            }}
+          >
+            {darkMode ? 'Use Light Mode' : 'Use Dark Mode'}
+          </button>
+          <button
             type="submit"
             style={{
               width: '100%',
+              marginTop: 8,
               padding: '10px 12px',
               borderRadius: 4,
               border: 'none',
@@ -157,10 +224,15 @@ class App extends React.Component {
       return this.renderLogin();
     }
 
+    const darkMode = this.state.darkMode;
+
     return (
       <Router>
-        <div>
-          <Navbar>
+        <div
+          className={darkMode ? 'admin-shell admin-dark' : 'admin-shell'}
+          style={{ minHeight: '100vh', backgroundColor: darkMode ? '#121212' : '#fff', color: darkMode ? '#f0f0f0' : '#111' }}
+        >
+          <Navbar inverse={darkMode}>
             <Navbar.Header>
               <Navbar.Brand>Admin</Navbar.Brand>
             </Navbar.Header>
@@ -179,6 +251,9 @@ class App extends React.Component {
               </NavItem>
               <NavItem>
                 <Link to="/admin/authors">Authors</Link>
+              </NavItem>
+              <NavItem onClick={this.onToggleDarkMode}>
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
               </NavItem>
               <NavItem onClick={this.onLogout}>Logout</NavItem>
             </Nav>
