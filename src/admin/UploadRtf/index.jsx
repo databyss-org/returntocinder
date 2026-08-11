@@ -106,7 +106,6 @@ class UploadRtf extends React.Component {
               padding: '12px',
               border: '1px solid #ddd',
               borderRadius: '4px',
-              background: '#fafafa',
               fontSize: '14px',
               lineHeight: 1.5
             }}

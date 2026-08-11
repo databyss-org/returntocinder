@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import 'reset-css/reset.css';
 import './admin.scss';
-import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, NavLink, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import UploadRtf from './UploadRtf';
@@ -232,33 +232,48 @@ class App extends React.Component {
           className={darkMode ? 'admin-shell admin-dark' : 'admin-shell'}
           style={{ minHeight: '100vh', backgroundColor: darkMode ? '#121212' : '#fff', color: darkMode ? '#f0f0f0' : '#111' }}
         >
-          <Navbar inverse={darkMode}>
-            <Navbar.Header>
-              <Navbar.Brand>Admin</Navbar.Brand>
-            </Navbar.Header>
-            <Nav>
-              <NavItem>
-                <Link to="/admin/supplement">Upload Supplement</Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/admin/db">Database Actions</Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/admin/entries">Entries</Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/admin/sources">Sources</Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/admin/authors">Authors</Link>
-              </NavItem>
-              <NavItem onClick={this.onToggleDarkMode}>
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
-              </NavItem>
-              <NavItem onClick={this.onLogout}>Logout</NavItem>
-            </Nav>
-          </Navbar>
-          <div style={{ padding: '20px' }}>
+          <div className="admin-layout">
+            <Navbar inverse={darkMode} className="admin-sidebar-nav">
+              <Navbar.Header>
+                <Navbar.Brand>Admin</Navbar.Brand>
+              </Navbar.Header>
+              <div className="admin-sidebar-nav-groups">
+                <ul className="nav navbar-nav admin-sidebar-main-nav">
+                  <li>
+                    <NavLink to="/admin/supplement" className="admin-sidebar-route-link" activeClassName="admin-sidebar-link-active">
+                      Upload Supplement
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/admin/db" className="admin-sidebar-route-link" activeClassName="admin-sidebar-link-active">
+                      Database Actions
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/admin/entries" className="admin-sidebar-route-link" activeClassName="admin-sidebar-link-active">
+                      Entries
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/admin/sources" className="admin-sidebar-route-link" activeClassName="admin-sidebar-link-active">
+                      Sources
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/admin/authors" className="admin-sidebar-route-link" activeClassName="admin-sidebar-link-active">
+                      Authors
+                    </NavLink>
+                  </li>
+                </ul>
+                <Nav className="admin-sidebar-footer-nav">
+                  <NavItem onClick={this.onToggleDarkMode}>
+                    {darkMode ? 'Light Mode' : 'Dark Mode'}
+                  </NavItem>
+                  <NavItem onClick={this.onLogout}>Logout</NavItem>
+                </Nav>
+              </div>
+            </Navbar>
+            <div className="admin-main-content">
             <Route exact path="/admin" render={() => <Redirect to="/admin/supplement" />} />
             <Route
               path="/admin/supplement"
@@ -305,6 +320,7 @@ class App extends React.Component {
                 />
               )}
             />
+            </div>
           </div>
         </div>
       </Router>

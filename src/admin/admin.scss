@@ -1,3 +1,115 @@
+:global(.admin-layout) {
+  display: flex;
+  min-height: 100vh;
+}
+
+:global(.admin-sidebar-nav) {
+  width: 240px;
+  min-height: 100vh;
+  margin-bottom: 0;
+  border-radius: 0;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.admin-sidebar-nav) :global(.container-fluid) {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+:global(.admin-sidebar-nav-groups) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.admin-sidebar-nav) :global(.navbar-header) {
+  float: none;
+}
+
+:global(.admin-sidebar-nav) :global(.navbar-brand) {
+  float: none;
+  display: block;
+  padding: 18px 20px;
+}
+
+:global(.admin-sidebar-nav) :global(.navbar-nav) {
+  float: none;
+  margin: 0;
+}
+
+:global(.admin-sidebar-main-nav) {
+  margin-top: 0;
+  padding-bottom: 86px;
+}
+
+:global(.admin-sidebar-footer-nav) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-top: 0;
+}
+
+:global(.admin-sidebar-nav) :global(.navbar-nav) > li {
+  float: none;
+  width: 100%;
+}
+
+:global(.admin-sidebar-nav) :global(.navbar-nav) > li > a {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 20px;
+}
+
+:global(.admin-sidebar-nav .navbar-nav > li > a.admin-sidebar-link-active),
+:global(.admin-sidebar-nav .navbar-nav > li.active > a) {
+  background-color: #e9eefc !important;
+  color: #2f5ecf !important;
+}
+
+:global(.admin-main-content) {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+}
+
+@media (max-width: 900px) {
+  :global(.admin-layout) {
+    display: block;
+  }
+
+  :global(.admin-sidebar-nav) {
+    width: 100%;
+    min-height: auto;
+  }
+
+  :global(.admin-sidebar-nav) :global(.container-fluid),
+  :global(.admin-sidebar-nav-groups) {
+    display: block !important;
+  }
+
+  :global(.admin-sidebar-nav) :global(.navbar-nav) {
+    margin: 0;
+  }
+
+  :global(.admin-sidebar-footer-nav) {
+    position: static;
+  }
+
+  :global(.admin-main-content) {
+    padding: 12px;
+  }
+}
+
 :global(body.admin-dark) {
   background-color: #121212;
   color: #f0f0f0;
@@ -15,16 +127,33 @@
   border-color: #333;
 }
 
-:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-brand),
-:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a,
-:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-text) {
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-brand) {
   color: #f0f0f0;
 }
 
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-brand):hover,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-brand):focus {
+  color: #ffffff;
+}
+
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li a,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-text) {
+  color: #5b8bff;
+}
+
 :global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a:hover,
-:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a:focus {
-  color: #fff;
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li > a:focus,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li a:hover,
+:global(body.admin-dark) :global(.navbar-inverse) :global(.navbar-nav) > li a:focus {
+  color: #7ca3ff;
   background-color: #2a2a2a;
+}
+
+:global(body.admin-dark .admin-sidebar-nav .navbar-nav > li > a.admin-sidebar-link-active),
+:global(body.admin-dark .admin-sidebar-nav .navbar-nav > li.active > a) {
+  color: #8fb0ff !important;
+  background-color: #242d46 !important;
 }
 
 :global(body.admin-dark) :global(.panel) {
@@ -72,10 +201,20 @@
 
 :global(body.admin-dark) :global(.form-control)[disabled],
 :global(body.admin-dark) :global(.form-control)[readonly],
+:global(body.admin-dark) :global(fieldset[disabled]) :global(.form-control),
 :global(body.admin-dark) :global(.form-control)[disabled]:focus,
 :global(body.admin-dark) :global(.form-control)[readonly]:focus {
   background-color: #222 !important;
   color: #aaa !important;
+  cursor: not-allowed;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #aaa;
+}
+
+:global(body.admin-dark) :global(.form-control)[disabled]::placeholder,
+:global(body.admin-dark) :global(.form-control)[readonly]::placeholder,
+:global(body.admin-dark) :global(fieldset[disabled]) :global(.form-control)::placeholder {
+  color: #777;
 }
 
 :global(body.admin-dark) :global(.btn),
@@ -132,36 +271,53 @@
   background-color: #303030;
 }
 
-:global(body.admin-dark) :global(.nav-tabs) {
+:global(body.admin-dark .nav-tabs) {
   border-bottom-color: #444;
 }
 
-:global(body.admin-dark) :global(.nav-tabs) > li > a {
-  color: #ddd;
-  background-color: #1a1a1a;
-  border-color: #444;
+:global(body.admin-dark .nav-tabs > li:not(.disabled) > a) {
+  color: #5b8bff !important;
+  background-color: #1a1a1a !important;
+  border-color: #444 !important;
 }
 
-:global(body.admin-dark) :global(.nav-tabs) > li > a:hover,
-:global(body.admin-dark) :global(.nav-tabs) > li > a:focus {
-  color: #fff;
-  background-color: #2a2a2a;
-  border-color: #555;
+:global(body.admin-dark .nav-tabs > li:not(.disabled):not(.active) > a:hover),
+:global(body.admin-dark .nav-tabs > li:not(.disabled):not(.active) > a:focus) {
+  color: #7ca3ff !important;
+  background-color: #252525 !important;
+  border-color: #555 !important;
 }
 
-:global(body.admin-dark) :global(.nav-tabs) > li.active > a,
-:global(body.admin-dark) :global(.nav-tabs) > li.active > a:hover,
-:global(body.admin-dark) :global(.nav-tabs) > li.active > a:focus {
-  color: #fff;
-  background-color: #2a2a2a;
-  border-color: #555 #555 transparent;
+:global(body.admin-dark .nav-tabs > li.active > a),
+:global(body.admin-dark .nav-tabs > li.active > a:hover),
+:global(body.admin-dark .nav-tabs > li.active > a:focus) {
+  color: #5b8bff !important;
+  background-color: #2a2a2a !important;
+  border-color: #555 #555 transparent !important;
+}
+
+:global(body.admin-dark .nav-tabs > li.disabled > a),
+:global(body.admin-dark .nav-tabs > li.disabled > a:hover),
+:global(body.admin-dark .nav-tabs > li.disabled > a:focus) {
+  color: #555 !important;
+  background-color: #0f0f0f !important;
+  border-color: #2a2a2a !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
 }
 
 :global(body.admin-dark) :global(.nav) > li.disabled > a,
 :global(body.admin-dark) :global(.nav) > li.disabled > a:hover,
 :global(body.admin-dark) :global(.nav) > li.disabled > a:focus {
-  color: #777;
-  background-color: #1a1a1a;
+  color: #555 !important;
+  background-color: #0f0f0f !important;
+  border-color: #2a2a2a !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
 }
 
 :global(body.admin-dark) :global(.modal-backdrop).in {
