@@ -32,6 +32,6 @@ package-lock.json
 public/data
 
 # LOCAL DATA
-data
+/data
 .mongo-data/
 dump/
